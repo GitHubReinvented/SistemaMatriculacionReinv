@@ -1,0 +1,304 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<style>
+    article {
+        display: grid;
+        grid-template-columns: repeat(2,1fr); /* 4 columnas*/
+        gap: 50px; /*espacio entre columnas*/
+        margin-bottom: 50px;
+        margin-top: 10px;
+        font-size:medium;
+    }
+
+        article img {
+            width: 100%;
+            height: 180px;
+            border-radius: 4%;
+        }
+
+ 
+
+    @@media(min-width:800px)
+    {
+         .DivFlotante {
+        display: scroll;
+        position: fixed;
+        Top: 230px;
+        right: 0%;
+        width:42%;
+        }
+    }
+
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<center><h1>Pago de pensiones y servicios</h1></center>
+<br />
+
+<div class="row">
+    <div class="col-md-6">
+        <center><h2>Servicios Anulales disponibles</h2></center>
+        <article class="container">
+            <div>
+                <a href="#" onclick="CargarModalInfoServicio('InformacionSeguro.html')">
+                    <img src=" @Url.Content("~/media/logos/SeguroEstudiantil.jpg")" />
+                    <h3>Seguro estudiantíl</h3>
+                    <h4>Costo $300</h4>
+                    Ver información <i class="fa-solid fa-magnifying-glass-plus"></i>&nbsp;&nbsp;
+                </a>
+                <!--button-- class="btn btn-info" onclick="agregarServicio('Seguro estudiantíl','300')">Contratar</!--button-->
+            </div>
+
+            <!--div>
+                <a href="#" onclick="CargarModalInfoServicio('InformacionClubCiencias.html')">
+                    <img src=" @Url.Content("~/media/logos/ClubCiencias.jpg")" />
+                    <h3>Cub de ciencias</h3><h4>Costo $300</h4>
+                    Ver información <i class="fa-solid fa-magnifying-glass-plus"></i>&nbsp;&nbsp;
+                </a>
+                <button class="btn btn-info" onclick="agregarServicio('Cub de ciencias','300')">Contratar</button>
+            </div>
+
+            <div>
+                <a href="#" onclick="CargarModalInfoServicio('InformacionClubArte.html')">
+                    <img src=" @Url.Content("~/media/logos/ClubArte.jpg")" />
+                
+                    <h3>Club de arte</h3><h4>Costo $200</h4>
+                    Ver información <i class="fa-solid fa-magnifying-glass-plus"></i>&nbsp;&nbsp;
+                </a>
+                <button class="btn btn-info" onclick="agregarServicio('Club de arte','200')">Contratar</button>
+            </div>
+
+            <div>
+                <a href="#" onclick="CargarModalInfoServicio('InformacionClubGimnasia.html')">
+                    <img src=" @Url.Content("~/media/logos/ClubGimnasia.jpg")" />
+                
+                    <h3>Club de gimnasia</h3><h4>Costo $200</h4>
+                    Ver información <i class="fa-solid fa-magnifying-glass-plus"></i>&nbsp;&nbsp;
+                </a>
+                <button class="btn btn-info" onclick="agregarServicio('Club de gimnasia','200')">Contratar</button>
+            </div>
+
+            <div>
+                <a href="#" onclick="CargarModalInfoServicio('InformacionClubFutbol.html')">
+                    <img src=" @Url.Content("~/media/logos/ClubFutbol.jpg")" />
+                   <h3>Club de fútbol</h3><h4>Costo $200</h4>
+                    Ver información <i class="fa-solid fa-magnifying-glass-plus"></i>&nbsp;&nbsp;
+                </a>
+                <button-- class="btn btn-info" onclick="agregarServicio('Club de fútbol','200')">Contratar</button-->
+            </div>
+        </article>
+    </div>
+    @*-------------------------------------------------------------------------------------------------------------------------------------*@
+    <div class="col-md-6 DivFlotante">
+        <h2>Valores a pagar</h2>
+        <table class="table table-striped table-hover" id="TablaValores">
+            <thead class="thead-dark">
+                <tr>
+                    <th><b>Nombre</b></th>
+                    <th><b>Concepto</b></th>
+                    <th><b>Valor</b></th>
+                    <th><b>Acción</b></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th >Alexander Xavier Morales Rodas</th>
+                    <td>Pensión 2023-2024 10 meses</td>
+                    <td align="right">$6000</td>
+                    <td>&nbsp;&nbsp;&nbsp;</td>
+            
+                </tr>
+                <tr>
+                    <th>Servicio Anual</th>
+                    <td>Seguro estudiantil</td>
+                    <td align="right">$300</td>
+                    <td> <button class="btn btn-danger btn-sm QuitarSeguro">x</button></td>
+
+                </tr>
+            </tbody>
+
+    
+        </table>
+
+        <table>
+            <tr><td width="73%">&nbsp;&nbsp;&nbsp;&nbsp;</td><td align="right"><button id="infoPago" type="button" class="btn btn-secundary rounded float-end">Total $</button></td><td>&nbsp;&nbsp;</td></tr>
+            
+        </table>
+        
+        <div class="col-md-12">
+            <div class="d-grid gap-2">
+                <button id="btnPagar" onClick="CargaModalPago()"  type="button" class="btn btn-success rounded float-end" data-bs-toggle="modal" data-bs-target="#ModalPago">Pagar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal alerta seguro-->
+<div class="modal" tabindex="-1" id="ModalAlertaSeguro" style="z-index:1500">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">ALERTA</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Estimado representante si no quiere contratar el servicio anual de seguro estudiantíl por favor realice una notificación por escrito dirijida al gerente administrativo.</p>
+                <p>Una vez revisada la notificación se habilitará el pago de matrícula. Por el momento queda registrada.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No Quitar Seguro</button>
+                <button type="button" class="btn btn-danger" onclick="QuitarSeguro()">Quitar Seguro</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal información servicio-->
+<div class="modal" tabindex="-1" id="ModalInformaServicio" style="z-index:1500">
+    <div class="modal-lg modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">INFORMACION SERVICIO</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="idDivInfoServicio">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    var globalApagar = 0;
+    var PensionAnual=6000;//600x 10 meses
+    var servicioSeguroEstudiantil=300;
+    var globalApagar = PensionAnual + servicioSeguroEstudiantil;
+
+    
+    $(document).ready(function () {
+
+        let infoPago = document.getElementById('infoPago');
+
+        infoPago.textContent = "Total $ " + parseFloat(globalApagar).toFixed(2);
+
+       
+        
+
+    });
+
+    function CargarModalInfoServicio(documentoInfoServicio)
+    {
+        
+        $('#idDivInfoServicio').load('/Docs/' + documentoInfoServicio);
+        $('#ModalInformaServicio').modal({ backdrop: 'static', keyboard: false })
+        $("#ModalInformaServicio").modal("show");
+    }
+
+    function agregarServicio(nombreServicio,costo)
+    {
+
+        var fila = '<td>Servicio anual</td> <td>' + nombreServicio + '</td> <td align="right">$' + costo + '</td>';
+
+        globalApagar = parseFloat(globalApagar) + parseFloat(costo);
+        setTimeout(() => {
+            infoPago.textContent = "Total $" + parseFloat(globalApagar).toFixed(2) ;
+        }, 500);
+
+        if (nombreServicio == 'Seguro estudiantíl')
+        {
+            fila = fila + '<td><button onclick="valorSeguroQuitar(&apos;' + costo + '&apos;)" class="btn btn-danger btn-sm QuitarSeguro" >x</button></td >';
+            document.getElementById("btnPagar").style.display = 'block';
+        }
+        else
+            //fila = fila + '<td><button class="btn btn-primary Quitar" >x</button></td >';
+            fila = fila + '<td><button onclick="QuitarServicio(&apos;' + costo + '&apos;)" class="btn btn-primary btn-sm Quitar" >x</button></td >';
+
+        document.getElementById('TablaValores').insertRow(-1).innerHTML = fila ;
+    }
+   
+    /*
+    const eliminarFila = () => {
+        const table = document.getElementById('tablaprueba')
+        const rowCount = table.rows.length
+
+        if (rowCount <= 1)
+            alert('No se puede eliminar el encabezado')
+        else
+            table.deleteRow(rowCount - 1)
+    }
+    */
+   var globalValorSeguroQuitar=0;
+    function valorSeguroQuitar(valor)
+    {
+        alert(valor);
+        globalValorSeguroQuitar = valor;
+    }
+    
+    $(document).on('mouseover', '.QuitarSeguro', function (event) {
+
+
+        $('#ModalAlertaSeguro').modal({ backdrop: 'static', keyboard: false })
+        $("#ModalAlertaSeguro").modal("show");
+
+
+    });
+
+    /*
+    $(document).on('click', '.QuitarSeguro', function (event) {
+        
+       
+        $('#ModalAlertaSeguro').modal({ backdrop: 'static', keyboard: false })
+        $("#ModalAlertaSeguro").modal("show");
+        
+        event.preventDefault();
+        $(this).closest('tr').remove();
+    });
+    */
+    function QuitarSeguro() {
+       
+        
+        globalApagar = parseFloat(globalApagar) - parseFloat(globalValorSeguroQuitar);
+
+        setTimeout(() => {
+            infoPago.textContent = "Total $" + parseFloat(globalApagar).toFixed(2) ;
+        }, 500);
+
+        $(".QuitarSeguro").parents("tr").remove();
+        $("#ModalAlertaSeguro").modal("hide");
+        document.getElementById("btnPagar").style.display = 'none';
+        
+        
+    }
+
+
+
+    $(document).on('click', '.Quitar', function (event) {
+        
+        event.preventDefault();
+        $(this).closest('tr').remove();
+        //let elementosFila = this.getElementsByTagName("td");
+       
+    });
+
+    function QuitarServicio(valor)
+    {
+
+        globalApagar = parseFloat(globalApagar) - parseFloat(valor);
+
+        setTimeout(() => {
+            infoPago.textContent = "Total $" + parseFloat(globalApagar).toFixed(2) ;
+        }, 500);
+    }
+
+</script>

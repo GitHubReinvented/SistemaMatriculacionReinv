@@ -1,0 +1,90 @@
+@{
+    var sucursalUser = @User.Claims.FirstOrDefault(c => c.Type == "Sucursal")?.Value;
+}
+
+<!DOCTYPE html>
+<html @Html.Raw(KTTheme.PrintHtmlAttributes("html"))>
+<!--begin::Head-->
+
+<head>
+    <title>@ViewData["Title"] - ReinventED Schools</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:locale" content="es" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="" />
+
+    @if (sucursalUser == "Puembo")
+    {
+        <link rel="shortcut icon" href='@KTTheme.GetAssetPath("media/Reinvented/IconoBlancoldpi.png")' />
+    }
+    else if (sucursalUser == "Santa Clara")
+    {
+        <link rel="shortcut icon" href='@KTTheme.GetAssetPath("media/Reinvented/IconoBlancoldpi.png")' />
+    }
+    else
+    {
+        <link rel="shortcut icon" href='@KTTheme.GetAssetPath("media/Reinvented/ReinventedSCH.png")' />
+
+    }
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+    <!--begin::Fonts-->
+    @foreach (string font in KTTheme.GetFonts())
+    {
+        <link rel="stylesheet" href="@font" />
+    }
+    <!--end::Fonts-->
+    <!--begin::Vendor Stylesheets(optional)-->
+    @foreach (string file in KTTheme.GetVendors("Css"))
+    {
+        <link rel="stylesheet" type="text/css" href="@file" />
+    }
+    <!--end::Vendor Stylesheets-->
+    <!--begin::Global Stylesheets(mandatory)-->
+    @foreach (string file in KTTheme.GetGlobalAssets("Css"))
+    {
+        <link rel="stylesheet" type="text/css" href="@file" />
+    }
+    <!--end::Global Stylesheets-->
+    <!--begin::Custom Stylesheets(optional)-->
+    @foreach (string file in KTTheme.GetCssFiles())
+    {
+        <link rel="stylesheet" type="text/css" href='@KTTheme.GetAssetPath(file)' />
+    }
+    <!--end::Custom Stylesheets-->
+</head>
+<!--end::Head-->
+<!--begin::Body-->
+<!body @Html.Raw(KTTheme.PrintHtmlAttributes("body")) class='@KTTheme.PrintHtmlClasses("body")'>
+<partial name="~/Views/Partials/ThemeMode/_Init.cshtml"></partial>
+
+    @RenderBody()
+
+<!--begin::Global Javascript(mandatory)-->
+    @foreach (string file in KTTheme.GetGlobalAssets("Js"))
+    {
+    <script src="@file" charset="utf-8"></script>
+    }
+<!--end::Global Javascript-->
+<!--begin::Vendors Javascript(optional)-->
+    @foreach (string file in KTTheme.GetVendors("Js"))
+    {
+    <script src="@file" charset="utf-8"></script>
+    }
+<!--end::Vendors Javascript-->
+<!--begin::Custom Javascript(optional)-->
+    @foreach (string file in KTTheme.GetJavascriptFiles())
+    {
+    <script src='@KTTheme.GetAssetPath(file)' charset="utf-8"></script>
+    }
+<!--end::Custom Javascript-->
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</!body>
+<!--end::Body-->
+
+</html>

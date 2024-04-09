@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Domain.ObligacionPendiente>
+
+@{
+
+}
+<h1>Obligaciones</h1>
+<table class="table table-striped table-hover table-bordered fs-6" id="TablaValores" style="background:#ffffff;">
+    <thead class="thead-dark">
+        <tr>
+            <th><b>Alumno</b></th>
+            <th><b>Concepto</b></th>
+            
+            <td align="center"><b>Valor</b></td>
+            
+            <td align="center"><b>Descuento</b></td>
+             
+            <td align="center"><b>Abono</b></td>
+            <td align="center"><b>Saldo</b></td>
+            <th><b>Estado</b></th>
+        </tr>
+    </thead>
+   <tbody>
+        @foreach (var obligacion in Model)
+        {
+           
+                <tr>
+                <td align="left">@obligacion.Matricula.Persona.Nombres @obligacion.Matricula.Persona.Apellidos</td>
+                    <td align="left">@obligacion.Rubro.TipoRubro.Descripcion</td>
+                    
+                    
+                    <td align="right">$@obligacion.Valor</td>
+                   
+                
+                    <td align="right">$@obligacion.Descuento</td>
+                
+                   
+                
+                    <td align="right">$@obligacion.Abono</td>
+               
+                    <td align="right">$@obligacion.Saldo</td>
+                    <td align="left">@obligacion.EstadoCuota.Descripcion</td>
+                   
+                    <td>&nbsp;&nbsp;&nbsp;</td>
+
+                </tr>
+            
+
+        }
+
+    </tbody>
+</table>

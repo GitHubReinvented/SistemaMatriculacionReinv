@@ -1,0 +1,1062 @@
+﻿@using System.Security.Claims
+@using Domain;
+@using Newtonsoft.Json;
+@model IEnumerable<Domain.ObligacionPendiente>
+
+@*model IEnumerable<Domain.Persona>*@
+@{
+    decimal totalPago = 0;
+    decimal sumatoriaPensiones = 0;
+    decimal costoSeguroEstudiantil = 0;
+    ViewData["Title"] = "Inicio";
+    //ViewBag.Padre = ViewData["Padre"];
+    //ViewBag.Madre = ViewData["Madre"];
+    ViewBag.Representante = ViewData["Representante"];
+    //ViewBag.Estudiante = ViewBag.Estudiante;
+    ViewBag.Servicio = ViewData["Servicio"];
+    var representante = new Persona();
+    string TokenAbitmedia = ViewBag.TokenAbitmedia;
+    string TokenPayPhone = ViewBag.TokenPayPhone;
+    if (TempData["Error"] != null)
+    {
+        ViewBag.Error = TempData["Error"];
+    }
+}
+<style>
+    .form-control {
+        background: #e0f3f8;
+    }
+
+    .form-check-input{
+        border-color:navy;
+    }
+
+    small {
+        color: darkred;
+        display: none;
+    }
+
+    .modal-xl {
+        --bs-modal-width: 90%;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    globalArrayobligaciones = []; //reseteo lo que pudo estar en pago matrícula
+    
+</script>
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-info" role="alert">
+        @ViewBag.Error;
+    </div>
+}
+<div class="row gx-5 gx-xl-10">
+    @if (!representante.Representante)
+    {
+      
+            var servicios = (List<Servicio>)ViewData["Servicio"]!;
+       
+      
+        <div class="col-xxl-3 mb-5 mb-xl-10">
+            @await Html.PartialAsync("~/Views/Partials/Widgets/Cards/_Card_Information.cshtml", new CardViewModel
+        {
+        Action = "",
+        Controller = "",
+        Title = servicios[0].Nombre,
+        Description = servicios[0].Descripcion,
+        Param = servicios[0].Link,
+        Icon = "fas fa-solid fa-utensils text-light",
+        Color = servicios[0].Sucursal!.color1
+        })
+
+
+
+        </div>
+
+        <div class="col-xxl-3 mb-5 mb-xl-10">
+            @await Html.PartialAsync("~/Views/Partials/Widgets/Cards/_Card_Information_Transporte.cshtml", new CardViewModel
+        {
+        Action = "",
+        Controller = "",
+        Title = "Transporte",
+        Description = "",
+        Param = "",
+        Icon = "fas fa-solid fa-bus text-light",
+        Color =servicios[1].Sucursal!.color3
+        })
+          
+
+
+
+
+        </div>
+        <div class="col-xxl-3 mb-5 mb-xl-10">
+            @await Html.PartialAsync("~/Views/Partials/Widgets/Cards/_Card_Information.cshtml", new CardViewModel
+        {
+        Action = "",
+        Controller = "",
+        Title = servicios[2].Nombre,
+        Description = servicios[2].Descripcion,
+        Param = servicios[2].Link,
+        Icon = "fas fa-solid fa-hand-holding-medical text-light",
+        Color = servicios[2].Sucursal!.color2
+        })
+
+
+
+        </div>
+        <div class="col-xxl-3 mb-5 mb-xl-10">
+            @await Html.PartialAsync("~/Views/Partials/Widgets/Cards/_Card_Information.cshtml", new CardViewModel
+        {
+        Action = "",
+        Controller = "",
+        Title = servicios[3].Nombre,
+        Description = servicios[3].Descripcion,
+        Param = servicios[3].Link,
+        Icon = "fas fa-duotone fa-store text-light",
+        Color = servicios[3].Sucursal!.color4
+        })
+
+
+
+        </div>
+       
+    }
+    else
+    {
+        <partial name='~/Views/Partials/Widgets/Cards/_Widget18.cshtml' />
+    }
+</div>
+
+@if(Model.Count()>0)
+{
+    
+
+<div class="row">
+    <div class="col-md-8" >
+        <h2>Valores a pagar</h2>
+        <br />
+        
+           
+                <table class="table table-striped table-hover table-bordered fs-6" style="background:#ffffff;" id="TablaValores">
+            <thead class="thead-dark">
+                <tr>
+                        <th><b>Alumno</b></th>
+                    <th><b>Concepto</b></th>
+                            <td></td>
+                     <th><b>Valor</b></th>
+                            <td></td>
+                     <th><b>Descuento</b></th>
+                            <td></td>
+                     <th><b>Abono</b></th>
+                            <td></td>
+                    <th><b>Saldo</b></th>
+                    <th><b>Acción</b></th>
+                </tr>
+            </thead>
+            <tbody>
+                ;
+                @foreach (var obligacion in Model)
+                {
+                            @if (obligacion.RubroId == 2)
+                                {
+                                       <!--Pensión es cod 2-->
+                                    totalPago = totalPago + obligacion.Saldo;
+                                    sumatoriaPensiones = sumatoriaPensiones + obligacion.Saldo;
+                                    <script>globalArrayobligaciones.push('@obligacion.Id');</script>
+
+                                    <tr>
+                                <td width="46%">@obligacion.Matricula.Persona.Nombres @obligacion.Matricula.Persona.Apellidos</td>
+                                        <td width="46%">Pensión anual @ViewBag.cicloEscolar</td>
+                                        <td>$</td>
+                                        <td align="right" width="10%">@obligacion.Valor</td>
+                                        <td>$</td>
+                                        <td align="right" width="10%">@obligacion.Descuento</td>
+                                        <td>$</td>
+                                        <td align="right" width="10%">@obligacion.Abono</td>
+                                        <td>$</td>
+                                        <td align="right" width="10%">@obligacion.Saldo</td>
+                                        <td width="10%">&nbsp;&nbsp;&nbsp;</td>
+
+                                    </tr>
+                                }
+
+                                @if (obligacion.RubroId == 3 && obligacion.EstadoCuotaId == 2)
+                                {
+                                    <!--Seguro estudiantil es cod 3-->
+                                    totalPago = totalPago + obligacion.Saldo;
+                                    costoSeguroEstudiantil = obligacion.Saldo;
+                                    <script>globalArrayobligaciones.push('@obligacion.Id');</script>
+
+                                    <tr>
+                                <td width="46%">@obligacion.Matricula.Persona.Nombres @obligacion.Matricula.Persona.Apellidos</td>
+                                        <td width="46%">Seguro estudiantil</td>
+                                        <td>$</td>
+                                        <td align="right" width="10%">@obligacion.Valor</td>
+                                        <td>$</td>
+                                        <td align="right" width="10%">@obligacion.Descuento</td>
+                                        <td>$</td>
+                                        <td align="right" width="10%">@obligacion.Abono</td>
+                                        <td>$</td>
+                                        <td align="right" width="10%">@obligacion.Saldo</td>
+                                <td width="10%"> <button class="btn btn-danger btn-sm QuitarSeguro" id="@obligacion.Id" 
+                                    alumnoEst="@obligacion.Matricula.Persona.Nombres @obligacion.Matricula.Persona.Apellidos"
+                                    alumnoCel="@obligacion.Matricula.Persona.Identificacion">
+                                        x
+                                    </button>
+                                </td>
+
+                                    </tr>
+                                }
+                     
+
+                    
+
+                }
+
+               
+            </tbody>
+            </table>
+        
+            <input type="hidden" id="idCostoPensionAnual" value="@sumatoriaPensiones">
+            <input type="hidden" id="idCostoSeguro" value="@costoSeguroEstudiantil">
+            <input type="hidden" id="idtotalPago" value="@totalPago" />
+
+            <table width="100%" border="0" class="table table-striped table-hover table-bordered fs-4" id="TablaDescuento">
+                <tbody>
+                   
+                </tbody>
+            </table>
+
+            <table width="100%" border="0" class="table table-striped table-hover table-bordered fs-3">
+            <tbody>
+            <tr>
+                <td align="right" width="57%">&nbsp;</td>
+                <td align="right" width="20%"><h5>Total $</h5></td>
+                <td align="right" width="15%"><h5 id="infoPago"></h5></td>
+                <td width="8%"></td>
+            </tr>
+            </tbody>
+        </table>
+        <br />
+
+    </div>
+
+    <div class="col-md-4" style="margin-bottom:20px;" id="condicionesPago">
+        <h2>Condiciones de pago</h2>
+        <br />
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="PagoTRC">
+            <h6>
+                Pago TDC diferido 10 meses sin interés
+            </h6>
+        </div>
+        <br />
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="PagoTransferencia">
+            <h6>
+                Pago anual completo total 5% descuento transferencia
+            </h6>
+        </div>
+    </div>
+    
+    
+ </div>
+}
+
+<div class="col-md-12" id="divBotonesPago" style="display:none;">
+    <h2>Botones de pago</h2>
+    <br />
+    <p class="fs-3">Para pagos con tarjetas de crédito de las instituciones:</p>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            
+            <button class="btn btn-primary" onclick="CallBotonPagoMedios()">Pagos Medios</button>
+            <br /><br />
+            <ul class="fs-4">
+                <li>Banco Pichincha (Visa y Mastercard)</li>
+                <li>Banco del Pacífico (Visa y Mastercard)</li>
+                <li>Banco Guayaquil: (Visa, Mastercard, American Express)</li>
+                <li>Diners: (Visa, Mastercard, Discover, Diners)</li>
+            </ul>
+        </div>
+    
+        <div class="col-md-6">
+            <button class="btn btn-warning" onclick="CallBotonPayphone()">PayPhone</button>
+            <br /><br />
+            <h3>Tarjetas Visa y Mastercard</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="fs-4">
+                        <li>Produbanco</li>
+                        <li>Amazonas</li>
+                        <li>Bolivariano</li>
+                        <li>Mutualista Pichincha</li>
+                    
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="fs-4">
+                    
+                        <li>Internacional</li>
+                        <li>Mutualista Azuay</li>
+                        <li>Machala</li>
+                        <li>Solidario</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+</div>
+
+
+ <div class="col-md-12" id="divTransferencia" style="display:none;">
+     <div class="row">
+        <div class="col-md-7"> 
+            <h2>Pagos por transferencia</h2>
+            <form action="@Url.Action("GuardarPagoTransferencia")" method="post" name="formTransferencia" enctype="multipart/form-data">
+                <div class="row">
+                
+                        <div class="col-md-6">
+                        <label for="cuentaDestino" class="form-label">CUENTA DESTINO</label>
+                        <select class="form-select" name="cuentaDestino" id="cuentaDestino">
+                                    <option value="">Seleccionar....</option>
+                                    @foreach (var registro in (List<CuentaSucursal>)ViewBag.cuentasSucursal)
+                                    {
+
+                                        <option value="@registro.Id">@registro.Banco.Nombre @registro.TipoCuenta.Descripcion @registro.NumeroCuenta</option>
+                                    }
+                            </select>
+                                <small id="errCntaDestino">Cuenta destino es requerida</small>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label for="valor" class="form-label">VALOR</label>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">$</span>
+
+                                <input type="text" class="form-control" name="valor" id="valor" value="" readonly>
+
+                            </div>
+                            
+                        </div>
+                </div>
+                    <br />
+                <div class="row">
+                        <div class="col-md-6">
+                            <label for="numRef2" class="form-label">REFERENCIA TRASFERENCIA</label>
+                        <input type="text" class="form-control" name="numeroReferencia" id="numeroReferencia" maxlength="70">
+                            <small id="errnumRef2">Número referencia es requerido</small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="fechaTrans2" class="form-label">FECHA TRANSFERENCIA</label>
+                        <input type="date" class="form-control" name="fechaTransferencia" id="fechaTransferencia" max="@DateTime.Now">
+                            <small id="errfechaTrans2">Fecha es requerida</small>
+                        </div>
+                </div>
+
+                    <br />
+                <div class="col-md-6">
+                    <label for="foto" class="form-label">CARGAR FOTO TRANSFERENCIA</label>
+                    <input type="file" class="form-control" id="fotoTransferencia" name="fotoTransferencia" accept=".jpg, jpeg">
+                    <small id="errfotoTransferencia">Archivo requerido</small>
+                </div>
+                    <br />
+                <input type="hidden" name="ObligacionPendienteId" id="ObligacionPendienteId" />
+                       
+                
+            </form>
+                <div class="d-grid gap-2">
+                    <button onclick="EjecutarTransferencia()" class="btn btn-success">Pagar</button>
+                </div>
+        </div>
+
+        <div class="col-md-4">
+                <br /><br />
+                <h5>Datos para tranferencia</h5>
+               
+                    <ul class="fs-4">
+                    <li>Razón Social: @ViewBag.DatosSucursal.RazonSocial </li>
+                    <li>RUC: @ViewBag.DatosSucursal.RUC</li>
+                    <li>Email:@ViewBag.DatosSucursal.EmailFacturas </li>
+                    @foreach (var registro in (List<CuentaSucursal>)ViewBag.cuentasSucursal)
+                    {
+
+                    <li>@registro.Banco.Nombre @registro.TipoCuenta.Descripcion @registro.NumeroCuenta </li>
+                    }
+                    </ul>
+
+
+        </div>
+    </div>
+ </div>
+    
+
+
+<!-- Modal alerta seguro-->
+<div class="modal" tabindex="-1" id="ModalAlertaSeguro" style="z-index:1500">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">ALERTA</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Estimados padres de familia, si bien la adhesión a la póliza es una decisión voluntaria, es nuestro deber recomendarles su contratación. El seguro de beca estudiantil garantizará el financiamiento de la educación de sus hijos en ReinventED Puembo en caso de fallecimiento o incapacidad total y permanente de uno de sus representantes legales. El bajo costo negociado para esta importante cobertura depende de lograr el 70% de familias adscritas, apelamos a su sentido de solidaridad en este respecto. En caso de mantener su decisión de no adhesión, recibirán un correo para que nos puedan enviar su carta de desistimiento y descargo de responsabilidad en caso de siniestro.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continuar con pago del seguro</button>
+                <button type="button" class="btn btn-danger" onclick="QuitarSeguro()">Desistir del pago del seguro</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Modal justificación-->
+<div class="modal" tabindex="-1" id="ModalJustifica" style="z-index:1500">
+    
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+               
+                <h5 class="modal-title">JUSTIFICACIÓN</h5>
+                <button type="button" class="btn-close" onclick="location.href='@Url.Action("Index")'" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="@Url.Action("GrabarJustificacion")" method="post" name="formJustifica">
+                <div class="col-md-12">
+                    
+
+                    <div class="col-md-12">
+                        <label for="NombreJustifica"><b>Nombres y Apellidos</b></label>
+                        <input type="text" maxlength="100" class="form-control" name="NombreJustifica" id="NombreJustifica" placeholder="Obligatorio" requeried value="@ViewBag.Representante[0].Nombres @ViewBag.Representante[0].Apellidos" />
+                        <small id="errNombreJustifica">Fecha es requerida</small>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="telfJustifica"><b>Teléfono de contacto</b></label>
+                        <input type="text" maxlength="10" class="form-control" name="telfJustifica" id="telfJustifica" placeholder="Obligatorio" requeried value="@ViewBag.Representante[0].TelefonoMovil" />
+                        <small id="errtelfJustifica">Teléfono es requerido</small>
+                    </div>
+                    
+                       
+                        <input type="hidden" maxlength="20" class="form-control" name="CedulaJustifica" id="CedulaJustifica" value="@ViewBag.Representante[0].Identificacion" />
+                        <input type="hidden" name="ObligacionesPensionesSeguro" id="ObligacionesPensionesSeguro" />
+                        <input type="hidden" name="IdSeguro" id="IdSeguro" value="0" />
+                        <input type="hidden" name="alumnoEst" id="alumnoEst" value="0" />
+                        <input type="hidden" name="alumnoCel" id="alumnoCel" value="0" />
+                        
+                    <div class="col-md-12">
+                        <label for="txtjustifica"><b>Justificación</b></label>
+                        <div class="form-floating">
+                                <textarea maxlength="300" class="form-control" placeholder="Obligatorio" id="txtjustifica" name="txtjustifica" style="height: 100px"></textarea>
+                            <label for="Txtarea fs-5 text">Obligatorio</label>
+                            <small id="errtxtjustifica">Justificación es requerida</small>
+                        </div>
+                    </div>
+                </div>
+                </form>
+                </div>
+                
+            <div class="modal-footer">
+                
+                <button type="button" class="btn btn-success"   onclick="EnviarJustificacion()">Enviar</button>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<!-- Modal Pago tarjeta-->
+<div class="modal" tabindex="-1" id="ModalAlertaPagoTarjeta" style="z-index:1500">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pago con tarjeta de crédito</h5>
+                
+            </div>
+            <div class="modal-body" id="idventanaPago"><center>
+                <h4>Abriendo página de pago</h4>
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                </center>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="codTxTC" />
+                <button type="button" class="btn btn-secondary" style="display:none" id="idbtnCerrarPagoTarjeta" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" style="display:none" id="idbtncontinuaPagoTarjeta" onclick="ResultadoPagoTarjeta()">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" id="ModalAlertaPagoTarjetaPy" style="z-index:1500">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pago con tarjeta de crédito</h5>
+                
+            </div>
+            <div class="modal-body" id="idventanaPagoPy">
+                <center>
+                <h4>Abriendo página de pago</h4>
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                </center>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="codTxTC" />
+                <button type="button" class="btn btn-secondary" style="display:none" id="idbtnCerrarPagoTarjetaPy" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" style="display:none" id="idbtncontinuaPagoTarjetaPy" onclick="PagoTarjetaPay()">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var globalApagar = 0;
+    var descuentoPagoAnualTransfrencia=0.05;//5%
+    var PensionAnual = 0;
+    var servicioSeguroEstudiantil = 0;
+    var globalApagar = 0;
+
+    var IdSelectSeguro=0;
+    
+    $(document).ready(function () {
+        
+        PensionAnual = document.getElementById('idCostoPensionAnual').value;
+        PensionAnual = parseFloat(PensionAnual.replace(',', '.'));
+           
+        if (document.getElementById("idCostoSeguro") !== null) {
+            //alert("The element exists");
+            servicioSeguroEstudiantil = document.getElementById('idCostoSeguro').value;//idCostoSeguro
+            servicioSeguroEstudiantil = parseFloat(servicioSeguroEstudiantil.replace(',', '.'));
+        }
+        
+
+        //globalApagar = parseFloat(PensionAnual) + parseFloat(servicioSeguroEstudiantil);
+        
+        globalApagar = document.getElementById('idtotalPago').value;
+        //alert(globalApagar);
+        globalApagar = globalApagar.replace(',','.');
+        let infoPago = document.getElementById('infoPago');
+
+        infoPago.textContent = parseFloat(globalApagar).toFixed(2);
+        document.getElementById('valor').value = parseFloat(globalApagar).toFixed(2);//valor para transferencia
+    });
+
+    function EjecutarTransferencia() {
+        
+        
+        //document.getElementById("ObligacionPendienteId").value = JSON.stringify(globalArrayobligaciones);
+        document.getElementById('ObligacionPendienteId').value =  globalArrayobligaciones;
+        //document.getElementById("ObligacionPendienteId").value = JSON.stringify(globalArrayobligaciones);
+
+        var CntaDestino = document.getElementById('cuentaDestino').value;
+        var numRef = document.getElementById('numeroReferencia').value;
+        var fechaTrans = document.getElementById('fechaTransferencia').value;
+        var valorTrans = document.getElementById('valor').value;
+        var fileInput = document.getElementById('fotoTransferencia');
+
+        var error = ""
+
+        if (CntaDestino == "" || CntaDestino == null) {
+            error = error + "Cuenta destino es requerida<br>";
+            document.getElementById("errCntaDestino").style.display = 'block';
+        }
+
+
+        if (numRef == "") {
+            error = error + "Número de referencia es requerido<br>";
+            document.getElementById("errnumRef2").style.display = 'block';
+        }
+
+        if (fechaTrans == "") {
+            error = error + "Fecha transferencia es requerida";
+            document.getElementById("errfechaTrans2").style.display = 'block';
+        }
+
+       
+        if (fileInput.files.length === 0) {
+            error = error + "Archivo es requerido";
+            document.getElementById("errfotoTransferencia").style.display = 'block';
+        }
+
+
+        if (error != "") {
+            toastr["warning"](error, "ERROR");
+            return "error";
+        }
+
+        //envio formulario
+        
+        document.formTransferencia.submit();
+        
+       
+    }
+    
+    $(document).on('click', '.QuitarSeguro', function (event) {
+
+
+        $('#ModalAlertaSeguro').modal({ backdrop: 'static', keyboard: false })
+        $("#ModalAlertaSeguro").modal("show");
+        //console.log((this).getAttribute("id"));
+        //IdSelectSeguro=(this).getAttribute("id");
+        $('#IdSeguro').val((this).getAttribute("id"));
+        $('#alumnoEst').val((this).getAttribute("alumnoEst"));
+        $('#alumnoCel').val((this).getAttribute("alumnoCel"));
+    });
+
+   
+    $(document).on('click', '#PagoTRC', function (event) {
+        document.getElementById("PagoTransferencia").disabled = false;//en caso de que seleccionó el otro antes
+        
+        //globalApagar = PensionAnual + servicioSeguroEstudiantil;//resetea al valor original
+        globalApagar = document.getElementById('idtotalPago').value.replace(',','.');
+        //document.getElementById('idtotalPago').value = globalApagar;
+        infoPago.textContent = parseFloat(globalApagar).toFixed(2);
+        document.getElementById('valor').value = parseFloat(globalApagar).toFixed(2);//valor para transferencia
+        $(".DescuentoAnualxTransferencia").parents("tr").remove();
+        document.getElementById("divTransferencia").style.display = 'none';
+        document.getElementById("divBotonesPago").style.display = 'block';
+        document.location.href = "#TablaValores";
+        
+        
+       
+    });
+
+    $(document).on('click', '#PagoTransferencia', function (event) {
+
+        //var valorDecuento = parseFloat(PensionAnual) * parseFloat(descuentoPagoAnualTransfrencia);//descuento solo a pensión
+        var valorDecuento = parseFloat(globalApagar) * parseFloat(descuentoPagoAnualTransfrencia);//descuento al total
+        //actualizo la tabla
+        fila = '<td class="DescuentoAnualxTransferencia" width="57%">Descuento por transferencia</td><td td align="right" width="20%">$</td><td align="right" width="15%">-' + parseFloat(valorDecuento).toFixed(2) + '</td><td width="8%">&nbsp;</td>';
+        document.getElementById('TablaDescuento').insertRow(-1).innerHTML = fila;
+       
+       //actualizo el total
+        globalApagar = parseFloat(globalApagar) - parseFloat(valorDecuento);
+        infoPago.textContent = parseFloat(globalApagar).toFixed(2);
+        document.getElementById('valor').value = parseFloat(globalApagar).toFixed(2);//valor para transferencia
+        //boqueo es radio button
+        document.getElementById("PagoTransferencia").disabled = true;
+
+        document.getElementById("divTransferencia").style.display = 'block';
+        
+        document.location.href = "#TablaValores";
+        document.getElementById("divBotonesPago").style.display = 'none';
+      
+    });
+
+    
+    
+    function QuitarSeguro() {
+       
+        //seteo el id del seguro
+        
+        globalApagar = parseFloat(globalApagar) - parseFloat(servicioSeguroEstudiantil);
+        infoPago.textContent = parseFloat(globalApagar).toFixed(2);
+        document.getElementById('valor').value = globalApagar;//valor para transferencia
+        /*
+        setTimeout(() => {
+            infoPago.textContent = "Total $" + parseFloat(globalApagar).toFixed(2);
+        }, 500);
+        */
+        //$(".QuitarSeguro").parents("tr").remove();//no le quito porque se pierde codigo obligación para justificar
+        $("#ModalAlertaSeguro").modal("hide");
+        document.getElementById("condicionesPago").style.display = 'none';
+        document.getElementById("divTransferencia").style.display = 'none';
+
+        $('#ModalJustifica').modal({ backdrop: 'static', keyboard: false })
+        $("#ModalJustifica").modal("show");
+        
+    }
+
+
+    function EnviarJustificacion()
+    {
+        
+        var _NombreJustifica=document.getElementById('NombreJustifica').value;
+        var _telfJustifica = document.getElementById('telfJustifica').value;
+        //var IdJustifica = document.getElementById('IdJustifica').value;
+        var _CedulaJustifica = document.getElementById('CedulaJustifica').value;
+        var _txtjustifica = document.getElementById('txtjustifica').value;
+
+        var error="";
+        if (_NombreJustifica == "") {
+            document.getElementById("errNombreJustifica").style.display = 'block';
+            error = error + "Nombres y Apellidos son requeridos<br>";
+        }
+            
+        if (_telfJustifica == "") {
+            document.getElementById("errtelfJustifica").style.display = 'block';
+            error = error + "Teléfono es requerido<br>";
+        }
+
+        if (_txtjustifica == "") {
+            document.getElementById("errtxtjustifica").style.display = 'block';
+            error = error + "Justificación es requerida";
+        }
+        
+        if (error != "") {
+            toastr["warning"](error, "ERROR");
+            return "error";
+        }
+        
+
+        
+        document.getElementById('ObligacionesPensionesSeguro').value = globalArrayobligaciones;
+        
+        document.formJustifica.submit();
+    }
+
+     
+
+    function CallBotonPayphone() {
+
+        $('#ModalAlertaPagoTarjetaPy').modal({ backdrop: 'static', keyboard: false });
+        $("#ModalAlertaPagoTarjetaPy").modal("show");
+        
+        var TransaccionID = new Date();
+        let TranID = "@ViewBag.TokePagoP";
+      
+         //var monto = document.getElementById('infoPago').value;
+         // monto= parseFloat(monto).toFixed(2) * 100;//piden enviar sin decimales
+
+        var amount_with_tax = 0.0;//monto que graban impuesto
+       
+        var tax_value = 0.00;//impuestos
+
+        var amount_without_tax = document.getElementById('idtotalPago').value.replace(',', '.');
+        var amount = document.getElementById('idtotalPago').value.replace(',', '.') ;
+          
+          var parametros={
+            amount: (amount * 100),
+            amountWithoutTax: (amount_without_tax * 100),
+            ClientTransactionId: TranID, 
+            responseURL: "@ViewBag.BaseUri" + "responsePago",
+            cancellationUrl: "@ViewBag.BaseUri"+"responsePago"
+          };
+          console.log(parametros);
+
+          $.ajax({
+              data:parametros,
+              url: 'https://pay.payphonetodoesposible.com/api/button/Prepare',
+              type:'POST',
+              beforeSend: function(xhr){
+                xhr.setRequestHeader('Authorization', "Bearer @TokenPayPhone")
+
+              },
+              success: function SolicitarPago(respuesta) {
+                abrirNuevoTab(respuesta.payWithCard);
+                        document.getElementById('idventanaPagoPy').innerHTML = "<h4>Continuar con proceso</h4>";
+                        document.getElementById('idbtncontinuaPagoTarjetaPy').style.display = "block";
+                        document.getElementById('idbtnCerrarPagoTarjetaPy').style.display = "none";
+              }, error:function(respuesta){
+                document.getElementById('idventanaPagoPy').innerHTML = "<h4>Error en apertura página de pago: " + respuesta.Message + "</h4>";
+                document.getElementById('idbtnCerrarPagoTarjetaPy').style.display = "block";
+                document.getElementById('idbtncontinuaPagoTarjetaPy').style.display = "none"
+              }
+          });
+
+          
+
+    }
+
+
+   
+    function cerrarPago() {
+       
+        location.href = '@Url.Action("ObligacionesRepresentante")';
+        
+    }
+    
+    function abrirNuevoTab(url) {
+        // Abrir nuevo tab
+        var configuracion_ventana = 'menubar=0,location=0,resizable=0,scrollbars=yes,status=0,width=' + parseInt(window.screen.availWidth * 0.9) + ',height=' + parseInt(window.screen.availHeight * 0.9) + ', top=' + parseInt(window.screen.availHeight) + ',left=' + parseInt(window.screen.availWidth * 0.05);
+        var win = window.open(url, '_blank', configuracion_ventana);
+
+
+        // Cambiar el foco al nuevo tab (punto opcional)
+        win.focus();
+
+    }
+
+   
+
+
+    function CallBotonPagoMedios() 
+    {
+        //proveedor Abitmedia
+        var ambiente = '@ViewBag.Ambiente';
+
+        $('#ModalAlertaPagoTarjeta').modal({ backdrop: 'static', keyboard: false });
+        $("#ModalAlertaPagoTarjeta").modal("show");
+
+
+        if(ambiente=="pruebas")
+        {
+            var amount_with_tax = 0.5;//monto que graban impuesto
+            var amount_without_tax = 0.5;//monto que no graban impuestos
+            var tax_value = 0.06;//impuestos
+            var amount = 1.06;//document.getElementById('totalPagarMatricula').value;
+
+        }
+        else
+        {//producción
+            var amount_with_tax = 0.0;//monto que graban impuesto
+            var amount_without_tax = document.getElementById('idtotalPago').value.replace(',','.');
+            var tax_value = 0.00;//impuestos
+            var amount = document.getElementById('idtotalPago').value.replace(',', '.');
+
+        }
+
+        var tipoIdentificacion = '@ViewBag.Representante[0].TipoIdentificacionId';
+
+        
+        if (tipoIdentificacion == 1)
+            tipoIdentificacion = "05";//cédula identidad
+        else
+            tipoIdentificacion = "06";//pasaporte
+
+        var numIdentificacion = '@ViewBag.Representante[0].Identificacion';
+        var Nombres = '@ViewBag.Representante[0].Nombres';
+        var Apellidos = '@ViewBag.Representante[0].Apellidos';
+        var Email = '@ViewBag.Representante[0].EmailPrincipal';
+        var Telefono = '@ViewBag.Representante[0].TelefonoMovil';
+        var direccion = '@ViewBag.direccionEstudiante[0].CallePrincipal @ViewBag.direccionEstudiante[0].Numero @ViewBag.direccionEstudiante[0].CalleSecundaria';
+
+        var ParametrosSolicitudPago = {
+            integration: true,
+            third: {
+                document: numIdentificacion,
+                document_type: tipoIdentificacion,
+                name: Nombres + ' ' + Apellidos,
+                email: Email,
+                phones: Telefono,
+                address: direccion,
+                type: "Individual"
+            },
+            generate_invoice: 0,
+            description: "Pago pensión,seguro",
+            amount: amount,
+            amount_with_tax: amount_with_tax,
+            amount_without_tax: amount_without_tax,
+            tax_value: tax_value,
+            settings: [
+                {
+                    id: "car_07ayAQuIyK9t7s7qLcPl5182",
+                    name: "American Express",
+                    type: "Diferido con intereses",
+                    terms: [10]
+                }, {
+                    id: "car_2uqlf8QmE0pANub5Zv2x3090",
+                    name: "Diners",
+                    type: "Diferido corriente",
+                    terms: [10]
+                },
+                {
+                    id: "car_c24Ajok6YcSrzbWx8yJw3248",
+                    name: "Discover",
+                    type: "Diferido corriente",
+                    terms: [10]
+                },
+                {
+                    id: "car_e0OsE3XGnUkV7hqv7jOK4425",
+                    name: "MasterCard",
+                    type: "Diferido corriente",
+                    terms: [10]
+                },
+                {
+                    id: "car_ThWmy5p68AeMs1PTC_4Y4400",
+                    name: "Visa",
+                    type: "Diferido corriente",
+                    terms: [10]
+                }
+            ],
+            notify_url: null,
+            custom_value: null,
+            has_cash: 0,
+            has_cards: 1
+        };
+        console.log(ParametrosSolicitudPago);
+
+        //console.log(ParametrosSolicitudPago);
+       
+
+        $.ajax({
+
+            url: 'https://api.abitmedia.cloud/pagomedios/v2/settings',
+            type: 'GET',
+            //async: false,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', "Bearer " + '@TokenAbitmedia')
+
+            },
+            success: function SolicitarCnx(respuesta) {
+               
+               // var SettingsEmpresaTarjetas = [...respuesta.data];
+               // ParametrosSolicitudPago.settings = SettingsEmpresaTarjetas;
+
+                // console.log(ParametrosSolicitudPago);
+
+                $.ajax({
+                    data: ParametrosSolicitudPago,
+                    url: 'https://api.abitmedia.cloud/pagomedios/v2/payment-requests',
+                    type: 'POST',
+                    async: false,
+                    //dataType: 'json',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', "Bearer " + '@TokenAbitmedia')
+
+                    },
+                    success: function SolicitarPago(respuesta) {
+
+                        document.getElementById('codTxTC').value = respuesta.data.token;
+                        abrirNuevoTab(respuesta.data.url);
+                        document.getElementById('idventanaPago').innerHTML = "<h4>Continuar con proceso</h4>";
+                        document.getElementById('idbtncontinuaPagoTarjeta').style.display = "block";
+                        document.getElementById('idbtnCerrarPagoTarjeta').style.display = "none";
+                        //location.href = respuesta.data.url;
+
+                    }, error: function (respuesta) {
+
+                        const mensajeError = respuesta.responseJSON.data[0].message;
+                        //console.log(mensajeError); 
+                        document.getElementById('idventanaPago').innerHTML = "<h4>Error en apertura página de pago: " + mensajeError + "</h4>";
+                        document.getElementById('idbtnCerrarPagoTarjeta').style.display = "block";
+                        document.getElementById('idbtncontinuaPagoTarjeta').style.display = "none";
+                    }
+                });
+
+
+            }, error: function (respuesta) {
+
+                alert("Error Conexión");
+            }
+        });
+        
+    }
+    function PagoTarjetaPay(){
+        $("#ModalAlertaPagoTarjetaPy").modal("hide");
+        cerrarPago();
+    }
+
+
+    function ResultadoPagoTarjeta() {
+
+        var TokenTxTC = document.getElementById('codTxTC').value;
+
+
+        $("#ModalAlertaPagoTarjeta").modal("hide");
+
+        var Url = "https://api.abitmedia.cloud/pagomedios/v2/payment-requests?integration=true&uuid=" + TokenTxTC;
+
+        $.ajax({
+
+            url: Url,
+            type: 'GET',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', "Bearer " + '@TokenAbitmedia')
+
+            },
+            success: function (respuesta) {
+
+                var referencia = respuesta.data[0].reference;
+                var descripcion = respuesta.data[0].description;
+                var valor = respuesta.data[0].amount;
+
+                var FechaTransaccion = respuesta.data[0].transactions[0].payment_date;
+                var Estado = respuesta.data[0].transactions[0].message;
+                var NombreTarjeta = respuesta.data[0].transactions[0].cardholder;
+                var idTxt = respuesta.data[0].transactions[0].payment_id;
+                var codTxT = respuesta.data[0].transactions[0].auth_code;
+                var card_brand = respuesta.data[0].transactions[0].card_brand;
+                var EstadoCodigo = respuesta.data[0].transactions[0].status;
+
+
+                
+                if (EstadoCodigo == 0 || Estado== null)
+                    Estado="Sin pagar";
+
+                //toastr["success"](Estado, "OK");
+
+                if (EstadoCodigo == 1 )//1 pagado
+                {
+                    GuardarPagoTarjeta(referencia, descripcion, valor, FechaTransaccion, Estado, NombreTarjeta, idTxt, codTxT, card_brand, TokenTxTC, EstadoCodigo);
+                }
+                else
+                {
+                    //alert("Estado transacción: " + Estado);
+                    document.getElementById('idventanaPago').innerHTML = "<h4>Estado transacción: " + Estado + "</h4>";
+                    document.getElementById('idbtnCerrarPagoTarjeta').style.display = "block";
+                    document.getElementById('idbtncontinuaPagoTarjeta').style.display = "none";
+                    
+                    $("#ModalAlertaPagoTarjeta").modal({ backdrop: 'static', keyboard: false });
+                    $("#ModalAlertaPagoTarjeta").modal("show");
+                }
+                    
+
+            }, error: function (respuesta) {
+                alert("Se produjo un error, intente nuevamente");
+
+
+            }
+        });
+
+    }
+
+
+    function GuardarPagoTarjeta(referencia, descripcion, valor, fechaTransaccion, Estado, NombreTarjeta, idTxt, codTxT, card_brand, TokenTxTC, estadoCodigo) 
+    {
+
+        ArrayObligaciones = globalArrayobligaciones;//ejemplo: [65, 66, 67] el codigo de la obigaciones 1 por cada matrícula
+
+        var PagarXTCMatriculaModel = {
+            ObligacionPendienteId: ArrayObligaciones,
+            NumeroReferencia: referencia,
+            Valor: valor,
+            FechaTransaccion: fechaTransaccion,
+            NombrePropietarioTarjeta: NombreTarjeta,
+            EstadoTarjeta: Estado,
+            ObservacionTarjeta: card_brand,
+            DescripcionTarjeta: descripcion,
+            TokenTxTarjeta: TokenTxTC,
+            idTxTarjeta: idTxt,
+            codTxTarjeta: codTxT,
+            EstadoCodigo: estadoCodigo,
+            Operador:"Pago Medios"
+
+        }
+
+        var Url = '@Url.Action("GuardarPagoXTC")';
+
+        $.ajax({
+            data: PagarXTCMatriculaModel,
+            url: Url,
+            type: 'POST',
+            //async: false,
+            success: function SolicitarPago(respuesta) {
+
+                cerrarPago();
+
+            }, error: function (respuesta) {
+
+                alert("Error en guardar pago tarjeta: " + respuesta.message);
+            }
+        });
+
+    }
+
+    
+</script>

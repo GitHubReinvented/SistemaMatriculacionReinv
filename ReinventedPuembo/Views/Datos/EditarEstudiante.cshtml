@@ -1,0 +1,460 @@
+﻿@using Domain;
+@model DetalleEstudianteViewModel;
+
+@{
+    ViewData["Title"] = "Estudiantes";
+    KTTheme.AddVendors(new string[] { "amcharts", "amcharts-maps", "amcharts-stock" });
+    KTTheme.AddJavascriptFile("js/custom/dropdown-select/dropdown.js");
+    KTTheme.AddJavascriptFile("js/custom/boton-imput/boton.js");
+    KTTheme.AddJavascriptFile("js/custom/CheckBox/CheckEstudiante.js");
+}
+<form asp-action="EditarEstudiante" asp-controller="Datos" id="formEstudiante" class="form" enctype="multipart/form-data">
+    <div class="card-title m-0">
+        <h1 style="padding-left:20px; color:#3c7edd" class="fw-bold m-0 pt-10 pb-5">Editar datos del estudiante</h1>
+        <div class="card-footer d-flex justify-content-end px-9">
+            <button type="submit" onclick="enviarFormularios()" class="btn btn-primary">Guardar</button>
+        </div>
+    </div>
+    <div class="row gx-5 gx-xl-10">
+        <!--begin::Col-->
+        <div class="col-xxl-6 mb-5 mb-xl-10">
+            <!-- Madre -->
+            <div class="card card-flush h-xl-90" style="margin: 20px;">
+                <!--begin::Card header-->
+                <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                    <!--begin::Card title-->
+                    <div class="card-title m-0">
+                        <h3 class="fw-bold m-0">Información General</h3>
+                    </div>
+                    <!--end::Card title-->
+                </div>
+                <!--begin::Card header-->
+                <!--begin::Content-->
+                <div id="kt_account_settings_profile_details" class="collapse show">
+                    <!--begin::Form-->
+                    <!--begin::Card body-->
+                    <div class="card-body border-top p-9">
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto del estudiante</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Image input-->
+                                <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/" + @Model.EstudiantesSeleccionado.Avatar))">
+                                    <!--begin::Preview existing avatar-->
+                                    <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/" + @Model.EstudiantesSeleccionado.Avatar))"></div>
+                                    <!--end::Preview existing avatar-->
+                                    <!--begin::Label-->
+                                    <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                        <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                        <!--begin::Inputs-->
+                                        <input type="file" name="Avatar" accept=".png, .jpg, .jpeg" />
+                                        <input type="hidden" name="avatar_remove" />
+                                        <!--end::Inputs-->
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Cancel-->
+                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                        <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                    <!--end::Cancel-->
+                                    <!--begin::Remove-->
+                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover imagen">
+                                        <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                    <!--end::Remove-->
+                                </div>
+                                <!--end::Image input-->
+                                <!--begin::Hint-->
+                                <div class="form-text">Tipos permitidos:  png, jpg, jpeg.</div>
+                                <!--end::Hint-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--Nombres-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label required fw-semibold fs-6">Nombres Completos</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <!--begin::Col-->
+                                    <div class="col-lg-6 fv-row">
+                                        <input type="hidden" name="TipoPersonaId" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" value="" />
+                                        <input type="text" name="Nombres" id="nombresEst" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" maxlength="70" placeholder="Nombres" oninput="validarLetras(event)" value="@Model.EstudiantesSeleccionado.Nombres" />
+                                        <div id="errorNombresEst" class="error-message" style="color:red"></div>
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--Apellidos-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label required fw-semibold fs-6">Apellidos completos</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <!--begin::Col-->
+                                    <div class="col-lg-6 fv-row">
+                                        <input type="text" name="Apellidos" id="apellidosEst" class="form-control form-control-lg form-control-solid" maxlength="70" placeholder="Apellidos" oninput="validarLetras(event)" value="@Model.EstudiantesSeleccionado.Apellidos" />
+                                        <div id="errorApellidosEst" class="error-message" style="color:red"></div>
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label required fw-semibold fs-6">Tipo de documento</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <!--begin::Col-->
+                                    <div class="col-lg-6 fv-row">
+                                        <select name="TipoIdentificacionId" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                            <option value="1">Cedula</option>
+                                            <option value="2">Pasaporte</option>
+                                        </select>
+                                        <div id="errorTipoIdentificacion" class="error-message" style="color:red"></div>
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label required fw-semibold fs-6">Número de Identificación</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <!-- SUBIR PDF-->
+                            <div class="col-lg-8 fv-row">
+                                <div class="form-group" style="padding-top: 10px;">
+
+                                    <!--begin::Image input-->
+                                    <div class="col-lg-8 fv-row">
+                                        <!-- SUBIR PDF-->
+                                        <input type="text" name="Identificacion" id="IdentificacionEst" class="form-control form-control-lg form-control-solid" maxlength="20" placeholder="Documento" value="@Model.EstudiantesSeleccionado.Identificacion" />
+                                        <div id="errorIdentificacionEst" class="error-message" style="color:red"></div>
+                                        <!--begin::Modal - Upload File-->
+                                        
+                                        
+                                        <div style="padding: 20px">
+                                            <label class="col-form-label">Subir pdf de la cédula o ruc</label>
+                                            <input type="file" class="form-control" id="fileInput" name="PDFIdentificacion" />
+                                        </div>
+                                    </div>
+                                    <!--end::Image input-->
+                                    <!--begin::Hint-->
+                                </div>
+
+                                <!--end::Hint-->
+
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">PDF Identificación</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <!-- SUBIR PDF-->
+                            <div class="col-lg-8 fv-row">
+                                <div class="form-group" style="padding-top: 10px;">
+
+                                    <a href="@("/assets/media/documentosIdentificacion/" + @Model.EstudiantesSeleccionado.Identificacion + ".pdf")" id="pdfLink" target="_blank">
+                                        <i class="far fa-solid fa-file-pdf"></i> Descargar PDF
+                                    </a>
+                                </div>
+                                <!--end::Hint-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Fecha de nacimiento</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                @if (Model.EstudiantesSeleccionado != null)
+                                {
+                                    DateTime fechaNacimiento = @Model.EstudiantesSeleccionado.FechaNacimiento;
+                                    string fechaNacimientoFormatted = fechaNacimiento.ToString("yyyy-MM-dd");
+
+                                    <input type="date" name="FechaNacimiento" class="form-control form-control-lg form-control-solid" placeholder="Fecha de nacimiento" value="@fechaNacimientoFormatted" required />
+                                }
+                                else
+                                {
+                                    <input type="date" name="FechaNacimiento" class="form-control form-control-lg form-control-solid" placeholder="Fecha de nacimiento" required />
+                                }
+
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Dirección de domicilio</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                Calle Principal
+                                <input type="text" name="CallePrincipal" class="form-control form-control-lg form-control-solid" maxlength="70" placeholder="Calle principal" value="@Model.DireccionEstudiante.CallePrincipal" />
+                                Número de casa
+                                <input type="text" name="Numero" class="form-control form-control-lg form-control-solid" maxlength="10" placeholder="Número" value="@Model.DireccionEstudiante.Numero" />
+                                Calle Secundaria
+                                <input type="text" name="CalleSecundaria" class="form-control form-control-lg form-control-solid" maxlength="70" placeholder="Calle Secundaria" value="@Model.DireccionEstudiante.CalleSecundaria" />
+
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                    </div>
+                    <!--end::Form-->
+                </div>
+                <!--end::Content-->
+            </div>
+        </div>
+
+        <!--end::Col-->
+        <!--begin::Col-->
+        <div class="col-xl-6 mb-5 mb-xl-10">
+            <!-- Padre-->
+            <div class="card card-flush h-xl-90" style="margin: 20px;">
+                <!--begin::Card header-->
+                <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                    <!--begin::Card title-->
+                    <div class="card-title m-0">
+                        <h3 class="fw-bold m-0">Salud</h3>
+                    </div>
+                    <!--end::Card title-->
+                </div>
+                <!--begin::Card header-->
+                <!--begin::Content-->
+                <div id="kt_account_settings_profile_details" class="collapse show">
+                    <!--begin::Form-->
+                    <!--begin::Card body-->
+                    <div class="card-body border-top p-9">
+                        <!--begin::Input group-->
+                        <!--end::Input group-->
+                        <!--Nombres-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Peso (kg)</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input type="text" name="Peso" class="form-control form-control-lg form-control-solid" maxlength="6" placeholder="Peso en kilos" oninput="validarNumeros(event)" value="@Model.HistorialMedico.FirstOrDefault().Peso" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--Apellidos-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Talla (cm)</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input type="text" name="Talla" class="form-control form-control-lg form-control-solid" maxlength="6" placeholder="Talla en centímetros" oninput="validarNumeros(event)" value="@Model.HistorialMedico.FirstOrDefault().Talla" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Dosis de vacuna contra covid 19</label>
+                            <div id="third-div" class="col-lg-6 fv-row">
+                                <input type="number" maxlength="1" max="4" min="0" name="NumeroDosis" class="form-control form-control-lg form-control-solid" placeholder="Número de dosis" oninput="validarNumeros(event)" value="@if(Model.ObservacionesMedicas[0] != null){
+                            @Model.ObservacionesMedicas[0].Especificacion
+}" />
+                            </div>
+                        </div>
+
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Enfermedad crónica</label>
+                            <div id="enfermedad-div" class="col-lg-6 fv-row">
+                                <input type="text" name="EnfermedadCronica" class="form-control form-control-lg form-control-solid" placeholder="No registrado" value="@if(Model.ObservacionesMedicas[1]!= null){
+                            @Model.ObservacionesMedicas[1].Especificacion
+}" />
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Medicación continua:</label>
+                            <div id="medicacion-div" class="col-lg-6 fv-row">
+                                <input type="text" name="MedicacionContinua" class="form-control form-control-lg form-control-solid" placeholder="No registrado" value="@if(Model.ObservacionesMedicas[2]!= null){
+                            @Model.ObservacionesMedicas[2].Especificacion
+}" />
+                            </div>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Cirugías:</label>
+                            <!--end::Label-->
+                            <div id="Cirugia-div" class="col-lg-6 fv-row">
+                                <input type="text" name="cirugia" class="form-control form-control-lg form-control-solid" placeholder="No registrado" value="@if(Model.ObservacionesMedicas[3]!= null){
+                            @Model.ObservacionesMedicas[3].Especificacion
+}" />
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Autoriza la suministración de antiinflamatorios o analgésicos</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                <input name="Analgesico" class="form-check-input" type="checkbox" id="checkboxAutoriza" @(Model.FichaEstudiante != null && (Model.FichaEstudiante.AutorizaAntiinflamatorioAnalgesico ?? true) ? "checked" : "") value="@(Model.FichaEstudiante != null && (Model.FichaEstudiante.AutorizaAntiinflamatorioAnalgesico ?? true) ? true : false)" />
+
+                                <label class="form-check-label" for="checkboxAutoriza">
+                                    Sí autorizo
+                                </label>
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Seguro médico privado.</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-6 fv-row">
+                                    <input type="text" name="SeguroPrivado" class="form-control form-control-lg form-control-solid" placeholder="No registrado" value="@if(@Model.FichaEstudiante != null){
+                                @Model.FichaEstudiante.SeguroMedico
+}" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Datos en caso de emergencia:</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    Nombre del médico de cabecera:
+                                    <input type="text" name="NombreMedico" class="form-control form-control-lg form-control-solid" maxlength="70" placeholder="Nombre del médico pediatra" oninput="validarLetras(event)" value="@if(Model.FichaEstudiante != null){
+                                @Model.FichaEstudiante.NombresMedico
+}" />
+                                    Teléfono convencional del médico
+                                    <input type="text" name="TelefonoMedico" class="form-control form-control-lg form-control-solid" maxlength="10" placeholder="Telefono del médico pediatra" value="@if(Model.FichaEstudiante != null){
+                                @Model.FichaEstudiante.TelefonoMedico
+}" />
+                                    Teléfono celular del médico
+                                    <input type="text" name="CelularMedico" class="form-control form-control-lg form-control-solid" maxlength="10" placeholder="Telefono del médico pediatra" value="@if(Model.FichaEstudiante != null){
+                                @Model.FichaEstudiante.CelularMedico
+}" />
+                                    Dirección del consultorio médico
+                                    <input type="text" name="DireccionMedico" class="form-control form-control-lg form-control-solid" placeholder="Dirección del médico pediatra" value="@if(Model.FichaEstudiante != null){
+                                @Model.FichaEstudiante.DireccionMedico
+}" />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">En caso de tener alergias describirlas</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-6 fv-row">
+                                    <input type="text" name="alergias" class="form-control form-control-lg form-control-solid" maxlength="300" placeholder="Nombre de la alergia" value="@if(Model.FichaEstudiante != null){
+                                @Model.FichaEstudiante.Alergias
+}" />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">En caso de tener restricciones alimenticias describir</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-6 fv-row">
+                                    <input type="text" name="restriccionAlimento" class="form-control form-control-lg form-control-solid" maxlength="500" placeholder="Nombre de los alimentos restringidos" value="@if(Model.FichaEstudiante != null){
+                                @Model.FichaEstudiante.RestriccionesAlimenticias
+}" />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">¿Algún dato adicional de salud que se considere importante reportar al colegio?</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-6 fv-row">
+                                    <input type="text" name="datoAdicional" class="form-control form-control-lg form-control-solid" maxlength="500" placeholder="Dato adicional" value="@if(Model.FichaEstudiante != null){
+                                    @Model.FichaEstudiante.NotasImportanteSalud
+}" />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                        </div>
+                        <!--end::Card body-->
+
+                        <!--end::Form-->
+                    </div>
+                    <!--end::Content-->
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+

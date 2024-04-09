@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BarcodeLib" Version="2.4.0" />
+		<PackageReference Include="GrapeCity.Documents.Html" Version="6.1.5" />
+		<PackageReference Include="Haukcode.WkHtmlToPdfDotNet" Version="1.5.86" />
+		<PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.7" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Design" Version="1.1.2" />
+		<PackageReference Include="RestSharp" Version="110.2.0" />
+		<PackageReference Include="Select.HtmlToPdf.NetCore" Version="22.2.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.7" />
+		
+	</ItemGroup>
+	
+	
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Infrasctructure\Infrasctructure.csproj" />
+  </ItemGroup>
+	
+	
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\media\DocsIdAutorizadosRetiro\" />
+    <Folder Include="wwwroot\assets\media\documentosIdentificacionPadres\" />
+    <Folder Include="wwwroot\DocsLegales\" />
+    <Folder Include="wwwroot\PagoTransferencia\" />
+    <Folder Include="wwwroot\DocTmp\" />
+    <Folder Include="wwwroot\FotosTransferencias\" />
+    <Folder Include="wwwroot\ImagenPagoTransferencia\" />
+    <Folder Include="wwwroot\Plantillas\" />
+  </ItemGroup>
+
+</Project>

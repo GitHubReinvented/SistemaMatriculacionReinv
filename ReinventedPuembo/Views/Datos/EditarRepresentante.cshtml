@@ -1,0 +1,563 @@
+﻿@using Domain;
+@model List<Persona>;
+
+@{
+    ViewData["Title"] = "Representantes";
+    KTTheme.AddVendors(new string[] { "amcharts", "amcharts-maps", "amcharts-stock" });
+    KTTheme.AddJavascriptFile("js/custom/boton-imput/boton.js");
+
+    if (TempData["Error"] != null)
+    {
+        ViewBag.Error = TempData["Error"];
+    }
+}
+<form asp-action="EditarRepresentante" asp-controller="Datos" method="Post" id="kt_account_profile_details_form" class="form" enctype="multipart/form-data">
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-info" role="alert">
+            @ViewBag.Error;
+        </div>
+    }
+    <div class="card-title m-0">
+        <h1 style="padding-left:20px; color:#3c7edd" class="fw-bold m-0 pt-10 pb-5">Editar datos del Representantes</h1>
+        <div class="card-footer d-flex justify-content-end py-6 px-9">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+
+        </div>
+    </div>
+    <div class="row gx-5 gx-xl-10">
+
+        <!--begin::Col-->
+        <div class="col-xxl-6 mb-5 mb-xl-10">
+            <!-- Madre -->
+            <div class="card card-flush h-xl-100" style="margin: 20px;">
+                <!--begin::Card header-->
+                <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                    <!--begin::Card title-->
+                    <div class="card-title m-0">
+                        <h3 class="fw-bold m-0">Madre</h3>
+                    </div>
+                    <!--end::Card title-->
+                </div>
+                <!--begin::Card header-->
+                <!--begin::Content-->
+
+
+                <div id="kt_account_settings_profile_details" class="collapse show">
+                    <!--begin::Form-->
+                    <!--begin::Card body-->
+                    <div class="card-body border-top p-9">
+
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto de perfil</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Image input-->
+                                <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/" + @ViewBag.Madre.Avatar))">
+                                    <!--begin::Preview existing avatar-->
+                                    <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/" + @ViewBag.Madre.Avatar))"></div>
+                                    <!--end::Preview existing avatar-->
+                                    <!--begin::Label-->
+                                    <label style="background-color: var(--bs-primary) !important;" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                        <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                        <!--begin::Inputs-->
+                                        <input type="file" name="AvatarMadre" accept=".png, .jpg, .jpeg" />
+                                        <input type="hidden" name="avatar_remove" />
+                                        <!--end::Inputs-->
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Cancel-->
+                                    <span style="background-color: var(--bs-primary) !important;" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                        <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                    <!--end::Cancel-->
+                                    <!--begin::Remove-->
+                                    <span style="background-color: var(--bs-primary) !important;" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Quitar imagen">
+                                        <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                    <!--end::Remove-->
+                                </div>
+                                <!--end::Image input-->
+                                <!--begin::Hint-->
+                                <div class="form-text">Tipos permitidos:  png, jpg, jpeg.</div>
+                                <!--end::Hint-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--Nombres-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres Completos</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <!--begin::Col-->
+                                    <div class="col fv-row">
+                                        <input type="text" name="NombresMadre" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" maxlength="70" placeholder="Nombres" oninput="validarLetras(event)" value="@ViewBag.Madre.Nombres" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--Apellidos-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Apellidos completos</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <!--begin::Col-->
+                                    <div class="col fv-row">
+                                        <input type="text" name="ApellidosMadre" class="form-control form-control-lg form-control-solid" maxlength="70" placeholder="Apellidos" oninput="validarLetras(event)" value="@ViewBag.Madre.Apellidos" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Tipo de documento</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <!--begin::Col-->
+                                    <div class="col fv-row">
+                                        <select name="TipoIdentificacionIdMadre" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                            <option value="1">Cedula</option>
+                                            <option value="2">Pasaporte</option>
+                                        </select>
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">PDF Identificación</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <!-- SUBIR PDF-->
+                            <div class="col-lg-8 fv-row">
+                                <div class="form-group" style="padding-top: 10px;">
+
+                                    @if (!string.IsNullOrEmpty(ViewBag.Madre?.Identificacion))
+                                    {
+                                        <a href="@("/assets/media/documentosIdentificacionPadres/" + ViewBag.Madre.Identificacion + ".pdf")" id="pdfLink" target="_blank">
+                                            <i class="far fa-solid fa-file-pdf"></i> Descargar PDF
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <p>No hay PDF disponible para descargar.</p>
+                                    }
+                                </div>
+                                <!--end::Hint-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">N° de Identificación</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <!-- SUBIR PDF-->
+                            <div class="col-lg-8 fv-row">
+                                <!-- SUBIR PDF-->
+                                <input type="text" name="IdentificacionMadre" class="form-control form-control-lg form-control-solid" maxlength="20" placeholder="Documento" value="@ViewBag.Madre.Identificacion" />
+                                <div style="padding: 20px">
+                                    <label class="col-form-label">Subir pdf de la cédula o ruc</label>
+                                    <input type="file" class="form-control" id="fileInput" name="PDFIdentificacionMadre" />
+                                </div>
+                                <!--begin::Modal - Upload File-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label  fw-semibold fs-6">Profesión</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="ProfesionMadre" class="form-control form-control-lg form-control-solid" maxlength="70" placeholder="Profesión" oninput="validarLetras(event)" value="@ViewBag.Madre.Profesion" />
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Lugar de trabajo</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="LugarTrabajoMadre" class="form-control form-control-lg form-control-solid" placeholder="Lugar de trabajo" value="@ViewBag.Madre.LugarTrabajo" />
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Cargo</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="CargoMadre" class="form-control form-control-lg form-control-solid" placeholder="Cargo" value="@ViewBag.Madre.Cargo" />
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                <span>Teléfono celular</span>
+                            </label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                <input type="tel" name="CelularMadre" class="form-control form-control-lg form-control-solid" maxlength="15" placeholder="09XXXXXXXX" oninput="validarNumeros(event)" value="@ViewBag.Madre.TelefonoMovil" />
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Correo electrónico</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="CorreoMadre" class="form-control form-control-lg form-control-solid" placeholder="Correo electrónico" oninput="validarEmail(event)" value="@ViewBag.Madre.EmailPrincipal" />
+                            </div>
+                            <!--end::Col-->
+                        </div>
+@*                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Representante</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                <div class="form-check form-check-solid form-switch form-check-custom fv-row">
+                                    <label class="form-check-label" for="allowmarketing">
+                                        <span class="d-inline" style="padding-right:8px">No</span>
+                                    </label>
+                                    <input class="form-check-input w-45px h-30px" type="checkbox" id="RepresentanteMadre" name="RepresentanteMadre" value="true" onchange="alternarCheckbox('RepresentanteMadre')" />
+                                    <label class="form-check-label" for="RepresentanteMadre">
+                                        <span class="d-inline">Si</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <!--end::Col-->
+                        </div>*@
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <!--end::Input group-->
+                    </div>
+                    <!--end::Card body-->
+                    @*                    <!--begin::Actions-->
+                    <div class="card-footer d-flex justify-content-end py-6 px-9">
+                    <button type="reset" class="btn btn-light btn-active-light-primary me-2">Descartar</button>
+                    <button type="submit" class="btn btn-primary" id="kt_account_profile_details_submit">Guardar Cambios</button>
+                    </div>
+                    <!--end::Actions-->*@
+                    <!--end::Form-->
+                </div>
+                <!--end::Content-->
+            </div>
+        </div>
+        <!--end::Col-->
+        <!--begin::Col-->
+        <div class="col-xl-6 mb-5 mb-xl-10">
+            <!-- Padre-->
+            <div class="card card-flush h-xl-100" style="margin: 20px;">
+                <!--begin::Card header-->
+                <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                    <!--begin::Card title-->
+                    <div class="card-title m-0">
+                        <h3 class="fw-bold m-0">Padre</h3>
+                    </div>
+
+                    @*<div class="row mb-0">
+                        <!--begin::Label-->
+                        <div class="col-lg-8 d-flex align-items-center">
+                            <div class="form-check form-check-solid form-switch form-check-custom fv-row">
+                                <input class="form-check-input w-45px h-30px" type="checkbox" id="" name="" value="true" />
+                                <label class="form-check-label" for="">
+                                    <span class="d-inline">Sin información</span>
+                                </label>
+                            </div>
+                        </div>
+                        <!--begin::Label-->
+                    </div>*@
+                    <!--end::Card title-->
+                </div>
+                <!--begin::Card header-->
+                <!--begin::Content-->
+                <div id="kt_account_settings_profile_details" class="collapse show">
+                    <!--begin::Form-->
+                    <!--begin::Card body-->
+                    <div class="card-body border-top p-9">
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto de perfil</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Image input-->
+                                <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/" + @ViewBag.Padre.Avatar))">
+                                    <!--begin::Preview existing avatar-->
+                                    <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/" + @ViewBag.Padre.Avatar))"></div>
+                                    <!--end::Preview existing avatar-->
+                                    <!--begin::Label-->
+                                    <label style="background-color: var(--bs-primary) !important;" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                        <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                        <!--begin::Inputs-->
+                                        <input type="file" name="AvatarPadre" accept=".png, .jpg, .jpeg" />
+                                        <input type="hidden" name="avatar_remove" />
+                                        <!--end::Inputs-->
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Cancel-->
+                                    <span style="background-color: var(--bs-primary) !important;" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancelar">
+                                        <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                    <!--end::Cancel-->
+                                    <!--begin::Remove-->
+                                    <span style="background-color: var(--bs-primary) !important;" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Quitar imagen">
+                                        <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                    <!--end::Remove-->
+                                </div>
+                                <!--end::Image input-->
+                                <!--begin::Hint-->
+                                <div class="form-text">Tipos permitidos:  png, jpg, jpeg.</div>
+                                <!--end::Hint-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--Nombres-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres Completos</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <!--begin::Col-->
+                                    <div class="col fv-row">
+                                        <input type="text" name="NombresPadre" class="form-control form-control-lg form-control-solid" placeholder="Nombres" oninput="validarLetras(event)" value="@ViewBag.Padre.Nombres" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--Apellidos-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Apellidos completos</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <!--begin::Col-->
+                                    <div class="col fv-row">
+                                        <input type="text" name="ApellidosPadre" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" oninput="validarLetras(event)" value="@ViewBag.Padre.Apellidos" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Tipo de documento</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8">
+                                <!--begin::Row-->
+                                <div class="row">
+                                    <!--begin::Col-->
+                                    <div class="col fv-row">
+                                        <select name="TipoIdentificacionIdPadre" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                            <option value="1">Cedula</option>
+                                            <option value="2">Pasaporte</option>
+                                        </select>
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Row-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">PDF Identificación</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <!-- SUBIR PDF-->
+                            <div class="col-lg-8 fv-row">
+                                <div class="form-group" style="padding-top: 10px;">
+
+                                    @if (!string.IsNullOrEmpty(ViewBag.Padre?.Identificacion))
+                                    {
+                                        <a href="@("/assets/media/documentosIdentificacionPadres/" + ViewBag.Padre.Identificacion + ".pdf")" id="pdfLink" target="_blank">
+                                            <i class="far fa-solid fa-file-pdf"></i> Descargar PDF
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <p>No hay PDF disponible para descargar.</p>
+                                    }
+                                </div>
+                                <!--end::Hint-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Identificación N°</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <!-- SUBIR PDF-->
+                            <div class="col-lg-8 fv-row">
+                                <!-- SUBIR PDF-->
+                                <input type="text" name="IdentificacionPadre" class="form-control form-control-lg form-control-solid" placeholder="Documento" value="@ViewBag.Padre.Identificacion" />
+                                <div style="padding: 20px">
+                                    <label class="col-form-label">Subir pdf de la cédula o ruc</label>
+                                    <input type="file" class="form-control" id="fileInput" name="PDFIdentificacionPadre" />
+                                </div>
+                                <!--begin::Modal - Upload File-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Profesión</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="ProfesionPadre" class="form-control form-control-lg form-control-solid" placeholder="Profesión" oninput="validarLetras(event)" value="@ViewBag.Padre.Profesion" />
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Lugar de trabajo</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="LugarTrabajoPadre" class="form-control form-control-lg form-control-solid" placeholder="Lugar de trabajo" value="@ViewBag.Padre.LugarTrabajo" />
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Cargo</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="CargoPadre" class="form-control form-control-lg form-control-solid" placeholder="Cargo" value="@ViewBag.Padre.Cargo" />
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                <span>Teléfono celular</span>
+                            </label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                <input type="tel" name="CelularPadre" class="form-control form-control-lg form-control-solid" placeholder="09XXXXXXXX" oninput="validarNumeros(event)" value="@ViewBag.Padre.TelefonoMovil" />
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Correo electrónico</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="CorreoPadre" class="form-control form-control-lg form-control-solid" placeholder="Correo electrónico" oninput="validarEmail(event)" value="@ViewBag.Padre.EmailPrincipal" />
+                            </div>
+                            <!--end::Col-->
+                        </div>
+@*                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Representante</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-8 fv-row">
+                                <div class="form-check form-check-solid form-switch form-check-custom fv-row">
+                                    <label class="form-check-label" for="allowmarketing">
+                                        <span class="d-inline" style="padding-right:8px">No</span>
+                                    </label>
+                                    <input class="form-check-input w-45px h-30px" type="checkbox" id="RepresentantePadre" name="RepresentantePadre" value="true" onchange="alternarCheckbox('RepresentantePadre')" />
+                                    <label class="form-check-label" for="RepresentantePadre">
+                                        <span class="d-inline">Si</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <!--end::Col-->
+                        </div>*@
+                        <!--end::Input group-->
+                    </div>
+
+                    <!--end::Input group-->
+                </div>
+                <!--end::Card body-->
+
+            </div>
+            <!--end::Content-->
+        </div>
+    </div>
+</form>
+

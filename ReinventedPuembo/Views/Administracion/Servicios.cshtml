@@ -1,0 +1,269 @@
+﻿@using Domain;
+@model IReadOnlyList<Servicio>;
+
+@{
+    ViewData["Title"] = "Descuentos";
+    KTTheme.AddJavascriptFile("js/custom/boton-imput/boton.js");
+    KTTheme.AddJavascriptFile("js/custom/utilities/modals/servicios.js");
+
+}
+
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+    <!--begin::Content wrapper-->
+    <div class="d-flex flex-column flex-column-fluid">
+
+        <!--begin::Toolbar-->
+        <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack justify-content-between" style="padding-left: 0; margin-left: 10px;">
+            <!--begin::Page title-->
+            <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3 p-5">
+                <!--begin::Title-->
+                <div class="card-title m-0">
+                    <h1 style="color:#3c7edd" class="fw-bold m-0">Catálogo de Servicios</h1>
+                </div>
+                <!--end::Title-->
+            </div>
+            <!--end::Page title-->
+            <!--begin::Actions-->
+@*            <div class="d-flex align-items-center gap-2 gap-lg-3 ms-auto">
+                <!--begin::Filter menu-->
+                <a asp-action="RegistrarServicio" asp-controller="Administracion" class="btn btn-primary er fs-6 px-8 py-4" data-bs-toggle="modal" data-bs-target="#miModal">
+                    Crear
+                </a>
+                <!--end::Primary button-->
+            </div>*@
+            <!--end::Actions-->
+        </div>
+        <!--end::Toolbar container-->
+    </div>
+    <!--end::Toolbar-->
+    <!--begin::Content-->
+    <div class="card border-top p-9">
+
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table id="kt_datatable_complex_header" class="table table-striped table-row-bordered gy-5 gs-7 border rounded w-100">
+                    <thead>
+                        <tr class="fw-bold fs-6 text-gray-800 px-7">
+                            <th>Tipo de Servicio</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Periodo</th>
+                            <th>Precio</th>
+                            <th>Link Externo</th>
+                            <th>Sucursal</th>
+                            <th>Acción</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var servicio in Model)
+                        {
+                            <tr>
+                                <td>@servicio.TipoServicio.Descripcion</td>
+                                <td>@servicio.Nombre</td>
+                                <td>@servicio.Descripcion</td>
+                                <td>@servicio.Periodos</td>
+                                <td>@servicio.CostoPeriodo</td>
+                                <td> <a href="@servicio.Link" target="_blank">@servicio.Link</a></td>
+                                <td>@servicio.Sucursal.Nombre</td>
+                                <td>
+                                    <a asp-action="EditarServicio" asp-controller="Administracion" style="padding: 0.3rem;" class="btn btn-primary" title="Editar" data-bs-toggle="modal" data-bs-target="#EditarServicio" data-id="@servicio.Id">
+                                        <i class="fas fa-solid fa-pen"></i>
+                                    </a>
+                                </td>
+                                <td></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-px text-center pt-15 pb-15">
+                        <h2 class="fs-2x fw-bold mb-0">Registrar Servicio</h2>
+                        <p class="text-gray-400 fs-4 fw-semibold py-7">
+                            Catálogo de Servicios
+                        </p>
+                        <a asp-action="RegistrarServicio" asp-controller="Administracion" class="btn btn-primary er fs-6 px-8 py-4" data-bs-toggle="modal" data-bs-target="#miModal">
+                            Registrar
+                        </a>
+                    </div>
+                    <div class="text-center pb-15 px-5">
+                        <img src="@KTTheme.GetAssetPath("media/Reinvented/Sticker.png")" alt="" class="mw-100 h-200px h-sm-325px">
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+
+
+    <!--end::Content-->
+</div>
+<!--end::Content wrapper-->
+
+<form asp-controller="Administracion" asp-action="RegistrarServicios" method="post" class="form w-100">
+    <div class="modal fade" tabindex="-1" id="miModal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <!-- Agrega la clase 'modal-lg' para un tamaño grande -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrar nuevo servicio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Sucursal</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <div class="col-lg-6 fv-row">
+                                <select name="TipoServicioId" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                    <option selected>Seleccione el tipo de servicio</option>
+                                    <option value="1">Alimentación</option>
+                                    <option value="2">Transporte</option>
+                                    <option value="3">Seguro</option>
+                                    <option value="4">Uniformes</option>
+                                </select>
+                                <div id="errorTipoIdentificacion" class="error-message" style="color:red"></div>
+                            </div>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombre</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <input type="text" placeholder="Nombre" name="Nombre" autocomplete="off" class="form-control bg-transparent"/>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Descripción</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <input type="text" placeholder="Descripción del servicio" name="Descripcion" autocomplete="off" class="form-control bg-transparent"/>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Periodos</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <input type="text" placeholder="Periodos" name="Periodos" autocomplete="off" class="form-control bg-transparent" oninput="validarNumeros(event)" />
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Costo</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <input type="text" placeholder="Costo" name="CostoPeriodo" autocomplete="off" class="form-control bg-transparent" oninput="validarNumeros(event)" />
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Link del servicio</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <input type="text" placeholder="Link servicio" name="Link" autocomplete="off" class="form-control bg-transparent"/>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form asp-controller="Administracion" asp-action="EditarServicio" method="post" class="form w-100">
+    <div class="modal fade" tabindex="-1" id="EditarServicio">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <!-- Agrega la clase 'modal-lg' para un tamaño grande -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Servicio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombre</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <input type="hidden" name="TipoServicioId" id="idServicioInput" />
+                            <input id="NombreS" type="text" placeholder="Nombre" name="Nombre" autocomplete="off" class="form-control bg-transparent"/>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Descripción</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <input id="DescripcionS" type="text" placeholder="Descripción del servicio" name="Descripcion" autocomplete="off" class="form-control bg-transparent" maxlength="70"/>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Periodos</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <input id="PeriodoS" type="text" placeholder="Periodos" name="Periodos" autocomplete="off" class="form-control bg-transparent" oninput="validarNumeros(event)" maxlength="10" />
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Costo</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <input id="CostoPeriodoS" type="text" placeholder="Costo" name="CostoPeriodo" autocomplete="off" class="form-control bg-transparent" oninput="validarNumeros(event)" maxlength="8" />
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Link del servicio</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                            <input id="LinkS" type="text" placeholder="Link servicio" name="Link" autocomplete="off" class="form-control bg-transparent" />
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+

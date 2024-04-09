@@ -1,0 +1,2102 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    
+    @*datos representante*@
+    //System.Web.HttpContext.Current.Session["nombreCompleto "] = "Pedro Pérez";
+    
+   
+
+
+}
+
+
+<!--Indispensable para cargar modal -->
+<script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+<script>
+    var globalArrayobligaciones=[];
+    var GlobalTareaCompletada = 0;
+    var GlobalAceptaContrato = 0;
+    var tareaLlegaControlador = '@ViewBag.TareaCompletadaProceso';
+    var prexisteMadre = '@ViewBag.PreExisteMadre';
+    var prexistePadre = '@ViewBag.PreExistePadre';
+    var prexisteAutorizado = '@ViewBag.PreExisteAutorizado';
+
+    $(document).ready(function () {
+        
+       
+        
+        if (tareaLlegaControlador == 0) 
+        {
+            //document.getElementById("RegresarTarea1").style.display = 'none';
+            $("#LogoTarea1").attr("style", "padding-top:5px;background: #CCD1D1;");
+        }
+        else
+        {
+            
+            GlobalTareaCompletada = tareaLlegaControlador;
+            TareaCompletada(tareaLlegaControlador);
+        }
+        
+
+
+        setTimeout(function () {
+            $('#mostrarmodal').modal({ backdrop: 'static', keyboard: false })//para que no cierre dando click fuera de la modal
+        $("#mostrarmodal").modal("show");
+        
+      }, 0);
+
+        
+
+    });
+
+    function validarLetras(e) {
+    var input = e.target;
+    var valor = input.value.trim();
+    var letras = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/; // Expresión regular para validar letras y espacios
+
+    if (!letras.test(valor)) {
+        input.value = valor.replace(/[^A-Za-zÁÉÍÓÚáéíóúñÑ\s]/g, '');
+    }
+}
+
+function validarNumeros(e) {
+        var input = e.target;
+        var valor = input.value.trim();
+        var numeros = /^[0-9.]+$/; // Expresión regular para validar números con punto decimal
+
+        if (!numeros.test(valor)) {
+            input.value = valor.replace(/[^0-9.]/g, '');
+        }
+}
+
+function SoloNumeros(contenido)
+{
+        valor = contenido.trim(); // Obtenemos el valor del campo y eliminamos espacios al principio y al final.
+
+        // Verificamos si el valor contiene solo números y tiene máximo 10 caracteres.
+        if (/^\d+$/.test(valor) && valor.length == 10) 
+        {
+            return 'OK';
+        } else {
+            return 'Error';
+        }
+}
+
+function DosPalabras(valor)
+{
+        return "OK";
+
+        var contenido = valor.trim(); // Obtenemos el contenido del elemento y eliminamos espacios al principio y al final.
+        var contenido = contenido.replace('  ','');//reemplazo doble espacio en blanco que pueda haber ingresado el usuario
+            // Contamos las palabras utilizando un espacio como delimitador.
+        var numPalabras = contenido.split(' ').length;
+
+        // Validamos si el número de palabras es mayor o igual a dos.
+        if (numPalabras >= 2) {
+            return "OK";
+        } else {
+            return "Error"
+        }
+
+}
+
+    function validarEmail(email) {
+   
+    //var emailRegex = /^[A-Za-z0-9._%+-]+[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/; // Expresión regular para validar correo electrónico
+    var emailRegex = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (emailRegex.test(email)) {
+            return 'OK';
+        } else {
+            return 'error';
+        }
+}
+</script>
+
+<style>
+    i[class^=fa-], i[class*=" fa-"] {
+        line-height: 1;
+        font-size: 2rem;
+        color: navy;
+    }
+
+    .form-control {
+        background: #E5F0FC;
+    }
+
+   
+
+    .BtnFlotante {
+        display: scroll;
+        position: fixed;
+        Top: 130px;
+        right: 20%;
+    }
+
+   
+    iframe {
+        display: block; /* iframes are inline by default */
+        height: 500px; /* Set height to 100% of the viewport height */
+        width: 100%; /* Set width to 100% of the viewport width */
+        border: none; /* Remove default border */
+        background: lightyellow; /* Just for styling */
+    }
+
+    small {
+        color: darkred;
+        display: none;
+    }
+
+    .modal-xl {
+        --bs-modal-width: 90%;
+    }
+</style>
+
+ <!--variables para representante, se llenan en cargacontrato y se usan en varias partes-->
+<input type="hidden" id="nombresRepresentante" value="@if(ViewBag.nombresRepresentante!=null){@ViewBag.nombresRepresentante}" />
+<input type="hidden" id="apellidosRepresentante" value="@if(ViewBag.apellidosRepresentante!=null){@ViewBag.apellidosRepresentante}" />
+<input type="hidden" id="TipIdRepresentante" value="@if(ViewBag.TipIdRepresentante!=null){@ViewBag.TipIdRepresentante}" />
+<input type="hidden" id="numIdRepresentante" value="@if(ViewBag.numIdRepresentante!=null){@ViewBag.numIdRepresentante}" />
+<input type="hidden" id="EmailRepresentante" value="@if(ViewBag.EmailRepresentante!=null){@ViewBag.EmailRepresentante}" />
+<input type="hidden" id="TelfRepresentante" value="@if(ViewBag.TelfRepresentante!=null){@ViewBag.TelfRepresentante}" />
+<input type="hidden" id="numeroMatricula" value="@if(ViewBag.MatriculaEstudiante!=null){@ViewBag.MatriculaEstudiante.Id}" />
+
+
+
+<div class="modal fade show" id="mostrarmodal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true" style="z-index:1500;">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="container">
+                    <div class="row">
+                        <div id="LogoTarea1" class="col text-center"><i class="fas fa-user-graduate"></i><div class="col text-center d-none d-lg-block fs-3">Estudiante</div></div>
+                        <div id="LogoTarea2" class="col text-center"><i class="fa fa-users fa-2x" aria-hidden="true"></i><div class="col text-center d-none d-lg-block fs-3">Padres</div></div>
+                        <div id="LogoTarea3" class="col text-center"><i class="far fa-id-card fa-2x" aria-hidden="true"></i><div class="col text-center d-none d-lg-block fs-3">Autorización de retiro</div></div>
+                        <div id="LogoTarea4" class="col text-center"><i class="fas fa-hospital-user"></i><div class="col text-center d-none d-lg-block fs-3">Seguro</div></div>
+                        <div id="LogoTarea5" class="col text-center"><i class="fa fa-clipboard fa-2x" aria-hidden="true"></i><i class="fa fa-certificate" aria-hidden="true"></i><div class="col text-center d-none d-lg-block fs-3">Contrato</div></div>
+                        <div id="LogoTarea6" class="col text-center"><i class="fas fa-credit-card"></i> <div class="col text-center d-none d-lg-block fs-3">Pago</div></div>
+                    </div>
+
+                    <div class="progress container-fluid">
+                        <div id="barraProgreso" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                     </div>
+                    <h4>Número de niños por matricular: <span style="color:red">@ViewBag.NumeroHijosAProcesar</span></h4>
+                </div>
+                
+            </div><!--cierre head-->
+            
+            <div id="mostrarmodalBody" class="modal-body">
+
+                
+                <div id="idDivEstudiante" style="display:block">
+                    @Html.Partial("~/Views/Home/_Estudiante.cshtml")
+                    @*Html.Partial("~/Views/Datos/Estudiante.cshtml")*@
+                    
+
+                </div>
+               
+                <div id="idDivPadres" style="display:none">
+                    @Html.Partial("~/Views/Home/_Representantes.cshtml")
+                    @*Html.Partial("~/Views/Datos/Representantes.cshtml")*@
+                    
+                </div>
+
+                <div id="idDivAutorizacion" style="display:none">
+                    @Html.Partial("~/Views/Home/_AutorizadoRetiro.cshtml")
+                    @*Html.Partial("~/Views/Datos/AutorizadosRetirar.cshtml")*@
+                   
+                </div>
+
+
+                <div id="idDivSeguro" style="display:none;height:70vh;width:100%;">
+
+
+                    <object id="InfoTransporte" data="/Docs/InformacionSeguro.pdf" height="100%" width="100%"></object>
+                  
+
+                </div>
+
+                <div id="idDivContrato" style="display:none">
+
+                    <div id="TextoContrato" class="fs-3" style="display:block">
+                       
+                    </div>
+
+                </div>
+
+                <div id="idDivresumenPagos" style="display:none" class="container">
+                    @Html.Partial("~/Views/Home/_PagoMatricula.cshtml")
+                   
+                </div>
+
+                <div id="idDivProcesoTerminado" style="display:none" class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div class="text-center align-self-center">
+                            <h1 class="fs-2">Proceso terminado correctamente. </h1>
+                            <h3 class="fs-2">Felicidades, has completado el proceso de matriculación de forma exitosa.</h3>
+                            <h3 class="fs-2">Ahora podrás seguir con la contratación de servicios complementarios,</h3>
+                            <h3 class="fs-2">pago de los servicios educativos, revisar y modificar la información registrada.</h3>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">&nbsp;&nbsp;&nbsp;</div>
+                        <div class="col-md-6" align="center">
+                            <button class="btn btn-success" onclick="location.href='@Url.Action("Index")' ">Continuar</button>
+                        </div>
+                        
+                        <div class="col-md-3">&nbsp;&nbsp;&nbsp;</div>
+                    </div>
+                </div>
+             </div><!--cierre body-->
+
+            <div class="container" >
+                <div class="container">
+                    <div class="row" id="BotonesIzDr">
+                        <table width="100%">
+                            <tr>
+                                <td width="15%"><button style="display:none" id="RegresarTarea1" class="btn btn-secondary btn-sm" onClick="RegresarTarea('0')"><i class="fas fa-chevron-left"></i> Regresa</button></td>
+                                <td width="70%">&nbsp;</td>
+                                <td width="15%"><button id="BotonContinuar" class="btn btn-success btn-sm" onClick="RegistraEstudiante()">Continuar <i class="fas fa-chevron-right"></i></button></td>
+                            </tr>
+                         </table>
+                        
+                       
+                    </div>
+                </div>
+                <div id="BotonesContrato" style="display:none">
+                    
+                    <table width="100%">
+                        <tr>
+                            <td width="15%" align="left">
+                                <button style="display:none" id="RegresarTarea2" class="btn btn-secondary btn-sm" onClick="RegresarTarea('4')"><i class="fas fa-chevron-left"></i> Regresa</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </td>
+                            <td width="85%">
+                                &nbsp;&nbsp;
+                                Acepto <input type="checkbox" id="idChkParent" onclick="onclickChecks()" />
+                                <a href="#" onclick="CargaParentHandbook()">Parent Handbook</a>&nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" id="idChkStudent" onclick="onclickChecks()" />
+                                <a href="#" onclick="CargaStudentHandbook(@ViewBag.sucursalColegio)">Student Handbook</a>&nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" id="idChkTerminos" onclick="onclickChecks()" />
+                                <b>He leído el contrato de servicios educativos</b>&nbsp;&nbsp;
+                                <button id="btnAceptaContrato" class="btn btn-success btn-sm" onclick="AceptaContrato()" disabled>Aceptar contrato</button> &nbsp;&nbsp;
+                                <button class="btn btn-secondary btn-sm" onclick="NoAceptaDocs()">Cancelar</button>
+                            </td>
+                         </tr>
+                    </table>
+                </div>
+                <br />
+                <!--button-- type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</!--button-->
+            </div><!-- modal-footer-->
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal documentos-->
+<div class="modal" tabindex="-1" id="ModalDocumentos" style="z-index:18000;">
+    <div class="modal-xl modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+           
+
+            <!--el contenido carga al dar click en link términos y condiciones-->
+            <div class="modal-body" style="height:80vh;width:100%;">
+                <object id="ModalDocumentosBody" data="" height="100%" width="100%"></object>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal documentos-->
+<div class="modal" tabindex="-1" id="ModalParentHandbook" style="z-index:18000;">
+    <div class="modal-xl modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+           
+
+            <!--el contenido carga al dar click en link términos y condiciones-->
+            <div class="modal-body" style="height:80vh;width:100%;">
+                <object id="ModalParentHandbookBody" data="" height="100%" width="100%"></object>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal spinner-->
+<div class="modal" tabindex="-1" id="ModalSpinner" style="z-index:1500;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" align="center">
+                <h5 class="modal-title">Generando contrato, por favor espere</h5>
+                
+            </div>
+            <div class="modal-body" id="idventanaPago" align="center">
+                
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                
+                <button type="button" class="btn btn-secondary" style="display:none" data-bs-dismiss="modal">Cerrar</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal alrtea errores-->
+<div class="modal" tabindex="-1" id="ModalAlertaErrores" style="z-index:1500">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Alerta</h5>
+
+            </div>
+            <div class="modal-body fs-5" id="idventanaError">
+                
+            </div>
+            <div class="modal-footer">
+               
+                <button type="button" class="btn btn-secondary" id="idbtnCerrarPagoTarjeta" data-bs-dismiss="modal">Cerrar</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var globalApagar = 0;
+    
+
+    function clicCheck(objeto, valor) {
+        if (objeto.checked) {
+            //alert( 'El elemento está marcado');
+            globalApagar = parseFloat(globalApagar) + parseFloat(valor);
+        } else {
+            globalApagar = parseFloat(globalApagar) - parseFloat(valor);
+            //alert('Ahora está desmarcado');
+        }
+
+        //alert(globalApagar);
+
+        let btnPagar = document.getElementById('btnPagar');
+
+        if (parseFloat(globalApagar) <= 0) {
+            document.getElementById("btnPagar").style.display = 'none';
+            globalApagar = 0
+
+        }
+        else
+            document.getElementById("btnPagar").style.display = 'block';
+
+        setTimeout(() => {
+            btnPagar.textContent = "$" + parseFloat(globalApagar).toFixed(2) + " Pagar";
+        }, 500);
+
+    }
+
+    function CargaModalPago() {
+        document.getElementById('ModalPagoLabel').innerHTML = "VALOR A PAGAR $" + parseFloat(globalApagar).toFixed(2);
+
+        document.getElementById('valorTrans').value = parseFloat(globalApagar).toFixed(2);
+
+        $('#ModalPago').modal({ show: true });
+    }
+
+   
+
+    function TareaCompletada(tarea) {
+        debugger;
+        if (tarea > GlobalTareaCompletada)
+            GlobalTareaCompletada = tarea;
+        
+        if(tarea==4)
+        {
+            
+            //si aún no acepta contrato muestra botones contrato
+            if (GlobalAceptaContrato == 0)
+             {
+                
+                document.getElementById("BotonesIzDr").style.display = 'none';
+                document.getElementById("BotonesContrato").style.display = 'block';
+             }
+             else
+             {
+                document.getElementById("BotonesIzDr").style.display = 'block';
+                document.getElementById("BotonesContrato").style.display = 'none';
+             }
+            
+        }
+        else{
+            document.getElementById("BotonesIzDr").style.display = 'block';
+            document.getElementById("BotonesContrato").style.display = 'none';
+        }
+        
+        if(tarea==1)
+        {
+            
+            
+             //if ("error" == RegistraEstudiante()) {return;}
+                
+             //si todo es ok
+             let result=RegistroPadresYaRegistrados();           
+            if (prexisteMadre == '1' || prexistePadre == '1') {//cuando tiene más de un hijo pasa automático
+                //me va a validar todo
+                 if (result == "") {
+                RegistroPadres();
+                
+                return;
+                 }
+            }
+            
+
+            //actualiza barra progreso  
+            $("#LogoTarea1").attr("style", "padding-top:5px;background: #ffffff;");
+            $("#LogoTarea2").attr("style", "padding-top:5px;background: #CCD1D1;");
+
+            if (GlobalTareaCompletada==1)
+            $("#barraProgreso").attr("style", "width: 16.66%;background:  #64d2bc ;");
+            //$("#progress-bar").attr("style", "width: 16.66%;background: #CCD1D1;");
+
+            
+            //actualiza botón continuar
+            $("#BotonContinuar").attr("onclick", "RegistroPadres()");
+            //$("#RegresarTarea").attr("onclick", "RegresarTarea('1')");
+
+            //document.getElementById("RegresarTarea1").style.display = 'block';
+
+            document.getElementById("idDivEstudiante").style.display = 'none';
+            document.getElementById("idDivPadres").style.display = 'block';
+            document.getElementById("idDivAutorizacion").style.display = 'none';
+            document.getElementById("idDivSeguro").style.display = 'none';
+            document.getElementById("idDivContrato").style.display = 'none';
+            document.getElementById("idDivresumenPagos").style.display = 'none';
+            document.getElementById("idDivProcesoTerminado").style.display = 'none';
+
+            RefrescaContenidoModalProceso();
+            return;
+            
+        }
+
+        
+       
+        if (tarea == 2) {
+
+            
+                //if ("error" == RegistroPadres()) return;
+
+                
+            if (prexisteAutorizado == '1' ) 
+            {//cuando tiene más de un hijo pasa automático
+                RegistarPersonaRetira();
+                return;
+            }
+            
+            $("#LogoTarea2").attr("style", "padding-top:5px;background: #ffffff;");
+            $("#LogoTarea3").attr("style", "padding-top:5px;background: #CCD1D1;");
+
+            if (GlobalTareaCompletada == 2)
+            $("#barraProgreso").attr("style", "width: 33.33%;background:  #64d2bc ;");
+            //$("#progress-bar").attr("style", "width: 16.66%;background: #CCD1D1;");
+            
+
+            //$("#BotonContinuar").attr("onclick", "TareaCompletada('3')");
+            $("#BotonContinuar").attr("onclick", "RegistarPersonaRetira()");
+            
+            //$("#RegresarTarea1").attr("onclick", "RegresarTarea('2')");
+            //document.getElementById("RegresarTarea1").style.display = 'block';
+
+            document.getElementById("idDivEstudiante").style.display = 'none';
+            document.getElementById("idDivPadres").style.display = 'none';
+            document.getElementById("idDivAutorizacion").style.display = 'block';
+            document.getElementById("idDivSeguro").style.display = 'none';
+            document.getElementById("idDivContrato").style.display = 'none';
+            document.getElementById("idDivresumenPagos").style.display = 'none';
+            document.getElementById("idDivProcesoTerminado").style.display = 'none';
+
+                RefrescaContenidoModalProceso();
+            return;
+        }
+        
+        if (tarea == 3) {
+            
+            
+               // if ("error" == RegistarPersonaRetira()) return;
+            
+                
+
+            $("#LogoTarea3").attr("style", "padding-top:5px;background: #ffffff;");
+            $("#LogoTarea4").attr("style", "padding-top:5px;background: #CCD1D1;");
+
+            if (GlobalTareaCompletada == 3)
+            $("#barraProgreso").attr("style", "width: 50%;background:  #64d2bc ;");
+            //$("#progress-bar").attr("style", "width: 16.66%;background: #CCD1D1;");
+            
+
+            $("#BotonContinuar").attr("onclick", "TareaCompletada('4')");
+           // $("#RegresarTarea").attr("onclick", "RegresarTarea('3')");
+            //document.getElementById("RegresarTarea").style.display = 'block';
+
+            document.getElementById("idDivEstudiante").style.display = 'none';
+            document.getElementById("idDivPadres").style.display = 'none';
+            document.getElementById("idDivAutorizacion").style.display = 'none';
+            document.getElementById("idDivSeguro").style.display = 'block';
+            document.getElementById("idDivContrato").style.display = 'none';
+            document.getElementById("idDivresumenPagos").style.display = 'none';
+            document.getElementById("idDivProcesoTerminado").style.display = 'none';
+
+            //$('#idDivSeguro').load('/Docs/InformacionSeguro.htm');
+
+            RefrescaContenidoModalProceso();
+            return;
+        }
+        
+       
+
+        if (tarea == 4) {
+
+            
+            $("#LogoTarea4").attr("style", "padding-top:5px;background: #ffffff;");
+            $("#LogoTarea5").attr("style", "padding-top:5px;background: #CCD1D1;");
+
+            if (GlobalTareaCompletada == 4)
+            $("#barraProgreso").attr("style", "width: 66.64%;background:  #64d2bc ;");
+            
+            
+            //$("#RegresarTarea").attr("onclick", "RegresarTarea('4')");
+
+          
+            if (GlobalTareaCompletada > 4)//ya paso por acepta contrato,hubo regreso
+                $("#BotonContinuar").attr("onclick", "TareaCompletada('5')");
+
+            document.getElementById("idDivEstudiante").style.display = 'none';
+            document.getElementById("idDivPadres").style.display = 'none';
+            document.getElementById("idDivAutorizacion").style.display = 'none';
+            document.getElementById("idDivSeguro").style.display = 'none';
+            document.getElementById("idDivContrato").style.display = 'block';
+
+            document.getElementById("idDivresumenPagos").style.display = 'none';
+            document.getElementById("idDivProcesoTerminado").style.display = 'none';
+
+            //$('#TextoContrato').load('/Docs/Contrato.html');
+            CargaContrato();
+            RefrescaContenidoModalProceso();
+            return;
+
+        }
+        
+        if (tarea == 5) {
+            
+
+            $("#LogoTarea5").attr("style", "padding-top:5px;background: #ffffff;");
+            $("#LogoTarea6").attr("style", "padding-top:5px;background: #CCD1D1;");
+
+            if (GlobalTareaCompletada == 5)
+            $("#barraProgreso").attr("style", "width: 83%;background:  #64d2bc ;");
+            
+           
+
+            $("#BotonContinuar").attr("onclick", "TareaCompletada('6')");
+            document.getElementById("BotonContinuar").style.display = 'none';
+            //document.getElementById("RegresarTarea").style.display = 'none';
+            //$("#RegresarTarea").attr("onclick", "RegresarTarea('5')");
+
+           
+
+            document.getElementById("idDivEstudiante").style.display = 'none';
+            document.getElementById("idDivPadres").style.display = 'none';
+            document.getElementById("idDivAutorizacion").style.display = 'none';
+            document.getElementById("idDivSeguro").style.display = 'none';
+            document.getElementById("idDivContrato").style.display = 'none';
+            document.getElementById("idDivresumenPagos").style.display = 'block';
+            document.getElementById("idDivProcesoTerminado").style.display = 'none';
+            
+            RefrescaContenidoModalProceso();
+            return;
+
+        }
+        
+    }
+
+ 
+    function RegresarTarea(tarea)
+    {
+        
+         if(tarea==5)
+        {
+            if (GlobalAceptaContrato == 0) {
+
+                document.getElementById("BotonesIzDr").style.display = 'none';
+                document.getElementById("BotonesContrato").style.display = 'block';
+            }
+            else {
+                document.getElementById("BotonesIzDr").style.display = 'block';
+                document.getElementById("BotonesContrato").style.display = 'none';
+            }
+        }
+        else{
+            document.getElementById("BotonesIzDr").style.display = 'block';
+            document.getElementById("BotonesContrato").style.display = 'none';
+        }
+
+        if (tarea == 1) {
+            //actualiza barra progreso
+            
+            $("#LogoTarea1").attr("style", "padding-top:5px;background: #CCD1D1;");
+            $("#LogoTarea2").attr("style", "padding-top:5px;background: #ffffff;");
+            //actualiza botón continuar
+            //$("#BotonContinuar").attr("onclick", "TareaCompletada('1')");
+            $("#BotonContinuar").attr("onclick", "RegistraEstudiante()");
+            
+            //$("#RegresarTarea").attr("onclick", "RegresarTarea('0')");
+            //document.getElementById("RegresarTarea").style.display = 'none';
+            
+
+            document.getElementById("idDivEstudiante").style.display = 'block';
+            document.getElementById("idDivPadres").style.display = 'none';
+            document.getElementById("idDivAutorizacion").style.display = 'none';
+            document.getElementById("idDivSeguro").style.display = 'none';
+            document.getElementById("idDivContrato").style.display = 'none';
+            document.getElementById("idDivresumenPagos").style.display = 'none';
+            document.getElementById("idDivProcesoTerminado").style.display = 'none';
+
+            RefrescaContenidoModalProceso();
+            return;
+
+        }
+
+        if (tarea == 2) {
+            //actualiza barra progreso
+            
+            $("#LogoTarea2").attr("style", "padding-top:5px;background: #CCD1D1;");
+            $("#LogoTarea3").attr("style", "padding-top:5px;background: #ffffff;");
+            //actualiza botón continuar
+            $("#BotonContinuar").attr("onclick", "RegistroPadres()");
+            //$("#RegresarTarea").attr("onclick", "RegresarTarea('1')");
+            //document.getElementById("RegresarTarea").style.display = 'block';
+            
+
+            document.getElementById("idDivEstudiante").style.display = 'none';
+            document.getElementById("idDivPadres").style.display = 'block';
+            document.getElementById("idDivAutorizacion").style.display = 'none';
+            document.getElementById("idDivSeguro").style.display = 'none';
+            document.getElementById("idDivContrato").style.display = 'none';
+            document.getElementById("idDivresumenPagos").style.display = 'none';
+            document.getElementById("idDivProcesoTerminado").style.display = 'none';
+
+            RefrescaContenidoModalProceso();
+            return;
+
+        }
+
+
+
+        if (tarea == 3) {
+            
+            $("#LogoTarea3").attr("style", "padding-top:5px;background: #CCD1D1;");
+            $("#LogoTarea4").attr("style", "padding-top:5px;background: #ffffff;");
+
+            //$("#BotonContinuar").attr("onclick", "TareaCompletada('3')");
+            $("#BotonContinuar").attr("onclick", "RegistarPersonaRetira()");
+            
+            //$("#RegresarTarea").attr("onclick", "RegresarTarea('2')");
+            //document.getElementById("RegresarTarea").style.display = 'block';
+           
+            
+
+            document.getElementById("idDivEstudiante").style.display = 'none';
+            document.getElementById("idDivPadres").style.display = 'none';
+            document.getElementById("idDivAutorizacion").style.display = 'block';
+            document.getElementById("idDivSeguro").style.display = 'none';
+            document.getElementById("idDivContrato").style.display = 'none';
+            document.getElementById("idDivresumenPagos").style.display = 'none';
+            document.getElementById("idDivProcesoTerminado").style.display = 'none';
+
+            RefrescaContenidoModalProceso();
+            return;
+        }
+
+        if (tarea == 4) {
+            
+            $("#LogoTarea4").attr("style", "padding-top:5px;background: #CCD1D1;");
+            $("#LogoTarea5").attr("style", "padding-top:5px;background: #ffffff;");
+
+            $("#BotonContinuar").attr("onclick", "TareaCompletada('4')");
+            //$("#RegresarTarea").attr("onclick", "RegresarTarea('3')");
+            //document.getElementById("RegresarTarea").style.display = 'block';
+          
+            document.getElementById("BotonContinuar").style.display = 'block';
+
+            document.getElementById("idDivEstudiante").style.display = 'none';
+            document.getElementById("idDivPadres").style.display = 'none';
+            document.getElementById("idDivAutorizacion").style.display = 'none';
+            document.getElementById("idDivSeguro").style.display = 'block';
+            document.getElementById("idDivContrato").style.display = 'none';
+            document.getElementById("idDivresumenPagos").style.display = 'none';
+            document.getElementById("idDivProcesoTerminado").style.display = 'none';
+
+            //$('#idDivSeguro').load('/Docs/InformacionSeguro.htm');
+
+            RefrescaContenidoModalProceso();
+            return;
+        }
+
+
+        if (tarea == 5) {
+
+           
+            $("#LogoTarea5").attr("style", "padding-top:5px;background: #CCD1D1;");
+            $("#LogoTarea6").attr("style", "padding-top:5px;background: #ffffff;");
+
+            //$("#RegresarTarea").attr("onclick", "RegresarTarea('4')");
+            //document.getElementById("RegresarTarea").style.display = 'block';
+            
+            
+            if (GlobalTareaCompletada > 4)//ya paso por acepta contrato,hubo regreso
+                $("#BotonContinuar").attr("onclick", "TareaCompletada('5')");
+
+            document.getElementById("BotonContinuar").style.display = 'block';
+
+            document.getElementById("idDivEstudiante").style.display = 'none';
+            document.getElementById("idDivPadres").style.display = 'none';
+            document.getElementById("idDivAutorizacion").style.display = 'none';
+            document.getElementById("idDivSeguro").style.display = 'none';
+            document.getElementById("idDivContrato").style.display = 'block';
+            document.getElementById("idDivresumenPagos").style.display = 'none';
+            document.getElementById("idDivProcesoTerminado").style.display = 'none';
+
+            //$('#TextoContrato').load('/Docs/Contrato.html');
+            CargaContrato();
+            RefrescaContenidoModalProceso();
+            return;
+
+        }
+
+        if (tarea == 6) {
+
+            $("#LogoTarea6").attr("style", "padding-top:5px;background: #CCD1D1;");
+            $("#BotonContinuar").attr("onclick", "TareaCompletada('6')");
+            //$("#RegresarTarea").attr("onclick", "RegresarTarea('5')");
+            //document.getElementById("RegresarTarea").style.display = 'block';
+           
+
+            document.getElementById("BotonContinuar").style.display = 'block';
+            
+
+
+            document.getElementById("idDivEstudiante").style.display = 'none';
+            document.getElementById("idDivPadres").style.display = 'none';
+            document.getElementById("idDivAutorizacion").style.display = 'none';
+            document.getElementById("idDivSeguro").style.display = 'none';
+            document.getElementById("idDivContrato").style.display = 'none';
+            document.getElementById("idDivresumenPagos").style.display = 'block';
+            document.getElementById("idDivProcesoTerminado").style.display = 'none';
+
+            RefrescaContenidoModalProceso();
+            return;
+
+        }
+    }
+
+    function RefrescaContenidoModalProceso (){
+        //para que no cierre dando click fuera de la modal
+        setTimeout(function () {
+            $('#mostrarmodal').modal({ backdrop: 'static', keyboard: false })
+            $("#mostrarmodal").modal("show");
+
+        }, 0);
+    }
+
+
+    function onclickChecks() {
+
+        if ($('#idChkParent').is(':checked') && $('#idChkStudent').is(':checked') && $('#idChkTerminos').is(':checked')) {
+            $('#btnAceptaContrato').prop('disabled', false); //TO ENABLE
+        }
+        else
+            $('#btnAceptaContrato').prop('disabled', true); //TO disabled
+    }
+
+
+
+    function CargaStudentHandbook(codSucursal) {
+
+        var urlBase = '@ViewBag.BaseUri';
+
+        $("#ModalDocumentosBody").attr("data", urlBase + 'Docs/StudentHandbook' + codSucursal + '.pdf');
+        setTimeout(function () {
+            $('#ModalDocumentos').modal('show');
+
+        }, 1000);
+
+
+
+    }
+
+    function CargaParentHandbook() {
+
+        var urlBase = '@ViewBag.BaseUri';
+
+        $("#ModalParentHandbookBody").attr("data", urlBase + 'Docs/ParentHandbook.pdf');
+
+
+        setTimeout(function () {
+            $('#ModalParentHandbook').modal('show');
+
+        }, 1000);
+
+
+    }
+
+
+    
+    function NoAceptaDocs(){
+        alert('NO ACEPTO CONTRATOS');
+       // $("#mostrarmodal").modal("hide");
+    }
+
+
+    function AceptaContrato() {
+        
+        
+        //$('#ModalSpinner').modal({ backdrop: 'static', keyboard: false });
+        $("#ModalSpinner").modal("show");
+       // delay(3000); // Espera 3000 milisegundos (3 segundos)
+        var _matricula = document.getElementById('numeroMatricula').value;//este valor se tiene cuando graba estudiante
+        var combo = document.getElementById("nivel");
+        var nivelEscolar = combo.options[combo.selectedIndex].text;
+
+        var cicloEscolar = '@ViewBag.cicloEscolar';
+        var _valorMatricula = '@ViewBag.CostoMatricula';
+        var numIdAlumno = document.getElementById('Identificacion').value;
+
+        //variable para identificar si ya se acepto contrato
+        GlobalAceptaContrato=1;
+        //document.getElementById("RegresarTarea").style.display = 'none';
+        
+        var sucursalColegio = '@ViewBag.sucursalColegio';
+        var texto = document.getElementById('TextoContrato').innerHTML;
+
+        //cambia estado de matrícula
+        //genera cuota a pagar de matricula
+        //numCuota 1,valorMatricula,porcentajeDecuento,valorDescuento<valorFinal,Abono,Saldo,Matricula,EstadoCuota 2,null,rubro1
+       
+        $.ajax({
+            url: "@Url.Action("AceptarContrato")",
+            data: { matricula: _matricula, valorMatricula: _valorMatricula },
+            type: 'POST',
+            dataType: 'json',
+            //async: false,
+            success: function (respuesta) {
+                
+                Datos = JSON.stringify(respuesta);
+                /*
+                alert(JSON.stringify(respuesta));
+                console.log(Datos);
+               
+                
+                globalArrayobligaciones.push(Datos.obligacionId);
+                //aqui pongo el código de la obligacion de matrícula generada en vista _PagoMatricula
+                document.getElementById('NumObligacion').value = Datos.obligacionId;
+                document.getElementById('TablaValoresMatricula').insertRow(-1).innerHTML = Datos.filaTablaMatricula;
+                */
+                //TareaCompletada('5');
+                //$("#idDivEstudiante").find("input[type=text]").each(function () {
+                //    $(this).val("");
+                //});
+                $.ajax({
+                    url: "@Url.Action("CargaTextoParaPdf")",
+                    data: { textoTopdf: texto, cedulaEstudiante: numIdAlumno, codSucursal: sucursalColegio, CicloEscolar: cicloEscolar },
+                    type: 'POST',
+                    //async: false,
+                    success: function (respuesta) {
+                        //En respuesta llega la ruta  http al archivo
+                        //descarga automatica del archivo
+                        var anchor = document.createElement('a');
+                        anchor.href = respuesta;
+                        anchor.target = '_blank';
+                        //nombre para descargar
+                        anchor.download = numIdAlumno + '_' + cicloEscolar + '_' + sucursalColegio + '_Contrato.pdf';
+                        anchor.click();
+
+
+
+                        $("#ModalSpinner").modal("hide");
+                        location.reload();//recargo para chequear si hay otros estudiantes para el usuario
+
+                    }, error: function (respuesta) {
+
+                        //toastr["warning"](respuesta.responseText, "ERROR");
+                    }
+                });
+
+
+
+            }, error: function (respuesta) {
+
+                //toastr["warning"](respuesta.responseText, "ERROR");
+            }
+        });
+        
+        
+        //genera pdf contrato dejando una copia en el servidor y otra descargada automaticamente para el usuario
+        //paso el texto al controlador CargaTextoParaPdf
+
+         
+       
+       //return;
+        //
+        //
+        
+    }
+
+
+
+    function CargaContrato()
+    {
+
+        var combo = document.getElementById("nivel");
+        var nivelEscolar = combo.options[combo.selectedIndex].text;
+
+        
+        var nombresAlumno = document.getElementById('Nombres').value;
+        var apellidosAlumno = document.getElementById('Apellidos').value;
+        var numIdAlumno = document.getElementById('Identificacion').value;
+        
+        var cicloEscolar = '@ViewBag.cicloEscolar';
+        var NombreSucursal = '@ViewBag.NombreSucursal';
+        var EmailSucursal =  '@ViewBag.EmailSucursal';
+        var nombresRepresentante = '';
+        var apellidosRepresentante = '';
+        var numIdRepresentante = '';
+
+        var TipIdRepresentante = '';
+        var EmailRepresentante = '';
+        var TelfRepresentante = '';
+
+        if(document.getElementById('RepresentantePadre').checked==true){
+            nombresRepresentante = document.getElementById('NombresPadre').value;
+            document.getElementById('nombresRepresentante').value = nombresRepresentante;
+
+            apellidosRepresentante = document.getElementById('ApellidosPadre').value;
+            document.getElementById('apellidosRepresentante').value = apellidosRepresentante;
+
+            numIdRepresentante = document.getElementById('IdPadre').value;
+            document.getElementById('numIdRepresentante').value = numIdRepresentante;
+
+            
+            TipIdRepresentante = document.getElementById('TipoIdPadre').value;
+            document.getElementById('TipIdRepresentante').value = TipIdRepresentante;
+
+            EmailRepresentante = document.getElementById('EmailPadre').value;
+            document.getElementById('EmailRepresentante').value = EmailRepresentante;
+
+            TelfRepresentante = document.getElementById('TelfMovilPadre').value;
+            document.getElementById('TelfRepresentante').value = TelfRepresentante;
+        }
+
+        if (document.getElementById('RepresentanteMadre').checked == true) {
+            nombresRepresentante = document.getElementById('NombresMadre').value;
+            document.getElementById('nombresRepresentante').value = nombresRepresentante;
+
+            apellidosRepresentante = document.getElementById('ApellidosMadre').value;
+            document.getElementById('apellidosRepresentante').value = apellidosRepresentante;
+
+            numIdRepresentante = document.getElementById('IdMadre').value;
+            document.getElementById('numIdRepresentante').value = numIdRepresentante;
+
+            TipIdRepresentante = document.getElementById('TipoIdMadre').value;
+            document.getElementById('TipIdRepresentante').value = TipIdRepresentante;
+
+            EmailRepresentante = document.getElementById('EmailMadre').value;
+            document.getElementById('EmailRepresentante').value = EmailRepresentante;
+
+            TelfRepresentante = document.getElementById('TelfMovilMadre').value;
+            document.getElementById('TelfRepresentante').value = TelfRepresentante;
+
+         }
+
+        var _nombrePlantilla = 'Contrato' + '@ViewBag.sucursalColegio' + '.html';
+        //busco plantilla contrato para actualizarla con los datos del cliente
+        
+       // alert('Carga contrato');
+        $.ajax({
+            url: "@Url.Action("ObtenerPlantilla")",
+            data: { nombrePlantilla: _nombrePlantilla },
+            type: 'POST',
+            success: function (respuesta) {
+                //alert(respuesta);
+                
+                //reemplazo los datos en los cmpos de la plantilla
+                texto = respuesta.replace("[Fecha]", Now());
+                texto = texto.replace("[NombresRepresentante]", nombresRepresentante);
+                texto = texto.replace("[ApellidosRepresentante]", apellidosRepresentante);
+                texto = texto.replace("[numIdRepresentante]", numIdRepresentante);
+                texto = texto.replace("[NombesAlumno]",nombresAlumno);
+                texto = texto.replace("[ApellidosAlumno]",apellidosAlumno);
+                texto = texto.replace("[numIdAlumno]",numIdAlumno);
+                texto = texto.replace("[NivelEscolar]",nivelEscolar);
+                texto = texto.replace("[CicloEscolar]",cicloEscolar);
+                texto = texto.replace("[NombreSucursal]", NombreSucursal);
+                texto = texto.replace("[EmailSucursal]",EmailSucursal);
+                //repito porque existe varias veces
+                texto = texto.replace("[CicloEscolar]", cicloEscolar);
+                texto = texto.replace("[CicloEscolar]",cicloEscolar);
+                texto = texto.replace("[CicloEscolar]", cicloEscolar);
+                //repito porque fue necesario para las firmas
+                texto = texto.replace("[NombresRepresentante]", nombresRepresentante);
+                texto = texto.replace("[ApellidosRepresentante]", apellidosRepresentante);
+                texto = texto.replace("[numIdRepresentante]", numIdRepresentante);
+                //$('#TextoContrato').load(texto);
+                document.getElementById('TextoContrato').innerHTML = texto;
+                
+            }, error: function (respuesta) {
+
+                alert("Error Conexión: " + respuesta.message);
+            }
+        });
+       
+    }
+
+    function Now()
+    {
+        let date = new Date()
+
+        let day = date.getDate()
+        let month = date.getMonth() + 1
+        let year = date.getFullYear()
+
+        if (month < 10) {
+            return `${day}-0${month}-${year}`;
+        } else {
+            return `${day}-${month}-${year}`;
+        }
+
+        
+    }
+
+    function RegistraEstudiante() {
+        //alert('RegistraEstudiante');
+        
+        var _Nombres = document.getElementById('Nombres').value;
+        var _Apellidos = document.getElementById('Apellidos').value;
+        var _FechaNac = document.getElementById('FechaNac').value;
+        var _nivel = document.getElementById('nivel').value;
+        var _TipoId = document.getElementById('TipoId').value;
+        var _Identificacion = document.getElementById('Identificacion').value;
+        var _CallePrincipal = document.getElementById('CallePrincipal').value;
+        var _NumCasa = document.getElementById('NumCasa').value;
+        var _CalleSecundaria = document.getElementById('CalleSecundaria').value;
+
+        var _NombreMedico = document.getElementById('NombreMedico').value;
+        var _TelefMedico = document.getElementById('TelefMedico').value;
+        var _MovilMedico = document.getElementById('MovilMedico').value;
+        var _DireccionMedico = document.getElementById('DireccionMedico').value;
+        var _Talla = document.getElementById('Talla').value;
+        var _Peso = document.getElementById('Peso').value;
+        var _DosisVacunaCovid = document.getElementById('DosisVacunaCovid').value;
+        var _EnfermedadCronica = document.getElementById('EnfermedadCronica').value;
+        var _MedicacionContinua = document.getElementById('MedicacionContinua').value;
+        var _cirugia = document.getElementById('cirugia').value;
+        var _ChkAutorizaSuministrar = document.getElementById('ChkAutorizaSuministrar').checked;
+        var _seguroPrivado = document.getElementById('seguroPrivado').value;
+        var _alergias = document.getElementById('alergias').value;
+        var _restriccionAlimentos = document.getElementById('restriccionAlimentos').value;
+        var _datoAdicional = document.getElementById('datoAdicional').value;
+        var _UsuarioRegistra = document.getElementById('idUserLogin').value;
+
+        var _CicloEscolarId = '@ViewBag.cicloEscolarId';
+        var _SucursalColegioId = '@ViewBag.sucursalColegio';
+        //tomo los archivos desde el formulario
+        var _pdfIdentificacion = $('#PDFIdentificacion')[0].files;
+        var _imgAvatar = $('#Avatar')[0].files;
+        
+
+        //validaciones
+        var error=""
+        
+        if (_Nombres=="")
+        {
+            error = error + "nombres son obligatorios<br>";
+            document.getElementById("errNombres").style.display = 'block';
+        } else if (DosPalabras(_Nombres) != 'OK')
+        {
+            error = error + "nombres son obligatorios<br>";
+            document.getElementById("errNombres").style.display = 'block';
+        }
+        else
+            document.getElementById("errNombres").style.display = 'none';
+            
+       
+        if (_Apellidos == "") {
+            error = error + "apellidos son obligatorios<br>";
+            document.getElementById('errApellidos').style.display= 'block';
+        }else if( DosPalabras(_Apellidos)!= 'OK') 
+        {
+          error = error + "apellidos son obligatorios<br>";
+          document.getElementById("errApellidos").style.display = 'block';
+        } else document.getElementById("errApellidos").style.display = 'none';
+       
+       
+        if (_FechaNac=="")
+        {
+            error = error + "Fecha nacimiento es obligatoria<br>";
+            document.getElementById('errFechaNac').style.display= 'block';
+        } else document.getElementById('errFechaNac').style.display = 'none';
+        
+        if (_nivel=="")
+        {
+            error = error + "Nivel escolar es obligatorio<br>";
+            document.getElementById('errnivel').style.display = 'block';
+        } else document.getElementById('errnivel').style.display = 'none';
+            
+        if (_TipoId=="")
+        {
+            error = error + "Tipo identificción es obligatorio<br>";
+            document.getElementById("errTipoId").style.display = 'block';
+        } else document.getElementById("errTipoId").style.display = 'none';
+            
+        if (_Identificacion=="")
+        {
+            error = error + "Número identificación es obligatoria<br>";
+            document.getElementById("errIdentificacion").style.display = 'block';
+        } else document.getElementById("errIdentificacion").style.display = 'none';
+        
+        
+        if (_TipoId == "1") 
+        {
+            var respuesta = SoloNumeros(_Identificacion);
+
+            if (respuesta!='OK')
+            {
+                error = error + "Cédula debe tener solo números<br>";
+                document.getElementById("errIdentificacion").style.display = 'block';
+
+            } else document.getElementById("errIdentificacion").style.display = 'none';
+           
+        } else document.getElementById("errIdentificacion").style.display = 'none';
+        
+
+        if (_CallePrincipal=="")
+        {
+            error = error + "Calle principal es obligatoria<br>";
+            document.getElementById("errCallePrincipal").style.display = 'block';
+        } else document.getElementById("errCallePrincipal").style.display = 'none';
+            
+        if (_NumCasa=="")
+        {
+            error = error + "Numero casa es obligatoria<br>";
+            document.getElementById("errNumCasa").style.display = 'block';
+        } else document.getElementById("errNumCasa").style.display = 'none';
+            
+        if (_CalleSecundaria=="")
+        {
+            error = error + "Calle secundaria es obligatoria<br>";
+            document.getElementById("errCalleSecundaria").style.display = 'block';
+        } else document.getElementById("errCalleSecundaria").style.display = 'none';
+
+        if (_Talla=="")
+        {
+            error = error + "Talla es obligatoria<br>";
+            document.getElementById("errTalla").style.display = 'block';
+        } else document.getElementById("errTalla").style.display = 'none';
+
+        if(_Peso=="")
+        {
+            error = error + "Peso es obligatorio<br>";
+            document.getElementById("errPeso").style.display = 'block';
+        } else document.getElementById("errPeso").style.display = 'none';
+
+        //creo el formData para cargar los archivos
+        var formData = new FormData();
+        
+
+
+        if (_pdfIdentificacion.length > 0) {
+
+            formData.append('PDFIdentificacion', _pdfIdentificacion[0]);
+            document.getElementById("errPDFIdentificacion").style.display = 'none';
+            
+        }
+        else {
+            error = error + "No cargó pdf de cédula de identidad<br>";
+            document.getElementById("errPDFIdentificacion").style.display = 'block';
+        }
+
+
+        if (_imgAvatar.length > 0) {
+
+            formData.append('Avatar', _imgAvatar[0]);
+            document.getElementById("errAvatar").style.display = 'none';
+            
+        }
+        else {
+            error = error + "No cargó foto<br>";
+            document.getElementById("errAvatar").style.display = 'block';
+        }
+
+
+
+         if(error!="")
+         {
+            //toastr["warning"](error, "ERROR");
+            
+            document.getElementById('idventanaError').innerHTML = error;
+            $("#ModalAlertaErrores").modal("show");
+            return "error";
+         }
+        
+       
+        
+        formData.append('TipoPersonaId', 1);
+        formData.append('Nombres', _Nombres);
+        formData.append('Apellidos', _Apellidos);
+        formData.append('TipoIdentificacionId', _TipoId);
+        formData.append('Identificacion', _Identificacion);
+        formData.append('CallePrincipal', _CallePrincipal);
+        formData.append('Numero', _NumCasa);
+        formData.append('CalleSecundaria', _CalleSecundaria);
+        formData.append('FechaNacimiento', _FechaNac);
+        formData.append('Peso', _Peso);
+        formData.append('Talla', _Talla);
+        formData.append('NumeroDosis', _DosisVacunaCovid);
+        formData.append('EnfermedadCronica', _EnfermedadCronica);
+        formData.append('MedicacionContinua', _MedicacionContinua);
+        formData.append('Cirugia', _cirugia);
+        formData.append('Analgesico', _ChkAutorizaSuministrar);
+        formData.append('SeguroPrivado', _seguroPrivado);
+        formData.append('DatoAdicional', _datoAdicional);
+        formData.append('NombreMedico', _NombreMedico);
+        formData.append('TelefonoMedico', _TelefMedico);
+        formData.append('CelularMedico', _MovilMedico);
+        formData.append('DireccionMedico',_DireccionMedico);
+        formData.append('Alergias', _alergias);
+        formData.append('RestriccionAlimento', _restriccionAlimentos);
+        formData.append('Nivel', _nivel);
+        formData.append('UsuarioRegistra', _UsuarioRegistra);
+        formData.append('CicloEscolarId', _CicloEscolarId);
+        formData.append('SucursalId', _SucursalColegioId);
+        
+       
+
+        var Url = '@Url.Action("GrabaEstudiante")';
+        $.ajax({
+            url: Url,
+            type: 'POST',
+            data: formData,
+            //dataType: 'json',
+            contentType: false,
+            processData: false,
+            async: false,
+            success: function (respuesta) {
+                
+                document.getElementById('numeroMatricula').value = respuesta;
+                toastr["success"]("Registro estudiante correcto", "OK");
+                TareaCompletada(1);
+                
+            }, error: function (respuesta) {
+                
+                toastr["warning"](respuesta.responseText, "ERROR");
+               return "error";
+                
+            }
+        });
+        //RegresarTarea('1');
+    }
+    
+    function RegistroPadres()
+    {
+        //alert('RegistroPadres');
+       
+
+        var _NombresMadre = document.getElementById('NombresMadre').value;
+        var _ApellidosMadre = document.getElementById('ApellidosMadre').value;
+        var _TipoIdMadre = document.getElementById('TipoIdMadre').value;
+        var _IdMadre = document.getElementById('IdMadre').value;
+        var _TelfMovilMadre = document.getElementById('TelfMovilMadre').value;
+        var _ProfesionMadre = document.getElementById('ProfesionMadre').value;
+        var _LugarTrabajoMadre = document.getElementById('LugarTrabajoMadre').value;
+        var _CargoMadre = document.getElementById('CargoMadre').value;
+        var _EmailMadre = document.getElementById('EmailMadre').value;
+        var _RepresentanteMadre = document.getElementById('RepresentanteMadre').checked;
+
+        var _NombresPadre = document.getElementById('NombresPadre').value;
+        var _ApellidosPadre = document.getElementById('ApellidosPadre').value;
+        var _TipoIdPadre = document.getElementById('TipoIdPadre').value;
+        var _IdPadre = document.getElementById('IdPadre').value;
+        var _TelfMovilPadre = document.getElementById('TelfMovilPadre').value;
+        var _ProfesionPadre = document.getElementById('ProfesionPadre').value;
+        var _LugarTrabajoPadre = document.getElementById('LugarTrabajoPadre').value;
+        var _CargoPadre = document.getElementById('CargoPadre').value;
+        var _EmailPadre = document.getElementById('EmailPadre').value;
+        var _RepresentantePadre = document.getElementById('RepresentantePadre').checked;
+        var _SucursalColegioId = '@ViewBag.sucursalColegio'
+        //para relacionar padres con hijo unso la cédula del hijo
+        var _IdentificacionHijo = document.getElementById('Identificacion').value;
+
+        //creo el formData para cargar los archivos
+        
+        var formData = new FormData();
+        
+
+        var error = "";
+        
+        if (_NombresMadre == "" && _NombresPadre == "")
+        {
+            //toastr["warning"]("ALMENOS UN PADRE DEBE SER REGISTRADO", "ERROR",);
+            document.getElementById('idventanaError').innerHTML = "ALMENOS UN PADRE DEBE SER REGISTRADO";
+            $("#ModalAlertaErrores").modal("show");
+
+            document.getElementById("errNombresMadre").style.display = 'block';
+            document.getElementById("errNombresPadre").style.display = 'block';
+            return 'error';
+        }
+        else{
+            document.getElementById("errNombresMadre").style.display = 'none';
+            document.getElementById("errNombresPadre").style.display = 'none';
+        }
+        
+
+        
+
+        if (document.getElementById('RepresentantePadre').checked == true && document.getElementById('RepresentanteMadre').checked == true) {
+            //toastr["warning"]("SOLO UN PADRE PUEDE SER REPRESENTANTE", "ERROR",);
+            document.getElementById('idventanaError').innerHTML = "SOLO UN PADRE PUEDE SER REPRESENTANTE";
+            $("#ModalAlertaErrores").modal("show");
+
+            document.getElementById("errRepresentanteMadre").style.display = 'block';
+            document.getElementById("errRepresentantePadre").style.display = 'block';
+            return 'error';
+        } else {
+            document.getElementById("errRepresentanteMadre").style.display = 'none';
+            document.getElementById("errRepresentantePadre").style.display = 'none';
+        }
+
+        if (_NombresMadre != "") 
+        {
+
+            var _pdfIdentificacionMadre = $('#PDFIdentificacionMadre')[0].files;
+            var _imgAvatarMadre = $('#AvatarMadre')[0].files;
+
+            if (DosPalabras(_NombresMadre) != 'OK') {
+                error = error + "nombres madre son obligatorios<br>";
+                document.getElementById("errNombresMadre").style.display = 'block';
+            }
+            else
+                document.getElementById("errNombresMadre").style.display = 'none';
+            
+
+            if (_ApellidosMadre == "") 
+            {
+                error = error + "apellidos madre son obligatorios<br>";
+                document.getElementById('errApellidosMadre').style.display = 'block';
+            } else if (DosPalabras(_ApellidosMadre) != 'OK') {
+                error = error + "apellidos son obligatorios<br>";
+                document.getElementById("errApellidosMadre").style.display = 'block';
+            } else document.getElementById("errApellidosMadre").style.display = 'none';
+
+
+            if(_TipoIdMadre=="")
+            {
+                error = error + "Tipo identificación madre es requerido<br>";
+                document.getElementById("errTipoIdMadre").style.display = 'block';
+            } else document.getElementById("errTipoIdMadre").style.display = 'none';
+
+            if (_IdMadre=="")
+            {
+                error = error + "Identificación madre es requerida<br>";
+                document.getElementById("errIdMadre").style.display = 'block';
+            } else document.getElementById("errIdMadre").style.display = 'none';
+
+
+            if (_TipoIdMadre == "1") {
+                var respuesta = SoloNumeros(_IdMadre);
+
+                if (respuesta != 'OK') {
+                    error = error + "Cédula debe tener 10 números<br>";
+                    document.getElementById("errIdMadre").style.display = 'block';
+
+                } else document.getElementById("errIdMadre").style.display = 'none';
+
+            } else document.getElementById("errIdMadre").style.display = 'none';
+
+            if(_TelfMovilMadre=="") 
+            {
+                error = error + "Teléfono movil madre es requerido<br>";
+                document.getElementById("errTelfMovilMadre").style.display = 'block';
+
+            } else document.getElementById("errTelfMovilMadre").style.display = 'none';
+
+            if (_ProfesionMadre=="") 
+            {
+                error = error + "Profesión madre es requerido<br>";
+                document.getElementById("errProfesionMadre").style.display = 'block';
+
+            } else document.getElementById("errProfesionMadre").style.display = 'none';
+
+            if (_LugarTrabajoMadre=="")
+            {
+                error = error + "Lugar Trabajo madre es requerido<br>";
+                document.getElementById("errLugarTrabajoMadre").style.display = 'block';
+            } else document.getElementById("errLugarTrabajoMadre").style.display = 'none';
+
+            if (_CargoMadre=="")
+            {
+                error = error + "Cargo madre es requerido<br>";
+                document.getElementById("errCargoMadre").style.display = 'block';
+            } else document.getElementById("errCargoMadre").style.display = 'none';
+
+            if (_EmailMadre == "") {
+                error = error + "Correo electrónico madre es requerido<br>";
+                document.getElementById("errEmailMadre").style.display = 'block';
+            } else if (validarEmail(_EmailMadre) != 'OK') 
+            {
+                error = error + "Correo electrónico madre sin formato correcto<br>";
+                document.getElementById("errEmailMadre").style.display = 'block';
+
+            }else document.getElementById("errEmailMadre").style.display = 'none';
+
+
+            if (prexisteMadre!='1')
+            {
+                if (_pdfIdentificacionMadre.length > 0) {
+
+                    formData.append('PDFIdentificacionMadre', _pdfIdentificacionMadre[0]);
+                    document.getElementById("errPDFIdentificacionMadre").style.display = 'none';
+                }
+                else {
+                    error = error + "No cargó pdf de cédula de identidad Madre<br>";
+                    document.getElementById("errPDFIdentificacionMadre").style.display = 'block';
+                }
+
+
+                if (_imgAvatarMadre.length > 0) {
+
+                    formData.append('AvatarMadre', _imgAvatarMadre[0]);
+
+                    document.getElementById("errAvatarMadre").style.display = 'none';
+                }
+                else {
+                    error = error + "No cargó foto Madre<br>";
+                    document.getElementById("errAvatarMadre").style.display = 'block';
+                }
+            }
+            
+        }
+
+        if (_NombresPadre != "") 
+        {
+
+            var _pdfIdentificacionPadre = $('#PDFIdentificacionPadre')[0].files;
+            var _imgAvatarPadre = $('#AvatarPadre')[0].files;
+
+            if (DosPalabras(_NombresPadre) != 'OK') {
+                error = error + "Dos nombres padre son obligatorios<br>";
+                document.getElementById("errNombresPadre").style.display = 'block';
+            }
+            else
+                document.getElementById("errNombresPadre").style.display = 'none';
+
+
+            if (_ApellidosPadre == "") {
+                error = error + "Dos apellidos padre son obligatorios<br>";
+                document.getElementById('errApellidosPadre').style.display = 'block';
+            } else if (DosPalabras(_ApellidosPadre) != 'OK') {
+                error = error + "Dos apellidos padre son obligatorios<br>";
+                document.getElementById("errApellidosPadre").style.display = 'block';
+            } else document.getElementById("errApellidosPadre").style.display = 'none';
+
+
+
+           
+            if (_TipoIdPadre == "") {
+                error = error + "Tipo identificación padre es requerido<br>";
+                document.getElementById("errTipoIdPadre").style.display = 'block';
+            } else document.getElementById("errTipoIdPadre").style.display = 'none';
+
+            if (_IdPadre == "") {
+                error = error + "Identificación padre es requerida<br>";
+                document.getElementById("errIdPadre").style.display = 'block';
+            } else document.getElementById("errIdPadre").style.display = 'none';
+
+            if (_TipoIdPadre == "1") {
+                var respuesta = SoloNumeros(_IdPadre);
+
+                if (respuesta != 'OK') {
+                    error = error + "Cédula debe tener 10 números<br>";
+                    document.getElementById("errIdPadre").style.display = 'block';
+
+                } else document.getElementById("errIdPadre").style.display = 'none';
+
+            } else document.getElementById("errIdPadre").style.display = 'none';
+
+            if (_TelfMovilPadre == "") {
+                error = error + "Teléfono movil padre es requerido<br>";
+                document.getElementById("errTelfMovilPadre").style.display = 'block';
+
+            } else document.getElementById("errTelfMovilPadre").style.display = 'none';
+
+            if (_ProfesionPadre == "") {
+                error = error + "Profesión padre es requerido<br>";
+                document.getElementById("errProfesionPadre").style.display = 'block';
+
+            } else document.getElementById("errProfesionPadre").style.display = 'none';
+
+            if (_LugarTrabajoPadre == "") {
+                error = error + "Lugar Trabajo padre es requerido<br>";
+                document.getElementById("errLugarTrabajoPadre").style.display = 'block';
+            } else document.getElementById("errLugarTrabajoPadre").style.display = 'none';
+
+            if (_CargoPadre == "") {
+                error = error + "Cargo padre es requerido<br>";
+                document.getElementById("errCargoPadre").style.display = 'block';
+            } else document.getElementById("errCargoPadre").style.display = 'none';
+
+           
+
+            if (_EmailPadre == "") {
+                error = error + "Correo electrónico padre es requerido<br>";
+                document.getElementById("errEmailPadre").style.display = 'block';
+            } else if (validarEmail(_EmailPadre) != 'OK') {
+                error = error + "Correo electrónico padre sin formato correcto<br>";
+                document.getElementById("errEmailPadre").style.display = 'block';
+
+            } else document.getElementById("errEmailPadre").style.display = 'none';
+
+            if (prexistePadre != '1')
+            {
+                if (_pdfIdentificacionPadre.length > 0) {
+
+                    formData.append('PDFIdentificacionPadre', _pdfIdentificacionPadre[0]);
+                    document.getElementById("errPDFIdentificacionPadre").style.display = 'none';
+                }
+                else {
+                    error = error + "No cargó pdf de cédula de identidad Padre<br>";
+                    document.getElementById("errPDFIdentificacionPadre").style.display = 'block';
+                }
+
+
+                if (_imgAvatarPadre.length > 0) {
+
+                    formData.append('AvatarPadre', _imgAvatarPadre[0]);
+                    document.getElementById("errAvatarPadre").style.display = 'none';
+
+                }
+                else {
+                    error = error + "No cargó foto Padre<br>";
+                    document.getElementById("errAvatarPadre").style.display = 'block';
+                }
+            }
+
+            
+        }
+
+        if (_IdPadre.trim() == _IdMadre.trim())
+        {
+            error = error + "El número de identificación del padre y madre no pueden ser iguales<br>";
+        }
+
+       
+        
+
+        if (error != "") {
+            //toastr["warning"](error, "ERROR");
+            document.getElementById('idventanaError').innerHTML = error;
+            $("#ModalAlertaErrores").modal("show");
+            return "error";
+        }
+        
+        if (document.getElementById('RepresentantePadre').checked == false && document.getElementById('RepresentanteMadre').checked == false) {
+            //toastr["warning"]("NO DEFINIO UN REPRESENTANTE", "ERROR",);
+            document.getElementById('idventanaError').innerHTML = "NO DEFINIO REPRESENTANTE";
+            $("#ModalAlertaErrores").modal("show");
+
+
+            return 'error';
+        }
+      
+
+        formData.append('NombresPadre', _NombresPadre);
+        formData.append('ApellidosPadre', _ApellidosPadre);
+        formData.append('EmailPrincipalPadre', _EmailPadre);
+        formData.append('TipoIdentificacionIdPadre', _TipoIdPadre);
+        formData.append('IdentificacionPadre', _IdPadre);
+        formData.append('ProfesionPadre', _ProfesionPadre);
+        formData.append('LugarTrabajoPadre', _LugarTrabajoPadre);
+        formData.append('CelularPadre', _TelfMovilPadre);
+        formData.append('CorreoPadre', "");
+        formData.append('CargoPadre', _CargoPadre);
+        formData.append('RepresentantePadre', _RepresentantePadre);
+
+        formData.append('NombresMadre', _NombresMadre);
+        formData.append('ApellidosMadre', _ApellidosMadre);
+        formData.append('EmailPrincipalMadre', _EmailMadre);
+        formData.append('TipoIdentificacionIdMadre', _TipoIdMadre);
+        formData.append('IdentificacionMadre', _IdMadre);
+        formData.append('ProfesionMadre', _ProfesionMadre);
+        formData.append('LugarTrabajoMadre', _LugarTrabajoMadre);
+        formData.append('CelularMadre', _TelfMovilMadre);
+        formData.append('CorreoMadre', "");
+        formData.append('CargoMadre', _CargoMadre);
+        formData.append('RepresentanteMadre', _RepresentanteMadre);
+        formData.append('CedulaHijo', _IdentificacionHijo);
+        formData.append('SucursalId', _SucursalColegioId);
+        var Url = '@Url.Action("GrabaPadres")';
+
+       
+
+        $.ajax({
+            url: Url,
+            type: 'POST',
+            data: formData,
+            //dataType: 'json',
+            contentType: false,
+            processData: false,
+            async: false,
+            success:function(respuesta) {
+                //console.log(respuesta);
+                toastr["success"]("Registro padres correcto", "OK");
+                TareaCompletada(2);
+                //TareaCompletada(3);
+                
+            }, error: function (respuesta) {
+                //console.log(respuesta);
+                toastr["warning"](respuesta.responseText, "ERROR");
+                return "error";
+            }
+        });
+    }
+
+    function RegistroPadresYaRegistrados() {
+        //alert('RegistroPadres');
+
+
+        var _NombresMadre = document.getElementById('NombresMadre').value;
+        var _ApellidosMadre = document.getElementById('ApellidosMadre').value;
+        var _TipoIdMadre = document.getElementById('TipoIdMadre').value;
+        var _IdMadre = document.getElementById('IdMadre').value;
+        var _TelfMovilMadre = document.getElementById('TelfMovilMadre').value;
+        var _ProfesionMadre = document.getElementById('ProfesionMadre').value;
+        var _LugarTrabajoMadre = document.getElementById('LugarTrabajoMadre').value;
+        var _CargoMadre = document.getElementById('CargoMadre').value;
+        var _EmailMadre = document.getElementById('EmailMadre').value;
+        var _RepresentanteMadre = document.getElementById('RepresentanteMadre').checked;
+
+        var _NombresPadre = document.getElementById('NombresPadre').value;
+        var _ApellidosPadre = document.getElementById('ApellidosPadre').value;
+        var _TipoIdPadre = document.getElementById('TipoIdPadre').value;
+        var _IdPadre = document.getElementById('IdPadre').value;
+        var _TelfMovilPadre = document.getElementById('TelfMovilPadre').value;
+        var _ProfesionPadre = document.getElementById('ProfesionPadre').value;
+        var _LugarTrabajoPadre = document.getElementById('LugarTrabajoPadre').value;
+        var _CargoPadre = document.getElementById('CargoPadre').value;
+        var _EmailPadre = document.getElementById('EmailPadre').value;
+        var _RepresentantePadre = document.getElementById('RepresentantePadre').checked;
+        var _SucursalColegioId = '@ViewBag.sucursalColegio'
+        //para relacionar padres con hijo unso la cédula del hijo
+        var _IdentificacionHijo = document.getElementById('Identificacion').value;
+
+        //creo el formData para cargar los archivos
+
+        var formData = new FormData();
+
+
+   
+
+
+        var error = "";
+
+        if (_NombresMadre == "" && _NombresPadre == "") {
+            //toastr["warning"]("ALMENOS UN PADRE DEBE SER REGISTRADO", "ERROR",);
+            document.getElementById('idventanaError').innerHTML = "ALMENOS UN PADRE DEBE SER REGISTRADO";
+           
+
+            document.getElementById("errNombresMadre").style.display = 'block';
+            document.getElementById("errNombresPadre").style.display = 'block';
+            return 'error';
+        }
+        else {
+            document.getElementById("errNombresMadre").style.display = 'none';
+            document.getElementById("errNombresPadre").style.display = 'none';
+        }
+
+
+
+
+        if (document.getElementById('RepresentantePadre').checked == true && document.getElementById('RepresentanteMadre').checked == true) {
+            //toastr["warning"]("SOLO UN PADRE PUEDE SER REPRESENTANTE", "ERROR",);
+       
+            document.getElementById("errRepresentanteMadre").style.display = 'block';
+            document.getElementById("errRepresentantePadre").style.display = 'block';
+            return 'error';
+        } else {
+            document.getElementById("errRepresentanteMadre").style.display = 'none';
+            document.getElementById("errRepresentantePadre").style.display = 'none';
+        }
+
+        if (_NombresMadre != "") {
+
+         
+            var _imgAvatarMadre = $('#AvatarMadre')[0].files;
+
+            if (DosPalabras(_NombresMadre) != 'OK') {
+                error = error + "nombres madre son obligatorios<br>";
+                document.getElementById("errNombresMadre").style.display = 'block';
+            }
+            else
+                document.getElementById("errNombresMadre").style.display = 'none';
+
+
+            if (_ApellidosMadre == "") {
+                error = error + "apellidos madre son obligatorios<br>";
+                document.getElementById('errApellidosMadre').style.display = 'block';
+            } else if (DosPalabras(_ApellidosMadre) != 'OK') {
+                error = error + "apellidos son obligatorios<br>";
+                document.getElementById("errApellidosMadre").style.display = 'block';
+            } else document.getElementById("errApellidosMadre").style.display = 'none';
+
+
+            if (_TipoIdMadre == "") {
+                error = error + "Tipo identificación madre es requerido<br>";
+                document.getElementById("errTipoIdMadre").style.display = 'block';
+            } else document.getElementById("errTipoIdMadre").style.display = 'none';
+
+            if (_IdMadre == "") {
+                error = error + "Identificación madre es requerida<br>";
+                document.getElementById("errIdMadre").style.display = 'block';
+            } else document.getElementById("errIdMadre").style.display = 'none';
+
+
+            if (_TipoIdMadre == "1") {
+                var respuesta = SoloNumeros(_IdMadre);
+
+                if (respuesta != 'OK') {
+                    error = error + "Cédula debe tener 10 números<br>";
+                    document.getElementById("errIdMadre").style.display = 'block';
+
+                } else document.getElementById("errIdMadre").style.display = 'none';
+
+            } else document.getElementById("errIdMadre").style.display = 'none';
+
+            if (_TelfMovilMadre == "") {
+                error = error + "Teléfono movil madre es requerido<br>";
+                document.getElementById("errTelfMovilMadre").style.display = 'block';
+
+            } else document.getElementById("errTelfMovilMadre").style.display = 'none';
+
+            if (_ProfesionMadre == "") {
+                error = error + "Profesión madre es requerido<br>";
+                document.getElementById("errProfesionMadre").style.display = 'block';
+
+            } else document.getElementById("errProfesionMadre").style.display = 'none';
+
+            if (_LugarTrabajoMadre == "") {
+                error = error + "Lugar Trabajo madre es requerido<br>";
+                document.getElementById("errLugarTrabajoMadre").style.display = 'block';
+            } else document.getElementById("errLugarTrabajoMadre").style.display = 'none';
+
+            if (_CargoMadre == "") {
+                error = error + "Cargo madre es requerido<br>";
+                document.getElementById("errCargoMadre").style.display = 'block';
+            } else document.getElementById("errCargoMadre").style.display = 'none';
+
+            if (_EmailMadre == "") {
+                error = error + "Correo electrónico madre es requerido<br>";
+                document.getElementById("errEmailMadre").style.display = 'block';
+            } else if (validarEmail(_EmailMadre) != 'OK') {
+                error = error + "Correo electrónico madre sin formato correcto<br>";
+                document.getElementById("errEmailMadre").style.display = 'block';
+
+            } else document.getElementById("errEmailMadre").style.display = 'none';
+
+
+            if (prexisteMadre != '1') {
+              
+            }
+
+        }
+
+        if (_NombresPadre != "") {
+
+       
+
+            if (DosPalabras(_NombresPadre) != 'OK') {
+                error = error + "Dos nombres padre son obligatorios<br>";
+                document.getElementById("errNombresPadre").style.display = 'block';
+            }
+            else
+                document.getElementById("errNombresPadre").style.display = 'none';
+
+
+            if (_ApellidosPadre == "") {
+                error = error + "Dos apellidos padre son obligatorios<br>";
+                document.getElementById('errApellidosPadre').style.display = 'block';
+            } else if (DosPalabras(_ApellidosPadre) != 'OK') {
+                error = error + "Dos apellidos padre son obligatorios<br>";
+                document.getElementById("errApellidosPadre").style.display = 'block';
+            } else document.getElementById("errApellidosPadre").style.display = 'none';
+
+
+
+
+            if (_TipoIdPadre == "") {
+                error = error + "Tipo identificación padre es requerido<br>";
+                document.getElementById("errTipoIdPadre").style.display = 'block';
+            } else document.getElementById("errTipoIdPadre").style.display = 'none';
+
+            if (_IdPadre == "") {
+                error = error + "Identificación padre es requerida<br>";
+                document.getElementById("errIdPadre").style.display = 'block';
+            } else document.getElementById("errIdPadre").style.display = 'none';
+
+            if (_TipoIdPadre == "1") {
+                var respuesta = SoloNumeros(_IdPadre);
+
+                if (respuesta != 'OK') {
+                    error = error + "Cédula debe tener 10 números<br>";
+                    document.getElementById("errIdPadre").style.display = 'block';
+
+                } else document.getElementById("errIdPadre").style.display = 'none';
+
+            } else document.getElementById("errIdPadre").style.display = 'none';
+
+            if (_TelfMovilPadre == "") {
+                error = error + "Teléfono movil padre es requerido<br>";
+                document.getElementById("errTelfMovilPadre").style.display = 'block';
+
+            } else document.getElementById("errTelfMovilPadre").style.display = 'none';
+
+            if (_ProfesionPadre == "") {
+                error = error + "Profesión padre es requerido<br>";
+                document.getElementById("errProfesionPadre").style.display = 'block';
+
+            } else document.getElementById("errProfesionPadre").style.display = 'none';
+
+            if (_LugarTrabajoPadre == "") {
+                error = error + "Lugar Trabajo padre es requerido<br>";
+                document.getElementById("errLugarTrabajoPadre").style.display = 'block';
+            } else document.getElementById("errLugarTrabajoPadre").style.display = 'none';
+
+            if (_CargoPadre == "") {
+                error = error + "Cargo padre es requerido<br>";
+                document.getElementById("errCargoPadre").style.display = 'block';
+            } else document.getElementById("errCargoPadre").style.display = 'none';
+
+
+
+            if (_EmailPadre == "") {
+                error = error + "Correo electrónico padre es requerido<br>";
+                document.getElementById("errEmailPadre").style.display = 'block';
+            } else if (validarEmail(_EmailPadre) != 'OK') {
+                error = error + "Correo electrónico padre sin formato correcto<br>";
+                document.getElementById("errEmailPadre").style.display = 'block';
+
+            } else document.getElementById("errEmailPadre").style.display = 'none';
+
+            if (prexistePadre != '1') {
+                
+            }
+
+
+        }
+
+        if (_IdPadre.trim() == _IdMadre.trim()) {
+            error = error + "El número de identificación del padre y madre no pueden ser iguales<br>";
+        }
+
+
+
+
+        if (error != "") {
+            return "error";
+        }else{
+            return error;
+        }
+
+        if (document.getElementById('RepresentantePadre').checked == false && document.getElementById('RepresentanteMadre').checked == false) {
+            return 'error';
+        }
+
+        
+    }
+
+
+
+    function RegistarPersonaRetira() 
+    {
+        //alert('RegistarPersonaRetira');
+        var _NombresAutorizado = document.getElementById('NombresAutorizado').value;
+        var _ApellidosAutorizado = document.getElementById('ApellidosAutorizado').value;
+        var _TipoIdAutorizado = document.getElementById('TipoIdAutorizado').value;
+        var _IdAutorizado = document.getElementById('IdAutorizado').value;
+        var _TelfMovilAutorizado = document.getElementById('TelfMovilAutorizado').value;
+        var _RelacionAutorizado = document.getElementById('RelacionAutorizado').value;
+        //para relacionar autorizado con alumno
+        var _IdentificacionAlumno = document.getElementById('Identificacion').value;
+        var _SucursalColegioId = '@ViewBag.sucursalColegio'
+        var formData = new FormData();
+        var _pdfIdentificacionAutorizado = $('#PDFIdentificacionAutorizado')[0].files;
+        var _imgAvatarAutorizado = $('#AvatarAutorizado')[0].files;
+
+       
+
+        var error=""
+
+       //victor 12122023 solo se descomento la validacion
+
+        /**/if (_NombresAutorizado == "") {
+            error = error + "nombres son obligatorios<br>";
+            document.getElementById("errNombresAutorizado").style.display = 'block';
+        } else if (DosPalabras(_NombresAutorizado) != 'OK') {
+            error = error + "nombres son obligatorios<br>";
+            document.getElementById("errNombresAutorizado").style.display = 'block';
+        }
+        else
+            document.getElementById("errNombresAutorizado").style.display = 'none';
+            
+       
+        if (_ApellidosAutorizado == "") {
+            error = error + "apellidos son obligatorios<br>";
+            document.getElementById('errApellidosAutorizado').style.display = 'block';
+        } else if (DosPalabras(_ApellidosAutorizado) != 'OK') {
+          error = error + "apellidos son obligatorios<br>";
+            document.getElementById("errApellidosAutorizado").style.display = 'block';
+        } else document.getElementById("errApellidosAutorizado").style.display = 'none';
+
+        if (_TipoIdAutorizado == "") {
+            error = error + "Tipo identificación es requerida<br>";
+            document.getElementById("errTipoIdAutorizado").style.display = 'block';
+        } else document.getElementById("errTipoIdAutorizado").style.display = 'none';
+
+        if (_IdAutorizado == "") {
+            error = error + "Identificación es requerida<br>";
+            document.getElementById("errIdAutorizado").style.display = 'block';
+        } else document.getElementById("errIdAutorizado").style.display = 'none';
+
+        //victor 12122023
+        if (_TipoIdAutorizado == "1") {
+            var respuesta = SoloNumeros(_IdAutorizado);
+
+            if (respuesta!='OK')
+            {
+                error = error + "Cédula debe tener 10 números<br>";
+                document.getElementById("errIdAutorizado").style.display = 'block';
+
+            } else document.getElementById("errIdAutorizado").style.display = 'none';
+           
+        } else document.getElementById("errIdAutorizado").style.display = 'none';
+
+        //comentar despues ini
+        if (_TelfMovilAutorizado=="")
+        {
+            error = error + "Teléfonomovil es requerido<br>";
+            document.getElementById("errTelfMovilAutorizado").style.display = 'block';
+        } else document.getElementById("errTelfMovilAutorizado").style.display = 'none';/**/
+
+        if (_RelacionAutorizado == "") {
+            error = error + "Relación es requerida<br>";
+            document.getElementById("errRelacionAutorizado").style.display = 'block';
+
+        } else document.getElementById("errRelacionAutorizado").style.display = 'none';/**/
+
+        //comentar despues fin
+
+        if (prexisteAutorizado!='1')
+        {
+            if (_pdfIdentificacionAutorizado.length > 0) {
+
+                formData.append('PDFIdentificacion', _pdfIdentificacionAutorizado[0]);
+                document.getElementById("errPDFIdentificacionAutorizado").style.display = 'none';
+            }
+            /*ini*/ else {
+                error = error + "No cargó pdf de cédula de identidad<br>";
+                document.getElementById("errPDFIdentificacionAutorizado").style.display = 'block';
+            }
+
+            if (_imgAvatarAutorizado.length > 0) {
+
+                formData.append('Avatar', _imgAvatarAutorizado[0]);
+                document.getElementById("errAvatarAutorizado").style.display = 'none';
+
+            }
+            /*fin*/else {
+                error = error + "No cargó foto<br>";
+                document.getElementById("errAvatarAutorizado").style.display = 'block';
+            }
+
+        }
+       
+
+
+        if (error != "") {
+            if (_IdAutorizado !== "") {
+            toastr["warning"](error, "ERROR");
+            document.getElementById('idventanaError').innerHTML = error;
+            $("#ModalAlertaErrores").modal("show");
+           return "error";
+            }
+           
+        }
+
+        formData.append('Nombres', _NombresAutorizado);
+        formData.append('Apellidos', _ApellidosAutorizado);
+        formData.append('Identificacion', _IdAutorizado);
+        formData.append('TipoIdentificacionId', _TipoIdAutorizado);
+        formData.append('TelefonoMovil', _TelfMovilAutorizado);
+        formData.append('TipoRelacionId', _RelacionAutorizado);
+        formData.append('CedulaAlumno', _IdentificacionAlumno);
+        formData.append('SucursalId', _SucursalColegioId);
+
+        console.log(formData);
+       
+
+        var Url = '@Url.Action("GrabaAutorizadosRetirar")';
+        
+
+        $.ajax({
+            url: Url,
+            type: 'POST',
+            data: formData,
+            //dataType: 'json',
+            contentType: false,
+            processData: false,
+            async: false,
+            success:function(respuesta) {
+                //console.log(respuesta);
+                toastr["success"]("Registro autorización correcto", "OK");
+                TareaCompletada(3)
+
+            }, error: function (respuesta) {
+                //console.log(respuesta);
+                toastr["warning"](respuesta.responseText, "ERROR");
+                return "error";
+            }
+        });
+        
+    }
+
+
+</script>

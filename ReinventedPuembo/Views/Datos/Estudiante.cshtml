@@ -1,0 +1,50 @@
+﻿@using Domain;
+@model DatosEstudianteViewModel;
+
+@{
+    ViewData["Title"] = "Estudiantes";
+    
+}
+
+<!-- Asegúrate de que el contenedor de las pestañas o botones tenga el siguiente formato -->
+<div class="d-flex justify-content-center align-items-center mt-4">
+        <h5 class="text-center">Seleccione:</h5>
+    <div class="btn-group" role="group" aria-label="Lista de Estudiantes">
+        @foreach (var estudiante in ViewBag.Estudiantes)
+        {
+            <button type="button" class="btn btn-outline-primary" onclick="openTab('@estudiante.Id')">
+                @estudiante.Nombres @estudiante.Apellidos
+            </button>
+        }
+    </div>
+</div>
+
+
+<!-- Aquí deberás mostrar la información detallada del estudiante seleccionado -->
+<div id="content">
+    <!-- Aquí cargaremos la vista parcial "_DetallesEstudiante.cshtml" -->
+    @if (ViewBag.EstudianteSeleccionado != null)
+    {
+        Html.RenderPartial("_DetallesEstudiante");
+    }
+</div>
+
+<!-- Resto de tu código JS -->
+
+<script>
+    function openTab(id) {
+        // Aquí puedes usar AJAX para obtener la información del estudiante por su ID y mostrarla en el contenedor 'content'
+        $.ajax({
+            url: '@Url.Action("ObtenerInfoEstudiante", "Datos")',
+            type: 'GET',
+            data: { estudianteId: id },
+            success: function (data) {
+                $('#content').html(data);
+            },
+            error: function () {
+                alert('Error al cargar la información del estudiante.');
+            }
+        });
+    }
+
+</script>

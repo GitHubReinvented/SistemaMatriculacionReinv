@@ -1,0 +1,97 @@
+﻿@using System.Text.Json;
+
+@{
+    
+    Layout = null;
+    var jss = JsonSerializer.Serialize(ViewBag.globalArrayobligaciones);
+    var userInfoJson = jss;
+   
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<h1 id="load">Espere...</h1>
+<script>
+
+
+    var parametros = {
+        id: @ViewBag.id, // Variable obtenida de la respuesta de la funcion anterior
+        clientTxId: "@ViewBag.clientTransactionId"  // Variable obtenida de la respuesta de la funcion anterior
+    };
+   
+    function GuardarPagoTarjeta(referencia, descripcion, valor, fechaTransaccion, Estado, NombreTarjeta, idTxt, codTxT, card_brand, TokenTxTC, estadoCodigo) {
+
+        ArrayObligaciones =  JSON.parse('@Html.Raw(userInfoJson)'); //ejemplo: [65, 66, 67] el codigo de la obigaciones 1 por cada matrícula
+        console.log(ArrayObligaciones);
+        
+        const fecha = new Date();
+        var PagarXTCMatriculaModel = {
+            ObligacionPendienteId: ArrayObligaciones,
+            NumeroReferencia: referencia,
+            Valor: valor,
+            FechaTransaccion: fecha,
+            NombrePropietarioTarjeta: NombreTarjeta,
+            EstadoTarjeta: Estado,
+            ObservacionTarjeta: card_brand,//marca tarjeta-cardBrand
+            DescripcionTarjeta: "Pago pensión,seguro",//que esta pagando
+            TokenTxTarjeta: TokenTxTC,//identificador
+            idTxTarjeta: idTxt,//nose
+            codTxTarjeta: codTxT,//no se
+            EstadoCodigo: estadoCodigo,//transactionStatus
+            Operador: "Pago PayPhone"
+
+        }
+
+        var Url = '@Url.Action("GuardarPagoXTC")';
+
+        $.ajax({
+            data: PagarXTCMatriculaModel,
+            url: Url,
+            type: 'POST',
+            //async: false,
+            success: function SolicitarPago(respuesta) {
+
+               
+
+            }, error: function (respuesta) {
+
+                alert("Error en guardar pago tarjeta: " + respuesta.message);
+            }
+        });
+
+    }
+    // Funcion para finalizar el pago
+    function pagar() {
+        $.ajax({
+            data: parametros,
+            url: 'https://pay.payphonetodoesposible.com/api/button/V2/Confirm',
+            type: 'POST',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', "Bearer @ViewBag.token")
+            },
+            success: function SolicitarPago(respuesta) {
+                
+                GuardarPagoTarjeta(respuesta.clientTransactionId, "", respuesta.amount, "", respuesta.transactionStatus, respuesta.document, respuesta.cardType, respuesta.cardBrandCode, respuesta.cardBrand, respuesta.transactionId, respuesta.statusCode);
+                //alert("Pago Realizado con Exito - Estado:" + respuesta.transactionStatus); //Muestro un mensaje pero puedes redirigir a otra pagina tambien
+                
+                
+                document.getElementById('load').innerHTML = "Proceso finalizado con exito cierre esta ventana";
+            },
+            error: function (mensajeerror) {
+                alert("Error en la llamada:" + mensajeerror.Message);
+                document.getElementById('load').innerHTML = "Error,Cierre esta pantalla";
+            }
+        });
+
+    }
+   
+
+    $(document).ready(function () {
+     if("@ViewBag.id" !=="0"){
+            pagar();
+     }else{
+            document.getElementById('load').innerHTML = "Cierre esta pantalla";
+     }
+       
+    
+    })
+
+</script>

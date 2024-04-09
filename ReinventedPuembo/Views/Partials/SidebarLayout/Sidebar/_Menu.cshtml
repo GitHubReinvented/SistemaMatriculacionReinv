@@ -1,0 +1,404 @@
+@using Application.Models.Authorization;
+
+<!--begin::sidebar menu-->
+<div class="app-sidebar-menu overflow-hidden flex-column-fluid">
+    <!--begin::Menu wrapper-->
+    <div id="kt_app_sidebar_menu_wrapper" class="app-sidebar-wrapper hover-scroll-overlay-y my-5" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_app_sidebar_logo, #kt_app_sidebar_footer" data-kt-scroll-wrappers="#kt_app_sidebar_menu" data-kt-scroll-offset="5px" data-kt-scroll-save-state="true">
+        <!--begin::Menu-->
+        <div class="menu menu-column menu-rounded menu-sub-indention px-3" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="false">
+            @if (User.IsInRole(Role.SUPERADMIN))
+            {
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <!--begin:Menu link-->
+                    <span class="menu-link">
+                        <span class="menu-icon">@Html.Raw(KTTheme.GetIcon("user", "fs-2"))</span>
+                        <span class="menu-title">Usuarios</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+                    <!--end:Menu link-->
+                    <!--begin:Menu sub-->
+                    <div class="menu-sub menu-sub-accordion">
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link" asp-action="Registrar" asp-controller="Administracion">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Registrar usuario</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item-->
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link" asp-action="Usuarios" asp-controller="Administracion">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Información de usuarios</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item-->
+                    </div>
+                    <!--end:Menu sub-->
+                </div>
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <!--begin:Menu link-->
+                    <span class="menu-link">
+                        <span class="menu-icon">
+                            <i class="ki-duotone ki-purchase fs-2">
+                                <i class="path1"></i>
+                                <i class="path2"></i>
+                            </i>
+                        </span>
+                        <span class="menu-title">Pagos</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+                    <!--end:Menu link-->
+                    <!--begin:Menu sub-->
+                    <div class="menu-sub menu-sub-accordion">
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                                <a asp-action="Consolidacion" asp-controller="Administracion">
+                                    <!--begin:Menu link-->
+                                    <span class="menu-link">
+                                        <span class="menu-icon">
+                                            <i class=" fas fa-solid fa-clipboard-list"></i>
+                                        </span>
+                                        <span class="menu-title">Consolidación</span>
+                                    </span>
+                                </a>
+                            </div>
+                            <!--end:Menu link-->
+                        </div>
+                        <div class="menu-item">
+                            <!--begin:Menu item-->
+                            <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                                <a asp-action="Cuentas" asp-controller="Administracion">
+                                    <!--begin:Menu link-->
+                                    <span class="menu-link">
+                                        <span class="menu-icon">
+                                            <i class="fas fa-solid fa-money-check"></i>
+                                        </span>
+                                        <span class="menu-title">Números de Cuenta</span>
+                                    </span>
+                                </a>
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                        <!--end:Menu item-->
+                        <!--end:Menu item-->
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                                <a asp-action="Descuentos" asp-controller="Administracion">
+                                    <!--begin:Menu link-->
+                                    <span class="menu-link">
+                                        <span class="menu-icon">
+                                            <i class="ki-duotone ki-tag fs-2">
+                                                <i class="path1"></i>
+                                                <i class="path2"></i>
+                                                <i class="path3"></i>
+                                            </i>
+                                        </span>
+                                        <span class="menu-title">Descuentos</span>
+                                    </span>
+                                </a>
+                            </div>
+                            <!--end:Menu link-->
+                        </div>
+                    </div>
+                    <!--end:Menu sub-->
+                </div>
+                <!--begin:Menu item-->
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <a asp-action="MatriculaPension" asp-controller="Administracion">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon">
+                                <i class="fas fa-solid fa-hand-holding-dollar"></i>
+                            </span>
+                            <span class="menu-title">Pensión y Matrícula</span>
+                        </span>
+                    </a>
+                </div>
+                <!--end:Menu item-->
+                <!--begin:Menu item-->
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <a asp-action="Servicios" asp-controller="Administracion">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon">
+                                <i class="fas fa-regular fa-handshake"></i>
+                            </span>
+                            <span class="menu-title">Servicios</span>
+                        </span>
+                    </a>
+                </div>
+                <!--end:Menu item-->
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <a asp-action="logout" asp-controller="usuarios">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon"><i class="fas fa-solid fa-right-from-bracket"></i></span>
+                            <span class="menu-title">Cerrar Sesión</span>
+                        </span>
+                    </a>
+                </div>
+            }
+            @if (User.IsInRole(Role.ADMIN))
+            {
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <!--begin:Menu link-->
+                    <span class="menu-link">
+                        <span class="menu-icon">@Html.Raw(KTTheme.GetIcon("user", "fs-2"))</span>
+                        <span class="menu-title">Usuarios</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+                    <!--end:Menu link-->
+                    <!--begin:Menu sub-->
+                    <div class="menu-sub menu-sub-accordion">
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link" asp-action="RegistrarSucursal" asp-controller="Administracion">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Registrar usuario</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item-->
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link" asp-action="Usuarios" asp-controller="Administracion">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Información de usuarios</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item-->
+                    </div>
+                    <!--end:Menu sub-->
+                </div>
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <!--begin:Menu link-->
+                    <span class="menu-link">
+                        <span class="menu-icon">
+                            <i class="ki-duotone ki-purchase fs-2">
+                                <i class="path1"></i>
+                                <i class="path2"></i>
+                            </i>
+                        </span>
+                        <span class="menu-title">Pagos</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+                    <!--end:Menu link-->
+                    <!--begin:Menu sub-->
+                    <div class="menu-sub menu-sub-accordion">
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                                <a asp-action="Consolidacion" asp-controller="Administracion">
+                                    <!--begin:Menu link-->
+                                    <span class="menu-link">
+                                        <span class="menu-icon">
+                                            <i class=" fas fa-solid fa-clipboard-list"></i>
+                                        </span>
+                                        <span class="menu-title">Consolidación</span>
+                                    </span>
+                                </a>
+                            </div>
+                            <!--end:Menu link-->
+                        </div>
+                        <div class="menu-item">
+                            <!--begin:Menu item-->
+                            <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                                <a asp-action="Cuentas" asp-controller="Administracion">
+                                    <!--begin:Menu link-->
+                                    <span class="menu-link">
+                                        <span class="menu-icon">
+                                            <i class="fas fa-solid fa-money-check"></i>
+                                        </span>
+                                        <span class="menu-title">Números de Cuenta</span>
+                                    </span>
+                                </a>
+                            </div>
+                            <!--end:Menu item-->
+                        </div>
+                        <!--end:Menu item-->
+                        <!--end:Menu item-->
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                                <a asp-action="Descuentos" asp-controller="Administracion">
+                                    <!--begin:Menu link-->
+                                    <span class="menu-link">
+                                        <span class="menu-icon">
+                                            <i class="ki-duotone ki-tag fs-2">
+                                                <i class="path1"></i>
+                                                <i class="path2"></i>
+                                                <i class="path3"></i>
+                                            </i>
+                                        </span>
+                                        <span class="menu-title">Descuentos</span>
+                                    </span>
+                                </a>
+                            </div>
+                            <!--end:Menu link-->
+                        </div>
+                    </div>
+                    <!--end:Menu sub-->
+                </div>
+                <!--begin:Menu item-->
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <a asp-action="MatriculaPension" asp-controller="Administracion">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon">
+                                <i class="fas fa-solid fa-hand-holding-dollar"></i>
+                            </span>
+                            <span class="menu-title">Pensión y Matrícula</span>
+                        </span>
+                    </a>
+                </div>
+                <!--end:Menu item-->
+                <!--begin:Menu item-->
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <a asp-action="Servicios" asp-controller="Administracion">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon">
+                                <i class="fas fa-regular fa-handshake"></i>
+                            </span>
+                            <span class="menu-title">Servicios</span>
+                        </span>
+                    </a>
+                </div>
+                <!--end:Menu item-->
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <a asp-action="logout" asp-controller="usuarios">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon"><i class="fas fa-solid fa-right-from-bracket"></i></span>
+                            <span class="menu-title">Cerrar Sesión</span>
+                        </span>
+                    </a>
+                </div>
+            }
+
+            @if (User.IsInRole(Role.GUARDIA))
+            {
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <a asp-action="logout" asp-controller="usuarios">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon"><i class="fas fa-solid fa-right-from-bracket"></i></span>
+                            <span class="menu-title">Cerrar Sesión</span>
+                        </span>
+                    </a>
+                </div>
+            }
+
+            @if (User.IsInRole(Role.REPRESENTANTE))
+            {
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <!--begin:Menu link-->
+                    <span class="menu-link">
+                        <span class="menu-icon">@Html.Raw(KTTheme.GetIcon("address-book", "fs-2"))</span>
+                        <span class="menu-title">Registrar Datos</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+                    <!--end:Menu link-->
+                    <!--begin:Menu sub-->
+                    <div class="menu-sub menu-sub-accordion">
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link" asp-action="Estudiante" asp-controller="Datos">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Datos del estudiante</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div>
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link" asp-action="Representantes" asp-controller="Datos">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Datos de padres</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item-->
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link" asp-action="AutorizadosRetirar" asp-controller="Datos">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Personas autorizadas para retirar al estudiante</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item-->
+                        <!--begin:Menu item-->
+@*                        <div class="menu-item">
+                            <!--begin:Menu link-->
+                            <a class="menu-link" asp-action="ContactoEmergencia" asp-controller="Datos">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Contactos de emergencia</span>
+                            </a>
+                            <!--end:Menu link-->
+                        </div>*@
+                    </div>
+                    <!--end:Menu sub-->
+                </div>
+                <!--end:Menu item-->
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <a asp-action="ObligacionesRepresentante" asp-controller="Home">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon">@Html.Raw(KTTheme.GetIcon("user", "fs-2"))</span>
+                            <span class="menu-title">Obligaciones</span>
+                        </span>
+                    </a>
+                </div>
+
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <a asp-action="logout" asp-controller="usuarios">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+                            <span class="menu-icon">@Html.Raw(KTTheme.GetIcon("user", "fs-2"))</span>
+                            <span class="menu-title">Cerrar Sesión</span>
+                        </span>
+                    </a>
+                </div>
+            }
+
+
+        </div>
+        <!--end::Menu-->
+
+    </div>
+    <!--end::Menu wrapper-->
+</div>
+<!--end::sidebar menu-->

@@ -1,0 +1,281 @@
+﻿@using Domain;
+@{
+    @*/ assets / media / avatars / blank.png*@
+    string RutaImagen = "media/avatars/blank.png";
+    if (ViewBag.DatosEstudiante!=null)
+        RutaImagen = "/media/avatars/" + ViewBag.DatosEstudiante.Avatar;
+    
+}
+
+
+<div class="container">
+    <input type="hidden" id="idUserLogin" value="@ViewBag.UsuarioID" />
+    <center><h4>Datos del estudiante</h4></center>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Identidad</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="col-md-12">
+                        <label for="Nombres">Nombres</label>
+                        <input type="text" maxlength="70" class="form-control" name="Nombres" id="Nombres" placeholder="Obligatorio dos nombres" required oninput="validarLetras(event)" value="@if(ViewBag.DatosEstudiante!= null){@ViewBag.DatosEstudiante.Nombres}" />
+                        <small id="errNombres">nombres son requeridos</small>
+                    </div>
+                    <br />
+                    <div class="col-md-12">
+                        <label for="Apellidos">Apellidos</label>
+                        <input type="text" maxlength="70" class="form-control" name="Apellidos" id="Apellidos" placeholder="Obligatorio dos apellidos" requeried oninput="validarLetras(event)" value="@if(ViewBag.DatosEstudiante!= null){@ViewBag.DatosEstudiante.Apellidos}" />
+                        <small id="errApellidos">apellidos son requeridos</small>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <center>
+                        <div class="row mb-5">
+                            <div class="col-md-12">
+                                <!--begin::Image input-->
+                               
+                                @*<div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@if(ViewBag.DatosEstudiante.Avatar != null){KTTheme.GetAssetPath("media/avatars/" + ViewBag.DatosEstudiante.Avatar);} else {KTTheme.GetAssetPath(RutaImagen);})">*@
+                                <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath(RutaImagen))">
+                                    <small id="errAvatar">Foto es requerida</small>
+                                    <div class="form-text">Foto (png,jpg,jpeg)</div>
+                                    <!--begin::Preview existing avatar-->
+                                    <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@KTTheme.GetAssetPath(RutaImagen))"></div>
+                                    @*<div class="image-input-wrapper w-125px h-125px" style="background-image: url(@if(ViewBag.DatosEstudiante.Avatar != null){KTTheme.GetAssetPath("media/avatars/" + ViewBag.DatosEstudiante.Avatar);} else {KTTheme.GetAssetPath(RutaImagen);})"></div>*@
+                                    <!--end::Preview existing avatar-->
+                                    <!--begin::Label-->
+                                    <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                        <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                        <!--begin::Inputs-->
+                                        <input type="file" id="Avatar" name="Avatar" accept=".png, .jpg, .jpeg" />
+                                        
+                                        <input type="hidden" name="avatar_remove" />
+                                        <!--end::Inputs-->
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Cancel-->
+                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                        <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                    <!--end::Cancel-->
+                                    <!--begin::Remove-->
+                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover imagen">
+                                        <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                    <!--end::Remove-->
+                                </div>
+                                <!--end::Image input-->
+                                <!--begin::Hint-->
+
+                                <!--end::Hint-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                    </center>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="FechaNac">Fecha nacimiento</label>
+                    <input type="date" class="form-control" name="FechaNac" id="FechaNac" placeholder="Obligatorio" requeried value="@if(ViewBag.DatosEstudiante!= null && ViewBag.DatosEstudiante.FechaNacimiento.ToString("yyyy-MM-dd")!="1900-01-01"){
+                    @ViewBag.DatosEstudiante.FechaNacimiento.ToString("yyyy-MM-dd")
+}" />
+                    <small id="errFechaNac">Fecha nacimiento es requerida</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="nivel">Grado</label>
+                    <select class="form-select" name="nivel" id="nivel" requeried>
+                        <option value="">Seleccionar....</option>
+                        @foreach (var registro in (List<NivelEscolar>)ViewBag.NivelEscolar)
+                        {
+                            @if (ViewBag.MatriculaEstudiante != null && ViewBag.MatriculaEstudiante.NivelEscolarId == registro.Id)
+                            {
+                                <option value="@registro.Id" selected>@registro.Descripcion</option>
+                            }
+                            else
+                            {
+                                <option value="@registro.Id">@registro.Descripcion</option>
+                           
+                            }
+                            
+                        }
+                    </select>
+                    <small id="errnivel">Nivel es requerido</small>
+                </div>
+
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="TipoId">Tipo Identificación</label>
+                    <select class="form-select" name="TipoId" id="TipoId" requeried>
+                        <option value="">Seleccionar....</option>
+                        @foreach (var registro in (List<TipoIdentificacion>)ViewBag.TipoIdentificacion)
+                        {
+                            @if (ViewBag.DatosEstudiante != null && ViewBag.DatosEstudiante.TipoIdentificacionId == registro.Id)
+                            {
+                                <option value="@registro.Id" selected >@registro.Descripcion</option>
+                            }
+                            else
+                            {
+                                <option value="@registro.Id" >@registro.Descripcion</option>
+                            }
+
+                        }
+                    </select>
+                        <small id="errTipoId">Tipo identificación es requerido</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="Identificacion">Identificación No.</label>
+                    <input type="text" maxlength="20" class="form-control" name="Identificacion" id="Identificacion" placeholder="Obligatorio" requeried value="@if(ViewBag.DatosEstudiante!= null){@ViewBag.DatosEstudiante.Identificacion}" />
+                    <small id="errIdentificacion">Número identificación es requerido</small>
+                    
+                </div>
+                <label class="col-form-label">Subir pdf de la cédula</label>
+                
+            </div>
+            <div class="row">
+                <div class="col">
+                    <input type="file" class="form-control" id="PDFIdentificacion" name="PDFIdentificacion" accept=".pdf" />
+                    <small id="errPDFIdentificacion">PDF de la identificación es requerido</small>
+                </div>
+                
+            </div>
+                       
+            <br />
+            <div class="col-md-12">
+                <center><h4>Dirección domicilio</h4></center>
+
+                <div class="col-md-12">
+                    <label for="CallePrincipal">Calle Principal</label>
+                    <input type="text" maxlength="70" class="form-control" name="CallePrincipal" id="CallePrincipal" placeholder="Obligatorio" requeried value="@if(ViewBag.domicilioEstudiante!= null){@ViewBag.domicilioEstudiante.CallePrincipal}" />
+                        <small id="errCallePrincipal">Calle Principal es requerida</small>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="NumCasa">Número casa</label>
+                    <input type="text" maxlength="10" class="form-control" name="NumCasa" id="NumCasa" placeholder="Obligatorio" requeried value="@if(ViewBag.domicilioEstudiante!= null){
+                    @ViewBag.domicilioEstudiante.Numero}" />
+                        <small id="errNumCasa">Número casa es requerido</small>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="CalleSecundaria">Calle Secundaria</label>
+                    <input type="text" maxlength="70" class="form-control" name="CalleSecundaria" id="CalleSecundaria" placeholder="Obligatorio" requeried 
+                    value="@if(ViewBag.domicilioEstudiante!= null){@ViewBag.domicilioEstudiante.CalleSecundaria}" />
+                        <small id="errCalleSecundaria">Calle Secundaria es requerida</small>
+                </div>
+            </div>
+                <br />
+            <div class="col-md-12">
+                <center><h4>En caso de emergencia</h4></center>
+
+                <div class="col-md-12">
+                    <label for="NombreMedico">Nombre del médico de cabecera:</label>
+                    <input type="text" maxlength="70" class="form-control" name="NombreMedico" id="NombreMedico" placeholder="" oninput="validarLetras(event)" value="@if(ViewBag.FichaMedica!=null){@ViewBag.FichaMedica.NombresMedico}" />
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="TelefMedico">Teléfono convencional del médico</label>
+                        <input type="text" maxlength="10" class="form-control" name="TelefMedico" id="TelefMedico" placeholder="" oninput="validarNumeros(event)" value="@if(ViewBag.FichaMedica!=null){@ViewBag.FichaMedica.TelefonoMedico}" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="MovilMedico">Teléfono celular del médico</label>
+                        <input type="text" maxlength="10" class="form-control" name="MovilMedico" id="MovilMedico" placeholder="" oninput="validarNumeros(event)" value="@if(ViewBag.FichaMedica!=null){@ViewBag.FichaMedica.CelularMedico}" />
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="DireccionMedico">Dirección del consultorio médico</label>
+                    <input type="text" maxlength="120" class="form-control" name="DireccionMedico" id="DireccionMedico" placeholder="" value="@if(ViewBag.FichaMedica!=null){ @ViewBag.FichaMedica.DireccionMedico}" />
+                </div>
+                <br />
+            </div>
+        </div>
+        <div class="col-md-1"> </div>
+        <div class="col-md-5">
+            <h4>Datos médicos</h4>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="Talla">Talla (cm)</label>
+                    <input type="text" maxlength="6" class="form-control" name="Talla" id="Talla" placeholder="Obligatorio" requeried oninput="validarNumeros(event)" value="@if(ViewBag.FichaMedica!=null){@ViewBag.FichaMedica.HistorialMedico[0].Talla}" />
+                        <small id="errTalla">Talla es requerida</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="Peso">Peso (kg)</label>
+                    <input type="text" maxlength="6" class="form-control" name="Peso" id="Peso" placeholder="Obligatorio" requeried oninput="validarNumeros(event)" value="@if(ViewBag.FichaMedica!=null){@ViewBag.FichaMedica.HistorialMedico[0].Peso}" />
+                        <small id="errPeso">Peso es requerido</small>
+                </div>
+
+            </div>
+            <br />
+            <div class="col-md-12">
+                <label for="DosisVacunaCovid">¿Cuántas dosis de vacuna contra covid 19 tiene el /la estudiante?</label>
+                    <!-- SI <input type="checkbox"  name="SiVacunaCovid" id="SiVacunaCovid" requeried /-->
+                <input type="text" oninput="validarNumeros(event)" maxlength="1" class="form-control" name="DosisVacunaCovid" id="DosisVacunaCovid" placeholder="Ingrese número de dosis" value="@if(ViewBag.FichaMedica!=null){
+                @ViewBag.FichaMedica.FichaObservacionMedica[0].Especificacion
+}" />
+            </div>
+            <br />
+            <div class="col-md-12">
+                <label for="EnfermedadCronica">¿Tiene el/la estudiante alguna enfermedad crónica?</label>
+                <!--SI <input type="checkbox" name="SiEnfermedadCronica" id="SiEnfermedadCronica" requeried /-->
+                <input type="text" maxlength="200" class="form-control" name="EnfermedadCronica" id="EnfermedadCronica" placeholder="Si es el caso, especificar" value="@if(ViewBag.FichaMedica!=null){@ViewBag.FichaMedica.FichaObservacionMedica[1].Especificacion}" />
+            </div>
+            <br />
+            <div class="col-md-12">
+                <label for="MedicacionContinua">¿Recibe el/la estudiante medicación continua?</label>
+                <!--SI <input type="checkbox" name="SiMedicacion" id="SiMedicacion" requeried /-->
+                <input type="text" maxlength="200" class="form-control" name="MedicacionContinua" id="MedicacionContinua" placeholder="Si es el caso, especificar" value="@if(ViewBag.FichaMedica!=null){@ViewBag.FichaMedica.FichaObservacionMedica[2].Especificacion}" />
+            </div>
+            <br />
+            <div class="col-md-12">
+                <label for="cirugia">¿El/la estudiante ha sido sometido/a a alguna cirugía?</label>
+                <!--SI <input type="checkbox" name="Sicirugia" id="Sicirugia" requeried /-->
+                <input type="text" maxlength="200" class="form-control" name="cirugia" id="cirugia" placeholder="Si es el caso, especificar" value="@if(ViewBag.FichaMedica!=null){@ViewBag.FichaMedica.FichaObservacionMedica[3].Especificacion}" />
+            </div>
+            <br />
+            <div class="col-md-12">
+                <label for="cirugia"><b>¿Autoriza la suministración de antiinflamatorios o analgésicos?</b></label>
+                @if (ViewBag.FichaMedica != null && ViewBag.FichaMedica.AutorizaAntiinflamatorioAnalgesico== true)
+                {
+                    <input type="checkbox"  name="ChkAutorizaSuministrar" id="ChkAutorizaSuministrar" checked/>
+                }
+                    else
+                {
+                    <input type="checkbox"  name="ChkAutorizaSuministrar" id="ChkAutorizaSuministrar" />
+                }
+                <b>SI</b>
+                    
+                </div>
+            <br />
+            <div class="col-md-12">
+                <label for="seguroPrivado">¿Tiene el/la estudiante seguro médico privado?</label>
+                <!--SI <input type="checkbox" name="SiseguroPrivado" id="SiseguroPrivado" requeried /-->
+                <input type="text" maxlength="200" class="form-control" name="seguroPrivado" id="seguroPrivado" placeholder="Si es el caso, especificar" value="@if(ViewBag.FichaMedica!=null){@ViewBag.FichaMedica.SeguroMedico}" />
+            </div>
+            <br />
+            <div class="col-md-12">
+                <label for="alergias">En caso de tener alergias describirlas</label>
+                <input type="text" maxlength="300" class="form-control" name="alergias" id="alergias" placeholder="Si es el caso, especificar" value="@if(ViewBag.FichaMedica!=null){@ViewBag.FichaMedica.Alergias}" />
+            </div>
+            <br />
+            <div class="col-md-12">
+                <label for="restriccionAlimentos">En caso de tener restricciones alimenticias describir</label>
+                <input type="text" maxlength="500" class="form-control" name="restriccionAlimentos" id="restriccionAlimentos" placeholder="Si es el caso, especificar" value="@if(ViewBag.FichaMedica!=null){@ViewBag.FichaMedica.RestriccionesAlimenticias}" />
+            </div>
+            <br />
+            <div class="col-md-12">
+                <label for="datoAdicional">¿Algún dato adicional de salud que se considere importante reportar al colegio?</label>
+                <input type="text" maxlength="500" class="form-control" name="datoAdicional" id="datoAdicional" placeholder="Si es el caso, especificar" value="@if(ViewBag.FichaMedica!=null){@ViewBag.FichaMedica.NotasImportanteSalud}" />
+            </div>
+            
+        </div>
+        
+    </div>
+ </div>

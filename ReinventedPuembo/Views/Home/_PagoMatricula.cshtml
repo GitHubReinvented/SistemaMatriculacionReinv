@@ -1,0 +1,607 @@
+﻿@using Domain;
+@{
+    string TokenAbitmedia = ViewBag.TokenAbitmedia;
+    decimal sumatoriaMatricula = 0;
+}
+
+
+<div class="row">
+    
+
+    <div class="col-md-8">
+        <h2>Valores a pagar</h2>
+        <table class="table table-striped table-hover table-bordered fs-5" id="TablaValoresMatricula">
+            <thead class="thead-dark">
+                <tr>
+                    <th><b>Nombre</b></th>
+                    <th><b>Concepto</b></th>
+                    <th><b>Valor</b></th>
+                    <th><b>Descuento</b></th>
+                    <th><b>Abono</b></th>
+                    <th><b>Saldo</b></th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <!--por el momento el contenido se llena en proceso function RegistraEstudiante()-->
+                @if (ViewBag.ListaObligacionesMatricula!=null)
+                {
+                    @foreach (var obligacionMatricula in (List<ObligacionPendiente>)ViewBag.ListaObligacionesMatricula)
+                    {
+                        sumatoriaMatricula = sumatoriaMatricula + obligacionMatricula.Saldo;
+                        <script>globalArrayobligaciones.push('@obligacionMatricula.Id');</script>
+                        <tr>
+                            <td>@obligacionMatricula.Matricula.Persona.Nombres @obligacionMatricula.Matricula.Persona.Apellidos</td>
+                            <td>Matrícula</td>
+                            <td>$ @obligacionMatricula.Valor</td>
+                            <td>$ @obligacionMatricula.Descuento</td>
+                            <td>$ @obligacionMatricula.Abono</td>
+                            <td>$ @obligacionMatricula.Saldo</td>
+                        </tr>
+                    }
+                }
+                
+                
+            </tbody>
+
+    
+        </table>
+       
+        <input type="hidden" id="totalPagarMatricula" value="@sumatoriaMatricula" />
+        <div class="d-grid gap-2">
+            <button id="btnPagarMatricula" type="button" class="btn btn-secondary rounded float-end">Total a pagar $ @sumatoriaMatricula</button>
+            <button id="idContinuarValorCero" style="display:none" onclick="CambiarEstadoObligacionesEnCero()" type="button" class="btn btn-success rounded float-end">Continuar</button>
+            
+        </div>
+    </div>
+
+    <div class="col-md-4" ïd="idMediosPago">
+        <h2>Medios de pago</h2>
+        <button  class="btn" onclick="SelectMedio('1')"><i class="far fa-credit-card"></i> Tarjeta Crédito o Débito</button>
+        <button type="button" class="btn" onclick="SelectMedio('2')"><i class="fas fa-money-bill-wave-alt"></i>Transferencia &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+     </div>
+</div>
+<br />
+
+<div class="col-md-12" id="divTransferencia" style="display:none;">
+    <div class="row">
+        <div class="col-md-7">
+            <h2>Pagos por transferencia</h2>
+            <div class="row">
+
+                <div class="col-md-6">
+                    <label for="CntaDestino" class="form-label">Cuenta destino</label>
+                    <select class="form-select" name="CntaDestino" id="CntaDestino">
+                        <option value="">Seleccionar....</option>
+                        @foreach (var registro in (List<CuentaSucursal>)ViewBag.cuentasSucursal)
+                        {
+                    
+                            <option value="@registro.Id">@registro.Banco.Nombre @registro.TipoCuenta.Descripcion @registro.NumeroCuenta</option>
+                        }
+                
+                    </select>
+                    <small id="errCntaDestino">Cuenta destino es requerida</small>
+                </div>
+
+
+                <div class="col-md-6">
+                    <label for="valorTransMatricula" class="form-label">Valor de la transferencia</label>
+                   
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">$</span>
+                        
+                        <input type="text" class="form-control" name="valorTransMatricula" id="valorTransMatricula" readonly>
+                       
+                    </div>
+
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="numRef" class="form-label">Número referencia de la transferencia</label>
+                    <input type="text" class="form-control" name="numRef" id="numRef" maxlength="70">
+                    <small id="errnumRef">Número referencia es requerido</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="fechaTrans" class="form-label">Fecha de la transferencia</label>
+                    <input type="date" class="form-control" name="fechaTrans" id="fechaTrans" max="@DateTime.Now">
+                    <small id="errfechaTrans">Fecha es requerida</small>
+                </div>
+            </div>
+
+            <br />
+            <div class="col-md-6">
+                <label for="fotoTransferencia" class="form-label">Cargar foto de trasferencia</label>
+                <input type="file" class="form-control" name="fotoTransferencia" id="fotoTransferencia" accept=".jpg, .png, .jpeg">
+                <small id="errfotoTransferencia">Foto de transferencia es requerida</small>
+            </div>
+            <br />
+            <input type="hidden" id="NumObligacion" value=""/>
+            <div class="d-grid gap-2">
+                <button onclick="EjecutarTransferencia()" class="btn btn-success">Pagar</button>
+            </div>
+        </div>
+        <div class="col-md-5" align="left">
+            <br /><br />
+            <h5>Datos para tranferencia</h5>
+
+            <ul class="fs-5">
+                <li>Razón Social: @ViewBag.DatosSucursal.RazonSocial </li>
+                <li>RUC: @ViewBag.DatosSucursal.RUC</li>
+                <li>Email:@ViewBag.DatosSucursal.EmailFacturas </li>
+                @foreach (var registro in (List<CuentaSucursal>)ViewBag.cuentasSucursal)
+                {
+
+                    <li>@registro.Banco.Nombre @registro.TipoCuenta.Descripcion @registro.NumeroCuenta </li>
+                }
+            </ul>
+
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pago tarjeta-->
+<div class="modal" tabindex="-1" id="ModalAlertaPagoTarjeta" style="z-index:1500">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pago con tarjeta de crédito</h5>
+
+            </div>
+            <div class="modal-body" id="idventanaPago">
+                <center>
+                    <h4>Abriendo página de pago</h4>
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </center>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="codTxTC" />
+                <button type="button" class="btn btn-secondary" style="display:none" id="idbtnCerrarPagoTarjeta" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" style="display:none" id="idbtncontinuaPagoTarjeta" onclick="ResultadoPagoTarjeta()">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        var sumatoriaMatricula = '@sumatoriaMatricula';
+        sumatoriaMatricula = sumatoriaMatricula.replace(',','.');
+        sumatoriaMatricula = parseFloat(sumatoriaMatricula).toFixed(2);
+       
+
+        if (sumatoriaMatricula == '0.00') {
+            //alert(sumatoriaMatricula);
+            //document.getElementById("idMediosPago").style.display = 'none';
+            document.getElementById("idContinuarValorCero").style.display = 'block';
+        }
+        else
+        {
+            document.getElementById("idMediosPago").style.display = 'block';
+            document.getElementById("idContinuarValorCero").style.display = 'none';
+        }
+            
+
+    });
+
+
+
+    function SelectMedio(medio) 
+    {
+
+        
+        if (medio == 2) 
+        {//transferencia
+
+            
+            
+            var totalPagarMatricula = document.getElementById('totalPagarMatricula').value.replace(',', '.');
+            
+            document.getElementById('valorTransMatricula').value = parseFloat(totalPagarMatricula).toFixed(2);
+            document.getElementById("divTransferencia").style.display = 'block';
+            document.location.href = "#divTransferencia";
+            
+            //document.getElementById("divTarjeta").style.display = 'none';
+        }
+        else 
+        {//tarjeta
+            document.getElementById("divTransferencia").style.display = 'none';
+            //document.getElementById("divTarjeta").style.display = 'block';
+            CallBotonPago();
+        }
+
+    }
+    
+    function EjecutarTransferencia()
+    {
+
+        
+        
+        var CntaDestino = document.getElementById('CntaDestino').value;
+
+        
+
+        var numRef = document.getElementById('numRef').value;
+        var fechaTrans = document.getElementById('fechaTrans').value;
+        var valorTrans = document.getElementById('valorTransMatricula').value;
+        valorTrans = valorTrans*100;//para evitar punto decimal en url al guardar a la BDD se divide para 100
+        var _numeroObligacion = document.getElementById('NumObligacion').value;
+        var _matricula = document.getElementById('numeroMatricula').value;
+
+        var formData = new FormData();
+        var _fotoTransferencia = $('#fotoTransferencia')[0].files;
+     
+      
+        var error=""
+
+        if (CntaDestino == "" || CntaDestino==null) {
+            error = error + "Cuenta destino es requerida<br>";
+            document.getElementById("errCntaDestino").style.display = 'block';
+        } else document.getElementById("errCntaDestino").style.display = 'none';
+
+        if(numRef=="")
+        {
+            error = error + "Número de referencia es requerido<br>";
+            document.getElementById("errnumRef").style.display = 'block';
+        } else document.getElementById("errnumRef").style.display = 'none';
+
+        if (fechaTrans == "") {
+            error = error + "Fecha transferencia es requerida";
+            document.getElementById("errfechaTrans").style.display = 'block';
+        } else document.getElementById("errfechaTrans").style.display = 'none';
+
+        if (_fotoTransferencia.length > 0) {
+
+            formData.append('fotoTransferencia', _fotoTransferencia[0]);
+            document.getElementById("errfotoTransferencia").style.display = 'none';
+            document.getElementById("errfotoTransferencia").style.display = 'none';
+        }
+        else {
+            error = error + "No cargó foto transferencia<br>";
+            document.getElementById("errfotoTransferencia").style.display = 'block';
+        }
+
+        if(error!="")
+        {
+            toastr["warning"](error, "ERROR");
+            return "error";
+        }
+       
+        formData.append('ObligacionPendienteId', globalArrayobligaciones);//ejemplo: [65, 66, 67] el codigo de la obigaciones 1 por cada matrícula
+        formData.append('numeroReferencia', numRef);
+        formData.append('fechaTransferencia', fechaTrans);
+        formData.append('valor', valorTrans);
+        formData.append('cuentaDestino', CntaDestino);
+
+
+        
+        var Url = '@Url.Action("GuardarPagoTransferenciaMatricula")';
+        
+        $.ajax({
+            url: Url,
+            type: 'POST',
+            data: formData,
+            //dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (respuesta) {
+                if(respuesta>=1)
+                {
+                    
+                    cerrarPAgoMatricula();
+                    
+                }
+                else
+                    toastr["warning"]("Se produjo un error en la transferencia", "ERROR");
+            }, error: function (respuesta) {
+                toastr["warning"]("Se produjo un error en la transferencia", "ERROR");
+               
+            }
+        });
+        
+    }
+
+    function CambiarEstadoObligacionesEnCero()
+    {
+        
+        var formData = new FormData();
+        formData.append('ObligacionPendienteId', globalArrayobligaciones);//ejemplo: [65, 66, 67] el codigo de la obigaciones 1 por cada matrícula
+        formData.append('numeroReferencia', 0);
+        formData.append('fechaTransferencia', Now());
+        formData.append('valor', 0);
+        formData.append('cuentaDestino', 0);
+
+        var Url = '@Url.Action("CambiarEstadoObligacionesEnCero")';
+
+        $.ajax({
+            url: Url,
+            type: 'POST',
+            data: formData,
+            //dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (respuesta) {
+                if (respuesta >= 1) {
+
+                    cerrarPAgoMatricula();
+
+                }
+                else
+                    toastr["warning"]("Se produjo un error en la transferencia", "ERROR");
+            }, error: function (respuesta) {
+                toastr["warning"]("Se produjo un error en la transferencia", "ERROR");
+
+            }
+        });
+    }
+    
+    function cerrarPAgoMatricula()
+    {
+        document.getElementById("idDivresumenPagos").style.display = 'none';//este bloque esta en página proceso
+        //para mostrar imagen y mensaje de proceso terminado
+        document.getElementById("idDivProcesoTerminado").style.display = 'block';//este bloque esta en página proceso
+        //para que se mire por un momento mensaje proceso terminado y luego redirije a PagosPensiones
+        //en PagosPensiones se generan las cuotas de pensiones y seguro estudiantil
+        //setTimeout("location.href='@Url.Action("Index")'", 3000);
+    }
+
+    function abrirNuevoTab(url) {
+        // Abrir nuevo tab
+        var configuracion_ventana = 'menubar=0,location=0,resizable=0,scrollbars=yes,status=0,width=' + parseInt(window.screen.availWidth*0.9) + ',height=' + parseInt(window.screen.availHeight*0.9) + ', top=' + parseInt(window.screen.availHeight) +',left=' + parseInt(window.screen.availWidth*0.05);
+        var win = window.open(url, '_blank', configuracion_ventana);
+         
+
+        // Cambiar el foco al nuevo tab (punto opcional)
+        win.focus();
+
+    }
+    
+    function CallBotonPago() 
+    {
+        debugger;
+        //proveedor Abitmedia
+        var ambiente = '@ViewBag.Ambiente';
+        
+        $('#ModalAlertaPagoTarjeta').modal({ backdrop: 'static', keyboard: false });
+        $("#ModalAlertaPagoTarjeta").modal("show");
+
+        if (ambiente == "pruebas") 
+        {
+            var amount_with_tax = 0.5;//monto que graban impuesto
+            var amount_without_tax = 0.5;//monto que no graban impuestos
+            var tax_value = 0.06;//impuestos
+            var amount = 1.06;//Total
+
+        }
+        else {//producción
+            var totalPagarMatricula = document.getElementById('totalPagarMatricula').value.replace(',', '.');
+            totalPagarMatricula = parseFloat(totalPagarMatricula).toFixed(2);
+            var amount_with_tax = 0.0;//monto que graban impuesto
+            var amount_without_tax = totalPagarMatricula;
+            var tax_value = 0.00;//impuestos
+            var amount = totalPagarMatricula;
+
+        }
+
+        
+       
+        var tipoIdentificacion = document.getElementById('TipIdRepresentante').value;
+
+        if (tipoIdentificacion == 1)
+            tipoIdentificacion = "05";//cédula identidad
+        else
+            tipoIdentificacion = "06";//pasaporte
+
+        var numIdentificacion = document.getElementById('numIdRepresentante').value;
+        var Nombres = document.getElementById('nombresRepresentante').value;
+        var Apellidos = document.getElementById('apellidosRepresentante').value;
+        var Email = document.getElementById('EmailRepresentante').value;
+        var Telefono = document.getElementById('TelfRepresentante').value;
+        var direccion = document.getElementById('CallePrincipal').value + ' '+document.getElementById('NumCasa').value +' ' + document.getElementById('CalleSecundaria').value;
+
+        var ParametrosSolicitudPago = {
+            integration: true,
+            third: {
+                document: numIdentificacion,
+                document_type: tipoIdentificacion,
+                name: Nombres + ' ' + Apellidos,
+                email: Email,
+                phones: Telefono,
+                address: direccion,
+                type: "Individual"
+            },
+            generate_invoice: 0,
+            description: "Pago matrícula",
+            amount: amount,
+            amount_with_tax: amount_with_tax,
+            amount_without_tax: amount_without_tax,
+            tax_value: tax_value,
+            settings: [
+                {
+                    "id": "car_4qCP__WOHx1a6lT4lBY44642",
+                    "name": "American Express",
+                    "type": "Corriente",
+                    "terms": []
+                },
+
+                {
+                    "id": "car_yqZ4WE84QoNBosHKWqxA4633",
+                    "name": "Diners",
+                    "type": "Corriente",
+                    "terms": []
+                },
+
+
+                {
+                    "id": "car_1ICHIePDXJ65Y77WAlHX4650",
+                    "name": "Discover",
+                    "type": "Corriente",
+                    "terms": []
+                },
+
+
+                {
+                    "id": "car__Iew9hRE8oSZ9XWLskrw4626",
+                    "name": "MasterCard",
+                    "type": "Corriente",
+                    "terms": []
+                },
+
+
+                {
+                    "id": "car_IUrWmrwdiRKa8ZyBoXFU4619",
+                    "name": "Visa",
+                    "type": "Corriente",
+                    "terms": []
+                }
+
+            ],
+            notify_url: null,
+            custom_value: null,
+            has_cash: 0,
+            has_cards: 1
+        }
+
+        //console.log(ParametrosSolicitudPago);
+        $.ajax({
+            data: ParametrosSolicitudPago,
+            url: 'https://api.abitmedia.cloud/pagomedios/v2/payment-requests',
+            type: 'POST',
+            async: false,
+            //dataType: 'json',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', "Bearer " + '@TokenAbitmedia')
+
+            },
+            success: function SolicitarPago(respuesta) {
+
+                document.getElementById('codTxTC').value = respuesta.data.token;
+                abrirNuevoTab(respuesta.data.url);
+                document.getElementById('idventanaPago').innerHTML = "<h4>Continuar con proceso</h4>";
+                document.getElementById('idbtncontinuaPagoTarjeta').style.display = "block";
+                document.getElementById('idbtnCerrarPagoTarjeta').style.display = "none";
+                //location.href = respuesta.data.url;
+
+            }, error: function (respuesta) {
+
+                const mensajeError = respuesta.responseJSON.data[0].message;
+                //console.log(mensajeError);
+                document.getElementById('idventanaPago').innerHTML = "<h4>Error en apertura página de pago: " + mensajeError + "</h4>";
+                document.getElementById('idbtnCerrarPagoTarjeta').style.display = "block";
+                document.getElementById('idbtncontinuaPagoTarjeta').style.display = "none";
+            }
+        });
+        
+    }
+
+    function ResultadoPagoTarjeta() 
+    {
+
+        var TokenTxTC = document.getElementById('codTxTC').value;
+        
+
+        $("#ModalAlertaPagoTarjeta").modal("hide");
+
+        var Url = "https://api.abitmedia.cloud/pagomedios/v2/payment-requests?integration=true&uuid=" + TokenTxTC;
+
+        $.ajax({
+
+            url: Url,
+            type: 'GET',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', "Bearer " + '@TokenAbitmedia')
+
+            },
+            success: function (respuesta) {
+
+                var referencia = respuesta.data[0].reference;
+                var descripcion = respuesta.data[0].description;
+                var valor = respuesta.data[0].amount;
+                
+                var FechaTransaccion = respuesta.data[0].transactions[0].payment_date;
+                var Estado = respuesta.data[0].transactions[0].message;
+                var NombreTarjeta = respuesta.data[0].transactions[0].cardholder;
+                var idTxt = respuesta.data[0].transactions[0].payment_id;
+                var codTxT = respuesta.data[0].transactions[0].auth_code;
+                var card_brand = respuesta.data[0].transactions[0].card_brand;
+                var EstadoCodigo = respuesta.data[0].transactions[0].status;
+
+                
+                if (EstadoCodigo == 0 || Estado == null)
+                    Estado = "Sin pagar";
+
+                //toastr["success"](Estado, "OK");
+
+                if (EstadoCodigo == 1 )//1 pagado
+                {
+                    GuardarPagoTarjeta(referencia, descripcion, valor, FechaTransaccion, Estado, NombreTarjeta, idTxt, codTxT, card_brand, TokenTxTC, EstadoCodigo);
+                }
+                else 
+                {
+                    //alert("Estado transacción: " + Estado);
+                    document.getElementById('idventanaPago').innerHTML = "<h4>Estado transacción: " + Estado + "</h4>";
+                    document.getElementById('idbtnCerrarPagoTarjeta').style.display = "block";
+                    document.getElementById('idbtncontinuaPagoTarjeta').style.display = "none";
+
+                    $("#ModalAlertaPagoTarjeta").modal({ backdrop: 'static', keyboard: false });
+                    $("#ModalAlertaPagoTarjeta").modal("show");
+                }
+
+            }, error: function (respuesta) {
+                alert("Se produjo un error, intente nuevamente");
+                
+
+            }
+        });
+
+    }
+
+
+    function GuardarPagoTarjeta(referencia, descripcion, valor, fechaTransaccion, Estado, NombreTarjeta, idTxt, codTxT, card_brand, TokenTxTC, estadoCodigo) 
+    {
+        ArrayObligaciones = globalArrayobligaciones;//ejemplo: [65, 66, 67] el codigo de la obigaciones 1 por cada matrícula
+
+        var PagarXTCMatriculaModel={
+            ObligacionPendienteId: ArrayObligaciones,
+            NumeroReferencia: referencia,
+            Valor: valor,
+            FechaTransaccion: fechaTransaccion,
+            NombrePropietarioTarjeta: NombreTarjeta,
+            EstadoTarjeta: Estado,
+            ObservacionTarjeta: card_brand,
+            DescripcionTarjeta: descripcion,
+            TokenTxTarjeta: TokenTxTC,
+            idTxTarjeta: idTxt,
+            codTxTarjeta: codTxT,
+            EstadoCodigo: estadoCodigo,
+            Operador: "Pago Medios"
+        }
+
+        var Url = '@Url.Action("GuardarPagoXTC")';
+
+        $.ajax({
+            data: PagarXTCMatriculaModel,
+            url: Url,
+            type: 'POST',
+            //async: false,
+            success: function SolicitarPago(respuesta) {
+
+                cerrarPAgoMatricula();
+
+            }, error: function (respuesta) {
+
+                alert("Error en guardar pago tarjeta: " + respuesta.message);
+            }
+        });
+
+    }
+</script>
+

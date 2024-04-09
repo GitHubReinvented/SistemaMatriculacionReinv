@@ -1,0 +1,425 @@
+﻿@{
+    ViewData["Title"] = "Estudiantes";
+    KTTheme.AddVendors(new string[] { "amcharts", "amcharts-maps", "amcharts-stock" });
+    KTTheme.AddJavascriptFile("js/custom/apps/user-management/users/view/add-entity.js");
+}
+
+
+<div class="card-title m-0">
+
+    <h1 style="padding-left:20px; color:#3c7edd" class="fw-bold m-0 pt-10 pb-5">Registro del @ViewBag.TipoPersona</h1>
+    <div class="card-footer d-flex justify-content-end px-9">
+        <a id="kt_register_submit" class="btn btn-primary">Registar</a>
+    </div>
+
+</div>
+<form id="kt_register_form" data-bs-tipo="@ViewBag.TipoPersona" class="form">
+
+<div class="row gx-5 gx-xl-10">
+    <div class="col-xxl-6 mb-5 mb-xl-10">
+        <div class="card card-flush h-xl-90" style="margin: 20px;">
+            <div class="card-header border-0 cursor-pointer" role="button">
+                <div class="card-title m-0">
+                    <h3 class="fw-bold m-0">Información General</h3>
+                </div>
+            </div>
+            <div id="kt_account_settings_profile_details" class="collapse show">
+                    <div class="card-body border-top p-9">
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto del @ViewBag.TipoPersona</label>
+                            <div class="col-lg-8">
+                                <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/avatar-default.png"))">
+                                    <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/avatar-default.png"))"></div>
+                                    <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
+                                        <i class="bi bi-pencil-fill fs-7" style="color: white !important;"></i>
+                                        <input type="file" name="Avatar" accept=".png, .jpg, .jpeg" />
+                                        <input type="hidden" name="avatar_remove" />
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres Completos</label>
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="Nombres" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Nombres" />
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Apellidos completos</label>
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="Apellidos" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" />
+
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Tipo de Identificación</label>
+                            <div class="col-lg-8 fv-row">
+                                <select name="TipoIdentificacion" class="form-select" id="kt_register_select_identificacion" data-control="select2" data-placeholder="Selecciona el tipo de identificación">
+                                </select>
+                            </div>
+                        </div>
+                        <div id="kt_register_input_identificacion" class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">N° Identificación</label>
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="Identificacion" class="form-control form-control-lg form-control-solid" placeholder="Identificación" />
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Fecha de nacimiento</label>
+                            <div class="col-lg-8 fv-row">
+                                <input class="form-control form-control-solid flatpickr-input active" placeholder="Fecha de Nacimiento" name="FechaNacimiento" id="kt_register_datapicker" type="text" readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+
+                <!--end::Form-->
+            </div>
+            <!--end::Content-->
+        </div>
+    </div>
+
+    <div class="col-xxl-6 mb-5 mb-xl-10">
+        <div class="card card-flush h-xl-90" style="margin: 20px;">
+            <div class="card-header border-0 cursor-pointer" role="button">
+                <div class="card-title m-0">
+                    <h3 class="fw-bold m-0">Información Personal</h3>
+                </div>
+            </div>
+            <div id="kt_account_settings_profile_details" class="collapse show">
+               
+                    <div class="card-body border-top p-9">
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Email Primario</label>
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="EmailPrincipal" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Email Primario" />
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Email Secundario</label>
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="EmailSecundario" class="form-control form-control-lg form-control-solid" placeholder="Email Secundario" />
+
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Teléfono Móvil</label>
+                            <div class="col-lg-8 fv-row">
+                                <input type="tel" name="TelefonoMovil" class="form-control form-control-lg form-control-solid" placeholder="Teléfono Móvil" />
+
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Profesión</label>
+                            <div class="col-lg-8 fv-row">
+                                <select class="form-select" id="kt_register_select_profesion" name="Profesion" data-control="select2" data-placeholder="Seleccione su profesión">
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Cargo</label>
+                            <div class="col-lg-8 fv-row">
+                                <input type="text" name="Cargo" class="form-control form-control-lg form-control-solid" placeholder="Cargo" />
+
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Lugar de Trabajo</label>
+                            <div class="col-lg-8 fv-row">
+                                <input type="tel" name="LugarTrabajo" class="form-control form-control-lg form-control-solid" placeholder="Lugar de Trabajo" />
+
+                            </div>
+                        </div>
+
+                    </div>
+
+       
+                <!--end::Form-->
+            </div>
+            <!--end::Content-->
+        </div>
+    </div>
+
+    <!--end::Col-->
+    @if (ViewBag.TipoPersona == "estudiante")
+    {
+        <div class="col-xl-6 mb-5 mb-xl-10">
+            <!-- Padre-->
+            <div class="card card-flush h-xl-90" style="margin: 20px;">
+                <!--begin::Card header-->
+                <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                    <!--begin::Card title-->
+                    <div class="card-title m-0">
+                        <h3 class="fw-bold m-0">Salud</h3>
+                    </div>
+                    <!--end::Card title-->
+                </div>
+                <!--begin::Card header-->
+                <!--begin::Content-->
+                <div id="kt_account_settings_profile_details" class="collapse show">
+                    <!--begin::Form-->
+                    <form id="kt_account_profile_details_form" class="form">
+                        <!--begin::Card body-->
+                        <div class="card-body border-top p-9">
+                            <!--begin::Input group-->
+                            <!--end::Input group-->
+                            <!--Nombres-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombre Médico</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8">
+                                    <!--begin::Row-->
+                                    <div class="row">
+                                        <!--begin::Col-->
+                                        <div class="col-lg-8 fv-row">
+                                            <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Peso en kilos" value="Nombre" />
+                                        </div>
+                                        <!--end::Col-->
+                                    </div>
+                                    <!--end::Row-->
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--Apellidos-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Apellidos Médico</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8">
+                                    <!--begin::Row-->
+                                    <div class="row">
+                                        <!--begin::Col-->
+                                        <div class="col-lg-8 fv-row">
+                                            <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Talla en centímetros" value="" />
+                                        </div>
+                                        <!--end::Col-->
+                                    </div>
+                                    <!--end::Row-->
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">¿El/la estudiante está vacunado/a contra covid 19?</label>
+                                <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                    <input class="form-check-input" type="checkbox" value="1" id="flexCheckChecked" />
+                                    <label class="form-check-label" for="flexCheckChecked">
+                                        Sí
+                                    </label>
+                                </div>
+                                <div id="third-div" class="col-lg-6 fv-row" style="display: none;">
+                                    Ingrese el número de dosis
+                                    <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Número de dosis" />
+                                </div>
+                            </div>
+
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">¿Tiene el/la estudiante alguna enfermedad crónica?</label>
+                                <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                    <input class="form-check-input" type="checkbox" value="1" id="EnfermedadCheckChecked" />
+                                    <label class="form-check-label" for="EnfermedadCheckChecked">
+                                        Sí
+                                    </label>
+                                </div>
+                                <div id="enfermedad-div" class="col-lg-6 fv-row" style="display: none;">
+                                    Especifique
+                                    <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Enfermedad crónica" />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">¿Recibe el/la estudiante medicación continua?</label>
+                                <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                    <input class="form-check-input" type="checkbox" value="1" id="MedicacionCheckChecked" />
+                                    <label class="form-check-label" for="MedicacionCheckChecked">
+                                        Sí
+                                    </label>
+                                </div>
+                                <div id="medicacion-div" class="col-lg-6 fv-row" style="display: none;">
+                                    Especifique
+                                    <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Medicación continua" />
+                                </div>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                    <span>¿Algún antecedente importante que desee reportar?</span>
+                                    <span class="ms-1" data-bs-toggle="tooltip" title="Accidentes, etc">
+                                        <i class="ki-duotone ki-information-5 text-gray-500 fs-6"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                    </span>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                    <input class="form-check-input" type="checkbox" value="1" id="AntecedenteCheckChecked" />
+                                    <label class="form-check-label" for="AntecedenteCheckChecked">
+                                        Sí
+                                    </label>
+                                </div>
+                                <div id="antecedente-div" class="col-lg-6 fv-row" style="display: none;">
+                                    Especifique
+                                    <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Antecedente" />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">¿El/la estudiante ha sido sometido/a a alguna cirugía?</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                    <input class="form-check-input" type="checkbox" value="1" id="CirugiaCheckChecked" />
+                                    <label class="form-check-label" for="CirugiaCheckChecked">
+                                        Sí
+                                    </label>
+                                </div>
+                                <div id="cirugia-div" class="col-lg-6 fv-row" style="display: none;">
+                                    Especifique
+                                    <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Nombre de la cirugía" />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Autoriza la suministración de antiinflamatorios o analgésicos</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                    <input class="form-check-input" type="checkbox" value="1" id="analgesicoCheckChecked" />
+                                    <label class="form-check-label" for="CirugiaCheckChecked">
+                                        Sí autorizo
+                                        1
+                                    </label>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">¿Tiene el/la estudiante seguro médico privado?</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                        <input class="form-check-input" type="checkbox" value="1" id="SeguroCheckChecked" />
+                                        <label class="form-check-label" for="SeguroCheckChecked">
+                                            Sí
+                                        </label>
+                                    </div>
+                                    <div id="seguro-div" class="col-lg-6 fv-row" style="display: none;">
+                                        Especifique
+                                        <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Nombre del seguro médico privado" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">¿Algún dato adicional que considera importante reportar al colegio sobre el estado de salud de el/la estudiante?</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                        <input class="form-check-input" type="checkbox" value="1" id="AdicionalCheckChecked" />
+                                        <label class="form-check-label" for="AdicionalCheckChecked">
+                                            Sí
+                                        </label>
+                                    </div>
+                                    <div id="adicional-div" class="col-lg-6 fv-row" style="display: none;">
+                                        Especifique
+                                        <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Dato adicional" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Por favor escribir el nombre y teléfono de su pediatra de cabecera para casos de emergencia</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        Nombre del médico
+                                        <input type="text" name="nombre" class="form-control form-control-lg form-control-solid" placeholder="Nombre del médico pediatra" />
+                                        Teléfono del médico
+                                        <input type="text" name="telefono" class="form-control form-control-lg form-control-solid" placeholder="Telefono del médico pediatra" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Alergias</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                        <input class="form-check-input" type="checkbox" value="1" id="AlergiaCheckChecked" readonly />
+                                        <label class="form-check-label" for="AlergiaCheckChecked">
+                                            Sí
+                                        </label>
+                                    </div>
+                                    <div id="alergia-div" class="col-lg-6 fv-row" style="display: none;">
+                                        Especifique
+                                        <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Nombre de la alergia" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Restricciones alimenticias</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                        <input class="form-check-input" type="checkbox" value="1" id="ALimentoCheckChecked" />
+                                        <label class="form-check-label" for="ALimentoCheckChecked">
+                                            Sí
+                                        </label>
+                                    </div>
+                                    <div id="alimento-div" class="col-lg-6 fv-row" style="display: none;">
+                                        Especifique
+                                        <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Nombre de los alimentos restringidos" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+
+                            </div>
+                            <!--end::Card body-->
+                    </form>
+                    <!--end::Form-->
+                </div>
+                <!--end::Content-->
+            </div>
+        </div>
+
+    }
+    <!--begin::Col-->
+</div>
+</form>
+
+
+<script>var baseUrl = '@Url.Content("~/")';</script>
+

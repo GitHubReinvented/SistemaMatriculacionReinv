@@ -1,0 +1,102 @@
+﻿@using System.Security.Claims
+@using Domain;
+@using Newtonsoft.Json;
+
+@{
+    ViewData["Title"] = "Inicio";
+    KTTheme.AddVendors(new string[] { "amcharts", "amcharts-maps", "amcharts-stock" });
+    if (TempData["Error"] != null)
+    {
+        ViewBag.Error = TempData["Error"];
+    }
+    var representante = new Persona();
+}
+
+@*<div class="text-center">
+    <h1 class="display-4">Bienvenido @ViewData["nameUser"]</h1>
+</div>*@
+
+
+<!--begin::Row-->
+<!--div-- class="col-xxl-12">
+    
+    <div class="col-xl-12">
+        <partial name='~/Views/Partials/Widgets/Cards/_Progress_Bar.cshtml' />
+    </div>
+</div-->
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-info" role="alert">
+        @ViewBag.Error;
+    </div>
+}
+<div class="row gx-5 gx-xl-10">
+   @if (!representante.Representante)
+   {
+    <div class="col-xxl-6 mb-5 mb-xl-10">
+        @await Html.PartialAsync("~/Views/Partials/Widgets/Cards/_Card_Information.cshtml", new CardViewModel
+        {
+        Action = "Estudiante",
+        Controller = "Datos",
+        Title = "Estudiantes",
+        Description = "Paso 1",
+        Param = "Estudiante",
+        Icon = "fas fa-duotone fa-children text-light",
+        Color = "#fcda35"
+        })
+        
+ 
+
+    </div>
+    <div class="col-xxl-6 mb-5 mb-xl-10">
+        @await Html.PartialAsync("~/Views/Partials/Widgets/Cards/_Card_Information.cshtml", new CardViewModel
+        {
+        Action = "",
+        Controller = "",
+        Title = "Padres",
+        Description = "Paso 2",
+        Param = "Padres",
+        Icon = "fas fa-duotone fa-users me-1 text-light",
+        Color = "#3c7edd"
+        })
+        
+
+
+    </div>
+    <div class="col-xxl-6 mb-5 mb-xl-10">
+        @await Html.PartialAsync("~/Views/Partials/Widgets/Cards/_Card_Information.cshtml", new CardViewModel
+        {
+        Action = "",
+        Controller = "",
+        Title = "Autorizados a Retirar",
+        Description = "Paso 3",
+        Param = "services",
+        Icon = "fas fa-duotone fa-users me-1 text-light",
+        Color = "#a0a0a0"
+        })
+        
+
+
+    </div>
+        <div class="col-xxl-6 mb-5 mb-xl-10">
+            @await Html.PartialAsync("~/Views/Partials/Widgets/Cards/_Card_Information.cshtml", new CardViewModel
+        {
+        Action = "",
+        Controller = "",
+        Title = "Servicios",
+        Description = "",
+        Param = "services",
+        Icon = "fas fa-duotone fa-store text-light",
+        Color = "#a0a0a0"
+        })
+
+
+
+        </div>
+   }
+   else
+   {
+        <partial name='~/Views/Partials/Widgets/Cards/_Widget18.cshtml' />
+   }
+</div>
+<!--end::Row-->

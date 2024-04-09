@@ -1,0 +1,1946 @@
+﻿@using Domain;
+@model ListaUsuariosViewModel;
+
+@{
+    KTTheme.AddJavascriptFile("js/custom/utilities/modals/create-account.js");
+    KTTheme.AddJavascriptFile("js/custom/CheckBox/CheckEstudiante.js");
+    KTTheme.AddJavascriptFile("js/custom/utilities/modals/Admin.js");
+    KTTheme.AddJavascriptFile("js/custom/tables/AdminTable.js");
+    KTTheme.AddJavascriptFile("js/custom/utilities/modals/Subtable.js");
+    KTTheme.AddJavascriptFile("js/custom/utilities/modals/view-family.js");
+}
+<div class="card card-flush h-xl-100">
+    <!--begin::Header-->
+    <div class="card-header pt-7">
+        <!--begin::Title-->
+        <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold text-gray-800">Información</span>
+        </h3>
+        <!--end::Title-->
+    </div>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div class="card-body">
+        <!--begin::Nav-->
+        <ul class="nav nav-pills nav-pills-custom mb-3" role="tablist">
+            <!--begin::Item-->
+            <li class="nav-item mb-3 me-3 me-lg-6" role="presentation">
+                <!--begin::Link-->
+                <a class="nav-link btn btn-outline btn-flex btn-color-muted btn-active-color-primary flex-column overflow-hidden w-100px h-85px pt-5 pb-2 active" data-bs-toggle="pill" href="#kt_stats_widget_6_tab_1" aria-selected="true" role="tab">
+                    <!--begin::Icon-->
+                    <div class="nav-icon mb-3">
+                        <i class="fas fa-solid fa-children fs-1"></i>
+                    </div>
+                    <!--end::Icon-->
+                    <!--begin::Title-->
+                    <span class="nav-text text-gray-800 fw-bold fs-6 lh-1">
+                        Estudiantes
+                    </span>
+                    <!--end::Title-->
+                    <!--begin::Bullet-->
+                    <span class="bullet-custom position-absolute bottom-0 w-100 h-4px bg-primary"></span>
+                    <!--end::Bullet-->
+                </a>
+                <!--end::Link-->
+            </li>
+            <!--end::Item-->
+            <!--begin::Item-->
+            <li class="nav-item mb-3 me-3 me-lg-6" role="presentation">
+                <!--begin::Link-->
+                <a class="nav-link btn btn-outline btn-flex btn-color-muted btn-active-color-primary flex-column overflow-hidden w-80px h-85px pt-5 pb-2" data-bs-toggle="pill" href="#kt_stats_widget_6_tab_2" aria-selected="false" role="tab" tabindex="-1">
+                    <!--begin::Icon-->
+                    <div class="nav-icon mb-3">
+                        <i class="fas fa-solid fa-person fs-1"></i>
+                    </div>
+                    <!--end::Icon-->
+                    <!--begin::Title-->
+                    <span class="nav-text text-gray-800 fw-bold fs-6 lh-1">
+                        Padres
+                    </span>
+                    <!--end::Title-->
+                    <!--begin::Bullet-->
+                    <span class="bullet-custom position-absolute bottom-0 w-100 h-4px bg-primary"></span>
+                    <!--end::Bullet-->
+                </a>
+                <!--end::Link-->
+            </li>
+            @*            <li class="nav-item" role="presentation" style="margin-left: auto;">
+            <!--begin::Link-->
+            <a class="btn btn-primary er fs-6 px-8 py-4" data-bs-toggle="modal" data-bs-target="#kt_modal_create_account">
+            Nuevo
+            </a>
+            <!--end::Link-->
+            </li>*@
+            <!--end::Item-->
+        </ul>
+
+        <!--end::Nav-->
+        <!--begin::Tab Content-->
+        <div class="tab-content">
+            <!--begin::Tap pane-->
+            <div class="tab-pane fade active show" id="kt_stats_widget_6_tab_1" role="tabpanel">
+                <!--begin::Table container-->
+                <div class="d-flex justify-content-end flex-stack flex-wrap gap-4 p-4" data-select2-id="select2-data-231-nnxa">
+                    <!--begin::Destination-->
+                    <div class="d-flex align-items-center fw-bold" data-select2-id="select2-data-221-9fkq">
+                        <!--begin::Label-->
+                        <div class="text-gray-400 fs-7 me-2">Grado</div>
+                        <!--end::Label-->
+                        <!--begin::Select-->
+                        <select id="SelectGrado" class="form-select form-select-transparent text-graY-800 fs-base lh-1 fw-bold py-0 ps-3 w-auto" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="Seleccione" data-tabla-estudiante="filter_grado">
+                            <option></option>
+                            <option value="Show All" selected="selected">Mostrar todo</option>
+                            <option value="Prekinder">Prekinder</option>
+                            <option value="Primero">Primero</option>
+                            <option value="Segundo">Segundo</option>
+                            <option value="Tercero">Tercero</option>
+                            <option value="Cuarto">Cuarto</option>
+                        </select>
+                        <!--end::Select-->
+                    </div>
+                    <!--end::Destination-->
+                    <!--begin::Status-->
+                    <div class="d-flex align-items-center fw-bold">
+                        <!--begin::Label-->
+                        <div class="text-gray-400 fs-7 me-2">Escuela</div>
+                        <!--end::Label-->
+                        <!--begin::Select-->
+                        <select id="SelectEscuela" class="form-select form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3 w-auto" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="Seleccione" data-tabla-estudiante="filter_escuela">
+                            <option></option>
+                            <option value="Show All" selected="selected">Mostrar todo</option>
+                            <option value="Puembo">Puembo</option>
+                            <option value="Santa Clara">Santa Clara</option>
+                            <option value="IDV">IDV</option>
+                        </select>
+                        <!--end::Select-->
+                    </div>
+                    <!--end::Status-->
+                    <!--begin::Search-->
+                    <!--begin::Search-->
+                    <div class="position-relative my-1">
+                        @Html.Raw(KTTheme.GetIcon("magnifier", "fs-2 position-absolute top-50 translate-middle-y ms-4"))
+                        <input id="searchHijo" type="text" class="form-control w-150px fs-7 ps-12" placeholder="Buscar" />
+                    </div>
+                    <!--end::Search-->
+                    <!--end::Search-->
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle table-row-dashed fs-6 gy-3" id="table_estudiante" data-url="@ViewBag.BaseUrl">
+                        <!--begin::Table head-->
+                        <thead>
+                            <!--begin::Table row-->
+                            <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                                <th>Nombre</th>
+                                <th>Edad</th>
+                                <th>Grado</th>
+                                <th>Cédula</th>
+                                <th>Escuela</th>
+                                <th>Acciones</th>
+                            </tr>
+                            <!--end::Table row-->
+                        </thead>
+                        <!--end::Table head-->
+                        <!--begin::Table body-->
+                        <tbody class="fw-bold text-gray-600">
+                        </tbody>
+                        <!--end::Table body-->
+                    </table>
+                </div>
+                <!--end::Table-->
+            </div>
+            <!--end::Tap pane-->
+            <!--begin::Tap pane-->
+            <div class="tab-pane fade" id="kt_stats_widget_6_tab_2" role="tabpanel">
+                <div class="d-flex justify-content-end flex-stack flex-wrap gap-4 p-4" data-select2-id="select2-data-231-nnxa">
+                    <!--begin::Status-->
+                    <div class="d-flex align-items-center fw-bold">
+                        <!--begin::Label-->
+                        <div class="text-gray-400 fs-7 me-2">Escuela</div>
+                        <!--end::Label-->
+                        <!--begin::Select-->
+                        <select id="SelectPadreSucursal" class="form-select form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3 w-auto" data-control="select2" data-hide-search="true" data-dropdown-css-class="w-150px" data-placeholder="Seleccione" data-tabla-padre="filter_escuela">
+                            <option></option>
+                            <option value="Show All" selected="selected">Mostrar todo</option>
+                            <option value="Puembo">Puembo</option>
+                            <option value="Santa Clara">Santa Clara</option>
+                            <option value="IDV">IDV</option>
+                        </select>
+                        <!--end::Select-->
+                    </div>
+                    <!--end::Status-->
+                    <!--begin::Search-->
+                    <!--begin::Search-->
+                    <div class="position-relative my-1">
+                        @Html.Raw(KTTheme.GetIcon("magnifier", "fs-2 position-absolute top-50 translate-middle-y ms-4"))
+                        <input id="searchPadre" type="text" class="form-control w-150px fs-7 ps-12" placeholder="Buscar" />
+                    </div>
+                    <!--end::Search-->
+                    <!--end::Search-->
+                </div>
+                <!--begin::Table container-->
+                <table class="table align-middle table-row-dashed fs-6 gy-3" id="table_padre">
+                    <!--begin::Table head-->
+                    <thead>
+                        <!--begin::Table row-->
+                        <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                            <th>Nombre</th>
+                            <th>Cédula</th>
+                            <th>Telefono</th>
+                            <th>Sucursal</th>
+                            <th></th>
+                        </tr>
+                        <!--end::Table row-->
+                    </thead>
+                    <tbody class="fw-bold text-gray-600">
+                    </tbody>
+                    <!--end::Table body-->
+                </table>
+                <!--end::Table-->
+            </div>
+        </div>
+
+        <div class="modal fade" tabindex="-1" id="eyeModal">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 900px;width: 100%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Datos estudiante</h3>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="card-body border-top p-9">
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto del estudiante</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8">
+                                    <!--begin::Image input-->
+                                    <div class="image-input image-input-outline" data-kt-image-input="true">
+                                        <!--begin::Preview existing avatar-->
+                                        <div class="image-input-wrapper w-125px h-125px" id="modalImagenWrapper">
+                                            <img id="modalImagen" src="" alt="">
+                                        </div>
+                                        <!--end::Preview existing avatar-->
+                                        <!--end::Remove-->
+                                    </div>
+                                    <!--end::Image input-->
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--Nombres-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8">
+                                    <!--begin::Row-->
+                                    <div class="row">
+                                        <!--begin::Col-->
+                                        <div class="col-lg-8 fv-row">
+                                            <input id="Nombres" type="text" name="fname" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Nombres" readonly />
+                                        </div>
+                                        <!--end::Col-->
+                                    </div>
+                                    <!--end::Row-->
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--Apellidos-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">N° de documento de Identidad</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <!-- SUBIR PDF-->
+                                <div class="col-lg-8 fv-row">
+                                    <div class="form-group" style="padding-top: 10px;">
+
+                                        <!--begin::Image input-->
+                                        <div class="col-lg-8 fv-row">
+                                            <!-- SUBIR PDF-->
+                                            <input id="Cedula" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Documento" readonly />
+                                        </div>
+                                    </div>
+
+                                    <!--end::Hint-->
+
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Edad</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="fechaNacimiento" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Fecha de nacimiento" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Grado</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <!--begin::Menu-->
+                                    <!--begin::Input group-->
+                                    <input id="Grado" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Grado" readonly />
+                                    <!--end::Input group-->
+                                    <!--end::Menu-->
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                    <span>Escuela</span>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="Escuela" type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Escuela" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                    <span>Tipo de Estudiante</span>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="IdTipoEstudiante" type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Tipo estudiante" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                        </div>
+                        @*<h3>Datos de la salud del estudiante</h3>
+                        <div class="card-body border-top p-9">
+                        <!--Nombres-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8">
+                        <!--begin::Row-->
+                        <div class="row">
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                        <input id="Nombres" type="text" name="fname" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Nombres" readonly />
+                        </div>
+                        <!--end::Col-->
+                        </div>
+                        <!--end::Row-->
+                        </div>
+                        <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--Apellidos-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">N° de documento de Identidad</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <!-- SUBIR PDF-->
+                        <div class="col-lg-8 fv-row">
+                        <div class="form-group" style="padding-top: 10px;">
+
+                        <!--begin::Image input-->
+                        <div class="col-lg-8 fv-row">
+                        <!-- SUBIR PDF-->
+                        <input id="Cedula" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Documento" readonly />
+                        </div>
+                        </div>
+
+                        <!--end::Hint-->
+
+                        </div>
+                        <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Edad</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                        <input id="fechaNacimiento" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Fecha de nacimiento" readonly />
+                        </div>
+                        <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Grado</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                        <!--begin::Menu-->
+                        <!--begin::Input group-->
+                        <input id="Grado" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Grado" readonly />
+                        <!--end::Input group-->
+                        <!--end::Menu-->
+                        </div>
+                        <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                        <span>Escuela</span>
+                        </label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                        <input id="Escuela" type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Escuela" readonly />
+                        </div>
+                        <!--end::Col-->
+                        </div>
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                        <span>Tipo de Estudiante</span>
+                        </label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-8 fv-row">
+                        <input id="IdTipoEstudiante" type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Tipo estudiante" readonly />
+                        </div>
+                        <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+                        </div>*@
+
+
+                        <h3>Archivos descargables:</h3>
+                        <div class="card-body p-9">
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6 d-grid align-items-start">
+                                    <span>Identificación</span>
+                                    <a href="#" id="pdfLink" target="_blank">
+                                        <i class="far fa-solid fa-file-pdf"></i> Descargar PDF
+                                    </a>
+                                </label>
+                            </div>
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6 d-grid align-items-start">
+                                    <span>Contrato servicios estudiantiles</span>
+                                    <a href="#" id="pdfContratoEst" target="_blank">
+                                        <i class="far fa-solid fa-file-pdf"></i> Descargar PDF
+                                    </a>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" tabindex="-1" id="eyeModalPadres">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 900px;width: 100%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Datos Padres</h3>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="card-body border-top p-9">
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8">
+                                    <!--begin::Image input-->
+                                    <div class="image-input image-input-outline" data-kt-image-input="true">
+                                        <!--begin::Preview existing avatar-->
+                                        <div class="image-input-wrapper w-125px h-125px" id="modalImagenWrapper">
+                                            <img id="modalImagenPadre" src="" alt="">
+                                        </div>
+                                        <!--end::Preview existing avatar-->
+                                        <!--end::Remove-->
+                                    </div>
+                                    <!--end::Image input-->
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--Nombres-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8">
+                                    <!--begin::Row-->
+                                    <div class="row">
+                                        <!--begin::Col-->
+                                        <div class="col-lg-6 fv-row">
+                                            <input id="NombresP" type="text" name="fname" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Nombres" readonly />
+                                        </div>
+                                        <!--end::Col-->
+                                    </div>
+                                    <!--end::Row-->
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--Apellidos-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">N° de documento de Identidad</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <!-- SUBIR PDF-->
+                                <div class="col-lg-8 fv-row">
+                                    <div class="form-group" style="padding-top: 10px;">
+
+                                        <!--begin::Image input-->
+                                        <div class="col-lg-8 fv-row">
+                                            <!-- SUBIR PDF-->
+                                            <input id="CedulaP" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Documento" readonly />
+                                        </div>
+                                    </div>
+
+                                    <!--end::Hint-->
+
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Teléfono</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="TelefonoP" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Fecha de nacimiento" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Escuela</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <!--begin::Menu-->
+                                    <!--begin::Input group-->
+                                    <input id="EscuelaPadres" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Grado" readonly />
+                                    <!--end::Input group-->
+                                    <!--end::Menu-->
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                    <span>Correo</span>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="CorreoPadre" type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Teléfono de domicilio" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                    <span>Profesión</span>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="ProfesionPadre" type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Teléfono de domicilio" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                    <span>Lugar de Trabajo</span>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="TrabajoPadre" type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Teléfono de domicilio" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                    <span>Cargo</span>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="CargoPadre" type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Teléfono de domicilio" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                    <span>Autorizado a retirar al estudiante</span>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="Autorizado" type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Teléfono de domicilio" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                        </div>
+                        <h3>Archivos descargables:</h3>
+                        <div class="card-body p-9">
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6 d-grid align-items-start">
+                                    <span>Identificación</span>
+                                    <a href="#" id="pdfLinkPadres" target="_blank">
+                                        <i class="far fa-solid fa-file-pdf"></i> Descargar PDF
+                                    </a>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+
+                            </div>
+
+                            <div id="ContratoRepresentante" class="row mb-6" style="display:none">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6 d-grid align-items-start">
+                                    <span>Contrato de servicios estudiantiles</span>
+                                </label>
+                                <a href="#" id="pdfContrato" target="_blank">
+                                    <i class="far fa-solid fa-file-pdf"></i> Descargar PDF
+                                </a>
+                                <!--end::Label-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--begin::Modals-->
+        <!--begin::Modal - Create account FORM PRINCIPAL-->
+        <div class="modal fade" id="kt_modal_create_account" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+            <!--begin::Modal dialog-->
+            <div class="modal-dialog" style="max-width: 1100px;width: 100%;">
+                <!--begin::Modal content-->
+                <div class="modal-content">
+                    <!--begin::Modal header-->
+                    <div class="modal-header">
+                        <!--begin::Title-->
+                        <h2>Crear nuevo</h2>
+                        <!--end::Title-->
+                        <!--begin::Close-->
+                        <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                            <i class="ki-duotone ki-cross fs-1">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+                    <!--end::Modal header-->
+                    <!--begin::Modal body-->
+                    <div class="modal-body scroll-y m-5">
+                        <!--begin::Stepper-->
+                        <div class="stepper stepper-links d-flex flex-column" id="kt_create_account_stepper">
+                            <!--begin::Nav-->
+                            <div class="stepper-nav py-5">
+                                <!--begin::Step 1-->
+                                <div class="stepper-item current" data-kt-stepper-element="nav">
+                                    <h3 class="stepper-title">Datos del niño</h3>
+                                </div>
+                                <!--end::Step 1-->
+                                <!--begin::Step 2-->
+                                <div class="stepper-item" data-kt-stepper-element="nav">
+                                    <h3 class="stepper-title">Datos complementarios</h3>
+                                </div>
+                                <!--end::Step 2-->
+                                <!--begin::Step 3-->
+                                <div class="stepper-item" data-kt-stepper-element="nav">
+                                    <h3 class="stepper-title">Padres</h3>
+                                </div>
+                                <!--end::Step 3-->
+                                <!--begin::Step 4-->
+                                <div class="stepper-item" data-kt-stepper-element="nav">
+                                    <h3 class="stepper-title">Creación de usuario</h3>
+                                </div>
+                                <!--end::Step 4-->
+                                <!--begin::Step 5-->
+                                <div class="stepper-item" data-kt-stepper-element="nav">
+                                    <h3 class="stepper-title">Tipo de descuentos</h3>
+                                </div>
+                                <!--end::Step 5-->
+                                <!--begin::Step 6-->
+                                <div class="stepper-item" data-kt-stepper-element="nav">
+                                    <h3 class="stepper-title">Completado</h3>
+                                </div>
+                                <!--end::Step 6-->
+                            </div>
+                            <!--end::Nav-->
+                            <!-- FORM REGISTRAR NUEVO -->
+                            <!--begin::Form-->
+                            <form action="/Home/RegistrarNuevo" method="post" class="mx-auto mw-600px w-100 py-10" novalidate="novalidate" id="kt_create_account_form">
+                                <!--begin::Step 1-->
+                                <div class="current" data-kt-stepper-element="content">
+                                    <!--begin::Wrapper-->
+                                    <div class="w-100">
+                                        <div class="pb-10 pb-lg-12">
+                                            <!--begin::Title-->
+                                            <h2 class="fw-bold text-dark">Datos del estudiante</h2>
+                                            <!--end::Title-->
+                                        </div>
+                                        <!--begin::Input group-->
+                                        <div class="fv-row">
+
+                                            <div class="card-body">
+                                                <!--begin::Input group-->
+                                                <div class="row mb-6">
+                                                    <!--begin::Label-->
+                                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto del estudiante</label>
+                                                    <!--end::Label-->
+                                                    <!--begin::Col-->
+                                                    <div class="col-lg-8">
+                                                        <!--begin::Image input-->
+                                                        <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))">
+                                                            <!--begin::Preview existing avatar-->
+                                                            <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))"></div>
+                                                            <!--end::Preview existing avatar-->
+                                                            <!--begin::Label-->
+                                                            <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                                                <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                                                <!--begin::Inputs-->
+                                                                <input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
+                                                                <input type="hidden" name="avatar_remove" />
+                                                                <!--end::Inputs-->
+                                                            </label>
+                                                            <!--end::Label-->
+                                                            <!--begin::Cancel-->
+                                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                                                <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                                            </span>
+                                                            <!--end::Cancel-->
+                                                            <!--begin::Remove-->
+                                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover imagen">
+                                                                <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                                            </span>
+                                                            <!--end::Remove-->
+                                                        </div>
+                                                        <!--end::Image input-->
+                                                        <!--begin::Hint-->
+                                                        <div class="form-text">Tipos permitidos:  png, jpg, jpeg.</div>
+                                                        <!--end::Hint-->
+                                                    </div>
+                                                    <!--end::Col-->
+                                                </div>
+                                                <!--end::Input group-->
+                                                <!--Nombres-->
+                                                <!--begin::Input group-->
+                                                <div class="row mb-6">
+                                                    <!--begin::Label-->
+                                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres Completos</label>
+                                                    <!--end::Label-->
+                                                    <!--begin::Col-->
+                                                    <div class="col-lg-8">
+                                                        <!--begin::Row-->
+                                                        <div class="row">
+                                                            <!--begin::Col-->
+                                                            <div class="col-lg-6 fv-row">
+                                                                <input type="text" name="NombresEst" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Nombres" />
+                                                            </div>
+                                                            <!--end::Col-->
+                                                        </div>
+                                                        <!--end::Row-->
+                                                    </div>
+                                                    <!--end::Col-->
+                                                </div>
+                                                <!--end::Input group-->
+                                                <!--Apellidos-->
+                                                <!--begin::Input group-->
+                                                <div class="row mb-6">
+                                                    <!--begin::Label-->
+                                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Apellidos completos</label>
+                                                    <!--end::Label-->
+                                                    <!--begin::Col-->
+                                                    <div class="col-lg-8">
+                                                        <!--begin::Row-->
+                                                        <div class="row">
+                                                            <!--begin::Col-->
+                                                            <div class="col-lg-6 fv-row">
+                                                                <input type="text" name="ApellidoEst" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" />
+                                                            </div>
+                                                            <!--end::Col-->
+                                                        </div>
+                                                        <!--end::Row-->
+                                                    </div>
+                                                    <!--end::Col-->
+                                                </div>
+                                                <!--end::Input group-->
+                                                <!--begin::Input group-->
+                                                <div class="row mb-6">
+                                                    <!--begin::Label-->
+                                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">N° de documento de Identidad</label>
+                                                    <!--end::Label-->
+                                                    <!--begin::Col-->
+                                                    <!-- SUBIR PDF-->
+                                                    <div class="col-lg-8 fv-row">
+                                                        <div class="form-group" style="padding-top: 10px;">
+
+                                                            <!--begin::Image input-->
+                                                            <div class="col-lg-8 fv-row">
+                                                                <!-- SUBIR PDF-->
+                                                                <input type="text" name="CedulaEst" class="form-control form-control-lg form-control-solid" placeholder="Cedula o Pasaporte" />
+                                                                <!--begin::Modal - Upload File-->
+                                                            </div>
+                                                            <!--end::Image input-->
+                                                        </div>
+
+                                                        <!--end::Hint-->
+
+                                                    </div>
+                                                    <!--end::Col-->
+                                                </div>
+                                                <!--end::Input group-->
+                                                <!--begin::Input group-->
+                                                <div class="row mb-6">
+                                                    <!--begin::Label-->
+                                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Fecha de nacimiento</label>
+                                                    <!--end::Label-->
+                                                    <!--begin::Col-->
+                                                    <div class="col-lg-8 fv-row">
+                                                        <div class="input-group" id="kt_td_picker_date_only" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                                            <input id="kt_td_picker_date_only_input" type="text" class="form-control" data-td-target="#kt_td_picker_date_only" />
+                                                            <span class="input-group-text" data-td-target="#kt_td_picker_date_only" data-td-toggle="datetimepicker">
+                                                                <i class="ki-duotone ki-calendar fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::Col-->
+                                                </div>
+                                                <!--end::Input group-->
+                                                <!--begin::Input group-->
+                                                <div class="row mb-6">
+                                                    <!--begin::Label-->
+                                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Grado</label>
+                                                    <!--end::Label-->
+                                                    <!--begin::Col-->
+                                                    <div class="col-lg-8 fv-row">
+                                                        <!--begin::Menu-->
+                                                        <!--begin::Input group-->
+                                                        <div class="form-floating">
+                                                            <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                                                <option selected>Seleccione el grado</option>
+                                                                <option value="1">Primero</option>
+                                                                <option value="2">Segundo</option>
+                                                                <option value="3">Tercero</option>
+                                                            </select>
+                                                            <label for="floatingSelect">Grado del estudiante</label>
+                                                        </div>
+                                                        <!--end::Input group-->
+                                                        <!--end::Menu-->
+                                                    </div>
+                                                    <!--end::Col-->
+                                                </div>
+                                                <!--end::Input group-->
+                                                <!--begin::Input group-->
+                                                <div class="row mb-6">
+                                                    <!--begin::Label-->
+                                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Dirección</label>
+                                                    <!--end::Label-->
+                                                    <!--begin::Col-->
+                                                    <div class="col-lg-8 fv-row">
+                                                        <input type="text" name="DireccionEst" class="form-control form-control-lg form-control-solid" placeholder="Dirección Exacta de residencia" />
+                                                    </div>
+                                                    <!--end::Col-->
+                                                </div>
+                                                <!--end::Input group-->
+                                                <!--begin::Input group-->
+                                                <div class="row mb-6">
+                                                    <!--begin::Label-->
+                                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Código único eléctrico</label>
+                                                    <!--end::Label-->
+                                                    <!--begin::Col-->
+                                                    <div class="col-lg-8 fv-row">
+                                                        <input type="text" name="CodigoelecEst" class="form-control form-control-lg form-control-solid" placeholder="Código único eléctrico (Planilla de luz eléctrica)" />
+                                                    </div>
+                                                    <!--end::Col-->
+                                                </div>
+                                                <!--end::Input group-->
+                                                <!--begin::Input group-->
+                                                <div class="row mb-6">
+                                                    <!--begin::Label-->
+                                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                                        <span>Teléfono de domicilio</span>
+                                                    </label>
+                                                    <!--end::Label-->
+                                                    <!--begin::Col-->
+                                                    <div class="col-lg-8 fv-row">
+                                                        <input type="tel" name="TelefonoEst" class="form-control form-control-lg form-control-solid" placeholder="Teléfono de domicilio" />
+                                                    </div>
+                                                    <!--end::Col-->
+                                                </div>
+                                                <!--end::Input group-->
+                                            </div>
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+                                    <!--end::Wrapper-->
+                                </div>
+                                <!--end::Step 1-->
+                                <!--begin::Step 2-->
+                                <div data-kt-stepper-element="content">
+                                    <!--begin::Wrapper-->
+                                    <div class="w-100">
+                                        <div class="pb-10 pb-lg-12">
+                                            <!--begin::Title-->
+                                            <h2 class="fw-bold text-dark">Salud del estudiante</h2>
+                                            <!--end::Title-->
+                                        </div>
+                                        <!--begin::Input group-->
+                                        <div class="row mb-6">
+                                            <!--begin::Label-->
+                                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Peso</label>
+                                            <!--end::Label-->
+                                            <!--begin::Col-->
+                                            <div class="col-lg-8">
+                                                <!--begin::Row-->
+                                                <div class="row">
+                                                    <!--begin::Col-->
+                                                    <div class="col-lg-8 fv-row">
+                                                        <input type="text" name="PesoEst" class="form-control form-control-lg form-control-solid" placeholder="Peso en kilos" />
+                                                    </div>
+                                                    <!--end::Col-->
+                                                </div>
+                                                <!--end::Row-->
+                                            </div>
+                                            <!--end::Col-->
+                                        </div>
+                                        <!--end::Input group-->
+                                        <!--Apellidos-->
+                                        <!--begin::Input group-->
+                                        <div class="row mb-6">
+                                            <!--begin::Label-->
+                                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Talla</label>
+                                            <!--end::Label-->
+                                            <!--begin::Col-->
+                                            <div class="col-lg-8">
+                                                <!--begin::Row-->
+                                                <div class="row">
+                                                    <!--begin::Col-->
+                                                    <div class="col-lg-8 fv-row">
+                                                        <input type="text" name="TallaEst" class="form-control form-control-lg form-control-solid" placeholder="Talla en centímetros" />
+                                                    </div>
+                                                    <!--end::Col-->
+                                                </div>
+                                                <!--end::Row-->
+                                            </div>
+                                            <!--end::Col-->
+                                        </div>
+                                        <!--end::Input group-->
+                                        <!--begin::Input group-->
+                                        <div class="row mb-6">
+                                            <label class="col-lg-4 col-form-label fw-semibold fs-6">¿El/la estudiante está vacunado/a contra covid 19?</label>
+                                            <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                                <input class="form-check-input" type="checkbox" value="1" id="flexCheckChecked" />
+                                                <label class="form-check-label" for="flexCheckChecked">
+                                                    Sí
+                                                </label>
+                                            </div>
+                                            <div id="third-div" class="col-lg-6 fv-row" style="display: none;">
+                                                ¿Cuantas dosis?
+                                                <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Ingrese número de dosis" />
+                                            </div>
+                                        </div>
+
+                                        <!--end::Input group-->
+                                        <!--begin::Input group-->
+                                        <div class="row mb-6">
+                                            <label class="col-lg-4 col-form-label fw-semibold fs-6">¿Tiene el/la estudiante alguna enfermedad crónica?</label>
+                                            <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                                <input class="form-check-input" type="checkbox" value="1" id="EnfermedadCheckChecked" />
+                                                <label class="form-check-label" for="EnfermedadCheckChecked">
+                                                    Sí
+                                                </label>
+                                            </div>
+                                            <div id="enfermedad-div" class="col-lg-6 fv-row" style="display: none;">
+                                                Especifique
+                                                <input type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Enfermedad crónica" />
+                                            </div>
+                                            <!--end::Col-->
+                                        </div>
+                                        <!--end::Input group-->
+                                        <!--end::Input group-->
+
+                                    </div>
+                                    <!--end::Wrapper-->
+                                </div>
+                                <!--end::Step 2-->
+                                <!--begin::Step 3-->
+                                <div data-kt-stepper-element="content">
+                                    <!--begin::Wrapper-->
+                                    <div class="w-100">
+                                        <!--Madre-->
+                                        <div class="card">
+                                            <!--begin::Card header-->
+                                            <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                                                <!--begin::Card title-->
+                                                <div class="card-title m-0">
+                                                    <h3 class="fw-bold m-0">Madre</h3>
+                                                </div>
+                                                <!--end::Card title-->
+                                            </div>
+                                            <!--begin::Card header-->
+                                            <!--begin::Content-->
+                                            <div id="kt_account_settings_profile_details" class="collapse show">
+                                                <!--begin::Form-->
+                                                <!--begin::Card body-->
+                                                <div class="card-body border-top">
+
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto de perfil</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8">
+                                                            <!--begin::Image input-->
+                                                            <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))">
+                                                                <!--begin::Preview existing avatar-->
+                                                                <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))"></div>
+                                                                <!--end::Preview existing avatar-->
+                                                                <!--begin::Label-->
+                                                                <label style="background-color: var(--bs-primary) !important;" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                                                    <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                                                    <!--begin::Inputs-->
+                                                                    <input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
+                                                                    <input type="hidden" name="avatar_remove" />
+                                                                    <!--end::Inputs-->
+                                                                </label>
+                                                                <!--end::Label-->
+                                                                <!--begin::Cancel-->
+                                                                <span style="background-color: var(--bs-primary) !important;" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                                                    <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                                                </span>
+                                                                <!--end::Cancel-->
+                                                                <!--begin::Remove-->
+                                                                <span style="background-color: var(--bs-primary) !important;" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Quitar imagen">
+                                                                    <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                                                </span>
+                                                                <!--end::Remove-->
+                                                            </div>
+                                                            <!--end::Image input-->
+                                                            <!--begin::Hint-->
+                                                            <div class="form-text">Tipos permitidos:  png, jpg, jpeg.</div>
+                                                            <!--end::Hint-->
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--Nombres-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres Completos</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8">
+                                                            <!--begin::Row-->
+                                                            <div class="row">
+                                                                <!--begin::Col-->
+                                                                <div class="col-lg-8 fv-row">
+                                                                    <input type="text" name="NombresMadre" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Nombres" />
+                                                                </div>
+                                                                <!--end::Col-->
+                                                            </div>
+                                                            <!--end::Row-->
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--Apellidos-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Apellidos completos</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8">
+                                                            <!--begin::Row-->
+                                                            <div class="row">
+                                                                <!--begin::Col-->
+                                                                <div class="col-lg-8 fv-row">
+                                                                    <input type="text" name="ApellidosMadre" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" />
+                                                                </div>
+                                                                <!--end::Col-->
+                                                            </div>
+                                                            <!--end::Row-->
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">N° de documento de Identidad</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <!-- SUBIR PDF-->
+                                                        <div class="col-lg-8 fv-row">
+                                                            <!-- SUBIR PDF-->
+                                                            <input type="text" name="CedulaMadre" class="form-control form-control-lg form-control-solid" placeholder="Documento" />
+                                                            <!--begin::Modal - Upload File-->
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Profesión</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8 fv-row">
+                                                            <input type="text" name="ProfesionMadre" class="form-control form-control-lg form-control-solid" placeholder="Profesión" />
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Lugar de trabajo</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8 fv-row">
+                                                            <input type="text" name="LugartrabajoMadre" class="form-control form-control-lg form-control-solid" placeholder="Lugar de trabajo" />
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Cargo</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8 fv-row">
+                                                            <input type="text" name="CargoMadre" class="form-control form-control-lg form-control-solid" placeholder="Cargo" />
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                                            <span>Teléfono celular</span>
+                                                        </label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8 fv-row">
+                                                            <input type="tel" name="CelularMadre" class="form-control form-control-lg form-control-solid" placeholder="09XXXXXXXX" />
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Correo electrónico</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8 fv-row">
+                                                            <input type="text" name="CorreoMadre" class="form-control form-control-lg form-control-solid" placeholder="Correo electrónico" />
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <!--end::Input group-->
+                                                </div>
+                                                <!--end::Form-->
+                                            </div>
+                                            <!--end::Content-->
+                                        </div>
+                                        <!--Padre-->
+
+                                        <div class="card">
+                                            <!--begin::Card header-->
+                                            <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                                                <!--begin::Card title-->
+                                                <div class="card-title m-0">
+                                                    <h3 class="fw-bold m-0">Padre</h3>
+                                                </div>
+                                                <!--end::Card title-->
+                                            </div>
+                                            <!--begin::Card header-->
+                                            <!--begin::Content-->
+                                            <div id="kt_account_settings_profile_details" class="collapse show">
+                                                <!--begin::Form-->
+                                                <!--begin::Card body-->
+                                                <div class="card-body border-top">
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto de perfil</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8">
+                                                            <!--begin::Image input-->
+                                                            <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))">
+                                                                <!--begin::Preview existing avatar-->
+                                                                <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))"></div>
+                                                                <!--end::Preview existing avatar-->
+                                                                <!--begin::Label-->
+                                                                <label style="background-color: var(--bs-primary) !important;" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                                                    <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                                                    <!--begin::Inputs-->
+                                                                    <input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
+                                                                    <input type="hidden" name="avatar_remove" />
+                                                                    <!--end::Inputs-->
+                                                                </label>
+                                                                <!--end::Label-->
+                                                                <!--begin::Cancel-->
+                                                                <span style="background-color: var(--bs-primary) !important;" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancelar">
+                                                                    <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                                                </span>
+                                                                <!--end::Cancel-->
+                                                                <!--begin::Remove-->
+                                                                <span style="background-color: var(--bs-primary) !important;" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Quitar imagen">
+                                                                    <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                                                </span>
+                                                                <!--end::Remove-->
+                                                            </div>
+                                                            <!--end::Image input-->
+                                                            <!--begin::Hint-->
+                                                            <div class="form-text">Tipos permitidos:  png, jpg, jpeg.</div>
+                                                            <!--end::Hint-->
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--Nombres-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres Completos</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8">
+                                                            <!--begin::Row-->
+                                                            <div class="row">
+                                                                <!--begin::Col-->
+                                                                <div class="col-lg-8 fv-row">
+                                                                    <input type="text" name="NombresPadre" class="form-control form-control-lg form-control-solid" placeholder="Nombres" />
+                                                                </div>
+                                                                <!--end::Col-->
+                                                            </div>
+                                                            <!--end::Row-->
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--Apellidos-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Apellidos completos</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8">
+                                                            <!--begin::Row-->
+                                                            <div class="row">
+                                                                <!--begin::Col-->
+                                                                <div class="col-lg-8 fv-row">
+                                                                    <input type="text" name="ApellidosPadre" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" />
+                                                                </div>
+                                                                <!--end::Col-->
+                                                            </div>
+                                                            <!--end::Row-->
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">N° de documento de Identidad</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <!-- SUBIR PDF-->
+                                                        <div class="col-lg-8 fv-row">
+                                                            <!-- SUBIR PDF-->
+                                                            <input type="text" name="CedulaPadre" class="form-control form-control-lg form-control-solid" placeholder="Documento" />
+                                                            <!--begin::Modal - Upload File-->
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Profesión</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8 fv-row">
+                                                            <input type="text" name="ProfesionPadre" class="form-control form-control-lg form-control-solid" placeholder="Profesión" />
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Lugar de trabajo</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8 fv-row">
+                                                            <input type="text" name="LugartrabajoPadre" class="form-control form-control-lg form-control-solid" placeholder="Lugar de trabajo" />
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Cargo</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8 fv-row">
+                                                            <input type="text" name="CargoPadre" class="form-control form-control-lg form-control-solid" placeholder="Cargo" />
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                                            <span>Teléfono celular</span>
+                                                        </label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8 fv-row">
+                                                            <input type="tel" name="CelularPadre" class="form-control form-control-lg form-control-solid" placeholder="09XXXXXXXX" />
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-6">
+                                                        <!--begin::Label-->
+                                                        <label class="col-lg-4 col-form-label fw-semibold fs-6">Correo electrónico</label>
+                                                        <!--end::Label-->
+                                                        <!--begin::Col-->
+                                                        <div class="col-lg-8 fv-row">
+                                                            <input type="text" name="CorreoPadre" class="form-control form-control-lg form-control-solid" placeholder="Correo electrónico" />
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                </div>
+
+                                                <!--end::Input group-->
+                                            </div>
+                                            <!--end::Card body-->
+
+                                        </div>
+                                    </div>
+                                    <!--end::Wrapper-->
+                                </div>
+                                <!--end::Step 3-->
+                                <!--begin::Step 4-->
+                                <div data-kt-stepper-element="content">
+                                    <!--begin::Wrapper-->
+                                    <div class="w-100">
+                                        <!--begin::Heading-->
+                                        <div class="pb-10 pb-lg-15">
+                                            <!--begin::Title-->
+                                            <h2 class="fw-bold text-dark">Seleccione quien quiere que sea el representante</h2>
+                                            <!--end::Title-->
+                                        </div>
+                                        <!--end::Heading-->
+                                        <!--begin::Input group-->
+                                        <div class="fv-row">
+                                            <!--begin::Row-->
+                                            <div class="row">
+                                                <!--begin::Col-->
+                                                <div class="col-lg-6">
+                                                    <!--begin::Option-->
+                                                    <input type="radio" class="btn-check" name="account_type" value="Padre" checked="checked" id="kt_create_account_form_account_type_personal" />
+                                                    <label class="btn btn-outline btn-outline-dashed btn-active-light-primary p-7 d-flex align-items-center mb-10" for="kt_create_account_form_account_type_personal">
+                                                        <i class="fas fa-solid fa-person fs-2tx" style="padding-right: 20px"></i>
+                                                        <!--begin::Info-->
+                                                        <span class="d-block fw-semibold text-start">
+                                                            <span class="text-dark fw-bold d-block fs-4 mb-2">Padre</span>
+                                                        </span>
+                                                        <!--end::Info-->
+                                                    </label>
+                                                    <!--end::Option-->
+                                                </div>
+                                                <!--end::Col-->
+                                                <!--begin::Col-->
+                                                <div class="col-lg-6">
+                                                    <!--begin::Option-->
+                                                    <input type="radio" class="btn-check" name="account_type" value="Madre" id="kt_create_account_form_account_type_corporate" />
+                                                    <label class="btn btn-outline btn-outline-dashed btn-active-light-primary p-7 d-flex align-items-center mb-10" for="kt_create_account_form_account_type_corporate">
+                                                        <i class="fas fa-solid fa-person-dress fs-2tx" style="padding-right: 20px"></i>
+                                                        <!--begin::Info-->
+                                                        <span class="d-block fw-semibold text-start">
+                                                            <span class="text-dark fw-bold d-block fs-4 mb-2">Madre</span>
+                                                        </span>
+                                                        <!--end::Info-->
+                                                    </label>
+                                                    <!--end::Option-->
+                                                </div>
+                                                <!--end::Col-->
+                                            </div>
+                                            <!--end::Row-->
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+                                    <!--end::Wrapper-->
+                                </div>
+                                <!--end::Step 4-->
+                                <!--begin::Step 5-->
+                                <div data-kt-stepper-element="content">
+                                    <div class="w-100">
+                                        <!--begin::Heading-->
+                                        <div class="pb-10 pb-lg-15">
+                                            <!--begin::Title-->
+                                            <h2 class="fw-bold text-dark">Escoja el tipo de descuento</h2>
+                                            <!--end::Title-->
+                                        </div>
+                                        <!--end::Heading-->
+                                        <!--begin::Input group-->
+                                        <div class="fv-row">
+                                            <!--begin::Row-->
+                                            <div class="row">
+                                                <!--begin::Col-->
+                                                <div class="col-lg-4">
+                                                    <!--begin::Option-->
+                                                    <input type="radio" class="btn-check" name="account_type" value="personal" checked="checked" id="kt_create_account_form_account_type_personal" />
+                                                    <label class="btn btn-outline btn-outline-dashed btn-active-light-primary p-7 d-flex align-items-center mb-10" for="kt_create_account_form_account_type_personal">
+                                                        <!--begin::Info-->
+                                                        <span class="d-block fw-semibold text-start">
+                                                            <span class="text-dark fw-bold d-block fs-4 mb-2">Normal</span>
+                                                            <span class="text-muted fw-semibold fs-6">Información del descuento</span>
+                                                        </span>
+                                                        <!--end::Info-->
+                                                    </label>
+                                                    <!--end::Option-->
+                                                </div>
+                                                <!--end::Col-->
+                                                <!--begin::Col-->
+                                                <div class="col-lg-4">
+                                                    <!--begin::Option-->
+                                                    <input type="radio" class="btn-check" name="account_type" value="corporate" id="kt_create_account_form_account_type_corporate" />
+                                                    <label class="btn btn-outline btn-outline-dashed btn-active-light-primary p-7 d-flex align-items-center" for="kt_create_account_form_account_type_corporate">
+                                                        <!--begin::Info-->
+                                                        <span class="d-block fw-semibold text-start">
+                                                            <span class="text-dark fw-bold d-block fs-4 mb-2">Fundadores</span>
+                                                            <span class="text-muted fw-semibold fs-6">Información del descuento</span>
+                                                        </span>
+                                                        <!--end::Info-->
+                                                    </label>
+                                                    <!--end::Option-->
+                                                </div>
+                                                <!--end::Col-->
+                                                <!--begin::Col-->
+                                                <div class="col-lg-4">
+                                                    <!--begin::Option-->
+                                                    <input type="radio" class="btn-check" name="account_type" value="corporate" id="kt_create_account_form_account_type_corporate" />
+                                                    <label class="btn btn-outline btn-outline-dashed btn-active-light-primary p-7 d-flex align-items-center" for="kt_create_account_form_account_type_corporate">
+                                                        <!--begin::Info-->
+                                                        <span class="d-block fw-semibold text-start">
+                                                            <span class="text-dark fw-bold d-block fs-4 mb-2">Hermanos</span>
+                                                            <span class="text-muted fw-semibold fs-6">Información del descuento</span>
+                                                        </span>
+                                                        <!--end::Info-->
+                                                    </label>
+                                                    <!--end::Option-->
+                                                </div>
+                                                <!--end::Col-->
+                                            </div>
+                                            <!--end::Row-->
+                                            <!--begin::Row-->
+                                            <div class="row justify-content-center">
+                                                @*<div class="col-lg-3"></div>*@
+                                                <!--begin::Col-->
+                                                <div class="col-lg-4">
+                                                    <!--begin::Option-->
+                                                    <input type="radio" class="btn-check" name="account_type" value="personal" id="kt_create_account_form_account_type_personal" />
+                                                    <label class="btn btn-outline btn-outline-dashed btn-active-light-primary p-7 d-flex align-items-center mb-10" for="kt_create_account_form_account_type_personal">
+                                                        <!--begin::Info-->
+                                                        <span class="d-block fw-semibold text-start">
+                                                            <span class="text-dark fw-bold d-block fs-4 mb-2">Hijos de staff</span>
+                                                            <span class="text-muted fw-semibold fs-6">Información del descuento</span>
+                                                        </span>
+                                                        <!--end::Info-->
+                                                    </label>
+                                                    <!--end::Option-->
+                                                </div>
+                                                <!--end::Col-->
+                                                <!--begin::Col-->
+                                                <div class="col-lg-4">
+                                                    <!--begin::Option-->
+                                                    <input type="radio" class="btn-check" name="account_type" value="corporate" id="kt_create_account_form_account_type_corporate" />
+                                                    <label class="btn btn-outline btn-outline-dashed btn-active-light-primary p-7 d-flex align-items-center" for="kt_create_account_form_account_type_corporate">
+                                                        <!--begin::Info-->
+                                                        <span class="d-block fw-semibold text-start">
+                                                            <span class="text-dark fw-bold d-block fs-4 mb-2">Ayuda financiera</span>
+                                                            <span class="text-muted fw-semibold fs-6">Información del descuento</span>
+                                                        </span>
+                                                        <!--end::Info-->
+                                                    </label>
+                                                    <!--end::Option-->
+                                                </div>
+                                                @*<div class="col-lg-3"></div>*@
+                                                <!--end::Col-->
+                                            </div>
+                                            <!--end::Row-->
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+                                </div>
+                                <!--end::Step 5-->
+                                <!--begin::Step 6-->
+                                <div data-kt-stepper-element="content">
+                                    <!--begin::Wrapper-->
+                                    <div class="w-100">
+                                        <!--begin::Heading-->
+                                        <div class="pb-8 pb-lg-10">
+                                            <!--begin::Title-->
+                                            <h2 class="fw-bold text-dark">Usuario Creado</h2>
+                                            <!--end::Title-->
+                                        </div>
+                                        <!--end::Heading-->
+                                        <!--begin::Body-->
+                                        <!--end::Body-->
+                                    </div>
+                                    <!--end::Wrapper-->
+                                </div>
+                                <!--end::Step 6-->
+                                <!--begin::Actions-->
+                                <div class="d-flex flex-stack pt-15">
+                                    <!--begin::Wrapper-->
+                                    <div class="mr-2">
+                                        <button type="button" class="btn btn-lg btn-light-primary me-3" data-kt-stepper-action="previous">
+                                            <i class="ki-duotone ki-arrow-left fs-4 me-1">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>Regresar
+                                        </button>
+                                    </div>
+                                    <!--end::Wrapper-->
+                                    <!--begin::Wrapper-->
+                                    <div>
+                                        <button type="button" class="btn btn-lg btn-primary me-3" data-kt-stepper-action="submit">
+                                            <span class="indicator-label">
+                                                Enviar
+                                                <i class="ki-duotone ki-arrow-right fs-3 ms-2 me-0">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                </i>
+                                            </span>
+                                            <span class="indicator-progress">
+                                                Creando...
+                                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                            </span>
+                                        </button>
+                                        <button type="button" class="btn btn-lg btn-primary" data-kt-stepper-action="next">
+                                            Continuar
+                                            <i class="ki-duotone ki-arrow-right fs-4 ms-1 me-0">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                        </button>
+                                    </div>
+                                    <!--end::Wrapper-->
+                                </div>
+                                <!--end::Actions-->
+                            </form>
+                            <!--end::Form-->
+                        </div>
+                        <!--end::Stepper-->
+                    </div>
+                    <!--end::Modal body-->
+                </div>
+                <!--end::Modal content-->
+            </div>
+            <!--end::Modal dialog-->
+        </div>
+
+        @*Editar Estudiante*@
+        <form>
+            <div class="modal fade" tabindex="-1" id="EditEstudiante">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" style="max-width: 900px;width: 100%;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Editar estudiante</h5>
+
+                            <!--begin::Close-->
+                            <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                                <i class="ki-duotone ki-cross fs-2x"><span class="path1"></span><span class="path2"></span></i>
+                            </div>
+                            <!--end::Close-->
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="card-body border-top">
+                                <!--begin::Input group-->
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto del estudiante</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8">
+                                        <!--begin::Image input-->
+                                        <div class="image-input image-input-outline" data-kt-image-input="true">
+                                            <!--begin::Preview existing avatar-->
+                                            <div class="image-input-wrapper w-125px h-125px" id="modalImagenWrapper">
+                                                <img id="modalImagenEdit" src="" alt="">
+                                            </div>
+                                            <!--end::Preview existing avatar-->
+                                            <!--end::Remove-->
+                                        </div>
+                                        <!--end::Image input-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--Nombres-->
+                                <!--begin::Input group-->
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8">
+                                        <!--begin::Row-->
+                                        <div class="row">
+                                            <!--begin::Col-->
+                                            <div class="col-lg-8 fv-row">
+                                                <input id="NombresEdit" type="text" name="fname" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Nombres" readonly />
+                                            </div>
+                                            <!--end::Col-->
+                                        </div>
+                                        <!--end::Row-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--Apellidos-->
+                                <!--begin::Input group-->
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">N° de documento de Identidad</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <!-- SUBIR PDF-->
+                                    <div class="col-lg-8 fv-row">
+                                        <div class="form-group" style="padding-top: 10px;">
+
+                                            <!--begin::Image input-->
+                                            <div class="col-lg-8 fv-row">
+                                                <!-- SUBIR PDF-->
+                                                <input id="CedulaEdit" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Documento" />
+                                            </div>
+                                        </div>
+
+                                        <!--end::Hint-->
+
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Fecha de nacimiento</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input id="fechaNacEdit" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Fecha de nacimiento" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Grado</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <!--begin::Menu-->
+                                        <!--begin::Input group-->
+                                        <input id="GradoEdit" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Grado" />
+                                        <!--end::Input group-->
+                                        <!--end::Menu-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Escuela</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input id="EscuelaEdit" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Dirección Exacta de residencia" readonly />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                        <span>Tipo Estudiante</span>
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input id="TipoEstudianteEdit" type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Teléfono de domicilio" readonly />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        @*Editar Padre*@
+        <div class="modal fade" tabindex="-1" id="Padre">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" style="max-width: 900px;width: 100%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar Padre</h5>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="ki-duotone ki-cross fs-2x"><span class="path1"></span><span class="path2"></span></i>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="card-body border-top p-9">
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8">
+                                    <!--begin::Image input-->
+                                    <div class="image-input image-input-outline" data-kt-image-input="true">
+                                        <!--begin::Preview existing avatar-->
+                                        <div class="image-input-wrapper w-125px h-125px" id="modalImagenWrapper">
+                                            <img id="modalImagen" src="" alt="Imagen del padre">
+                                        </div>
+                                        <!--end::Preview existing avatar-->
+                                        <!--end::Remove-->
+                                    </div>
+                                    <!--end::Image input-->
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--Nombres-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8">
+                                    <!--begin::Row-->
+                                    <div class="row">
+                                        <!--begin::Col-->
+                                        <div class="col-lg-6 fv-row">
+                                            <input id="fnameEstudiante" type="text" name="fname" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Nombres" readonly />
+                                        </div>
+                                        <!--end::Col-->
+                                    </div>
+                                    <!--end::Row-->
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--Apellidos-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">N° de documento de Identidad</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <!-- SUBIR PDF-->
+                                <div class="col-lg-8 fv-row">
+                                    <div class="form-group" style="padding-top: 10px;">
+
+                                        <!--begin::Image input-->
+                                        <div class="col-lg-8 fv-row">
+                                            <!-- SUBIR PDF-->
+                                            <input id="EstCedula" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Documento" readonly />
+                                        </div>
+                                    </div>
+
+                                    <!--end::Hint-->
+
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Fecha de nacimiento</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="fechaNac" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Fecha de nacimiento" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Grado</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <!--begin::Menu-->
+                                    <!--begin::Input group-->
+                                    <input id="EstGrado" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Grado" readonly />
+                                    <!--end::Input group-->
+                                    <!--end::Menu-->
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Dirección</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="EstDirecc" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Dirección Exacta de residencia" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                            <!--begin::Input group-->
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">
+                                    <span>Teléfono de domicilio</span>
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="EstTelefono" type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Teléfono de domicilio" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                            <!--end::Input group-->
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+<!--end::Modal - Create project-->
+<!--begin::Modal - Users Search-->
+
+
+<style>
+    .dataTables_filter {
+        display: none;
+    }
+</style>
+<partial name='~/Views/Partials/Modals/Family/_ViewChildren.cshtml' />
+<partial name='~/Views/Partials/Modals/Family/_ViewParent.cshtml' />

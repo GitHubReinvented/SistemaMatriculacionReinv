@@ -1,0 +1,314 @@
+@using Domain
+@model CardViewModel
+@{
+    var sucursal = @User.Claims.FirstOrDefault(c => c.Type == "Sucursal")?.Value;
+    ViewBag.Servicio = ViewData["Servicio"];
+    KTTheme.AddJavascriptFile("js/custom/card/TransporteE.js");
+    ViewBag.ListaEstudiantes = ViewData["ListaEstudiante"];
+
+}
+<script>
+    var formularioEnviado = false;
+</script>
+<!--begin::Card widget 18-->
+<div class="card card-flush">
+
+    <!--begin::Body-->
+    <div class="card-body py-9">
+        <!--begin::Row-->
+        <div class="row gx-9">
+            <!--begin::Col-->
+            <div class="col-sm-6 mb-10 mb-sm-0">
+                <!--begin::Image-->
+                <div class="bgi-no-repeat bgi-position-center bgi-size-contain card-rounded min-h-200px min-h-sm-100 h-100" style="background-image: none; position: relative;background-color: @Model.Color;">
+                    <i class="@Model.Icon" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 500%;"></i>
+                </div>
+                <!--end::Image-->
+            </div>
+            <!--end::Col-->
+            <!--begin::Col-->
+            <div class="col-sm-6">
+                <!--begin::Wrapper-->
+                <div class="d-flex flex-column">
+                    <!--begin::Header-->
+                    <div class="mb-7">
+                        <!--begin::Headin-->
+                        <div class="d-flex flex-stack mb-6">
+                            <!--begin::Title-->
+                            <div class="flex-shrink-0 me-5">
+                                <span class="text-gray-800 fs-1 fw-bold">@Model.Title</span>
+                            </div>
+                            <!--end::Title-->
+                            @*<span class="badge badge-light-primary flex-shrink-0 align-self-center py-3 px-4 fs-7">In Process</span>*@
+                        </div>
+                        <!--end::Heading-->
+                        <!--begin::Items-->
+                        <div class="d-flex align-items-center flex-wrap d-grid gap-2">
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center me-5 me-xl-13">
+                            </div>
+                            <!--end::Item-->
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center">
+                            </div>
+                            <!--end::Item-->
+                        </div>
+                        <span class="fw-semibold text-gray-600 fs-6 mb-8 d-block">@Model.Description</span>
+                        <!--end::Text-->
+                        <!--end::Items-->
+                    </div>
+                    <!--end::Header-->
+                    <!--begin::Body-->
+                    <div class="mb-6">
+                    </div>
+                    <!--end::Body-->
+                    <!--begin::Footer-->
+                    <div class="d-flex  mt-auto bd-highlight">
+                        @if (Model.Action != "" || Model.Controller != "")
+                        {
+                            <a asp-action="@Model.Action" asp-controller="@Model.Controller" asp-route-tipo="" class="btn btn-primary d-flex align-items-center opacity-75-hover fs-6 fw-semibold" disable>
+                                Registrar
+                            </a>
+                        }
+                        else
+                        {
+                            if (Model.Title.Contains("Alimentos"))
+                            {
+                                <a class="btn btn-secondary d-flex align-items-center opacity-75-hover fs-6 fw-semibold" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#ModalAlimento">
+                                    Mas información
+                                </a>
+                            }
+                            if (Model.Title.Contains("Uniforme"))
+                            {
+                                <a href="@Model.Param" target="_blank" class="btn btn-secondary d-flex align-items-center opacity-75-hover fs-6 fw-semibold" style="font-size: 10px;">
+                                    Mas información
+                                </a>
+                            }
+                            else if (Model.Title.Contains("Transporte"))
+                            {
+                                if (ViewBag.rutaEstudiante != null && ViewBag.rutaEstudiante.Count > 0)
+                                {
+                                    <a class="btn btn-secondary d-flex align-items-center opacity-75-hover fs-6 fw-semibold" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#miModalYaEnviado">
+                                        Servicio solicitado
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-primary fs-6 px-6 py-6" data-bs-toggle="modal" data-bs-target="#miModal">
+                                        Registrar
+                                    </a>
+                                }
+                            }
+                            else if (Model.Title.Contains("Seguro"))
+                            {
+                                <a class="btn btn-secondary d-flex align-items-center opacity-75-hover fs-6 fw-semibold" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#ModalSeguro">
+                                    Mas información
+                                </a>
+                            }
+
+                        }
+                        <!--end::Actions-->
+                    </div>
+                    <!--end::Footer-->
+                </div>
+                <!--end::Wrapper-->
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Row-->
+    </div>
+    <!--end::Body-->
+</div>
+
+<div class="modal fade" tabindex="-1" id="miModalYaEnviado">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Información enviada</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if (@User.Claims.FirstOrDefault(c => c.Type == "Sucursal")?.Value == "Puembo")
+                {
+                    <p>Hemos recibido tu solicitud de forma exitosa, si tienes alguna consulta adicional por favor escríbenos a <a href="mailto:transporte@reinventedpuembo.edu.ec">transporte@reinventedpuembo.edu.ec</a></p>
+                }
+                else
+                {
+                    <p>Hemos recibido tu solicitud de forma exitosa, si tienes alguna consulta adicional por favor escríbenos a <a href="mailto:transporte@reinventedsantaclara.edu.ec">transporte@reinventedsantaclara.edu.ec</a></p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="ModalAlimento">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Servicio de alimentos</h3>
+
+                <!--begin::close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="close">
+                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+                <!--end::close-->
+            </div>
+
+            <div class="modal-body">
+                <h4>Estamos trabajando en ofrecer el mejor servicio de alimentación en Reinvented @User.Claims.FirstOrDefault(c => c.Type == "Sucursal")?.Value, le enviaremos mayor información próximamente.</h4>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="ModalSeguro">
+    <div class="modal-dialog modal-xl" style="max-width: 1400px; width: 100%; max-height: 90vh;">
+        <div class="modal-content" style="height: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Información de seguro</h3>
+
+                <!--begin::close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="close">
+                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+                <!--end::close-->
+            </div>
+
+            <div class="modal-body">
+                <object id="Info" data="/Docs/InformacionSeguro.pdf#toolbar=0" height="100%" width="100%"></object>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .estudiante-links {
+        display: flex; /* Muestra los enlaces en una línea */
+    }
+
+    .estudiante-link {
+        margin-right: 10px; /* Agrega un margen a la derecha para separar los enlaces */
+    }
+</style>
+
+<script>
+   
+</script>
+<!--end::Card widget 18-->
+
+
+
+<div class="modal" tabindex="-1" id="ModalInformacionTransporte" style="z-index:18000;">
+    <div class="modal-xl modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+
+            </div>
+            <!--el contenido carga al dar click en link términos y condiciones-->
+            <div class="modal-body" style="height:80vh;width:100%;">
+                <object id="InfoTransporte" data="" height="100%" width="100%"></object>
+            </div>
+            <div class="modal-footer">
+                <!--button-- type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</!--button-->
+                <button class="btn btn-primary" data-bs-target="#miModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" tabindex="-1" id="ModalTerminosTransporte" style="z-index:18000;">
+    <div class="modal-xl modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+
+            </div>
+            <!--el contenido carga al dar click en link términos y condiciones-->
+            <div class="modal-body" style="height:80vh;width:100%;">
+                <object id="TerminosTransporte" data="" height="100%" width="100%"></object>
+            </div>
+            <div class="modal-footer">
+                <!--button-- type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</!--button-->
+                <button class="btn btn-primary" data-bs-target="#miModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function enviarFormulario() {
+
+        // Aquí puedes agregar el código para enviar el formulario por JavaScript, si es necesario.
+        // Por ejemplo, si utilizas jQuery para enviar el formulario:
+
+
+
+
+        // Se marca el formulario como enviado
+
+    }
+   
+
+    function abrirModalRegistro() {
+        if (!formularioEnviado) {
+            $('#miModal').modal('show'); // Muestra el modal de registro de transporte
+        } else {
+            $('#miModalYaEnviado').modal('show');
+        }
+    }
+
+    function AceptaTerminosTransporte() {
+
+        if ($('#AutorizaTerminosTranporte').is(':checked')) {
+            $('#btnSolicitarServicio').prop('disabled', false); //TO ENABLE
+
+            if ($('#RegistradoFlag').val() == 'true') {
+                $('#btnSolicitarServicio').prop('disabled', true);
+            }
+        }
+        else
+            $('#btnSolicitarServicio').prop('disabled', true); //TO disabled
+    }
+
+
+
+
+    function CargaCondiciones(codigoSucursal) {
+
+        var urlBase = '@ViewBag.BaseUri';
+
+        $("#TerminosTransporte").attr("data", urlBase + 'Docs/TerminosTransporte' + codigoSucursal + '.pdf');
+
+
+        setTimeout(function () {
+            $('#ModalTerminosTransporte').modal('show');
+
+        }, 1000);
+
+
+    }
+
+    function CargaInformacionTransporte(codigoSucursal) {
+        debugger
+        var urlBase = '@ViewBag.BaseUri';
+
+        $("#InfoTransporte").attr("data", urlBase + 'Docs/InformacionTransporte' + codigoSucursal + '.pdf');
+
+        setTimeout(function () {
+            $('#ModalInformacionTransporte').modal('show');
+
+        }, 1000);
+
+    }
+
+
+
+</script>

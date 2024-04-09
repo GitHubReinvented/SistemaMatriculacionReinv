@@ -1,0 +1,345 @@
+﻿@using Domain;
+@{
+
+    string RutaFotoMadre = "media/avatars/blank.png";
+    string RutaFotoPadre = "media/avatars/blank.png";
+
+    if (ViewBag.DatosMadre != null)
+        RutaFotoMadre = "/media/avatars/" + ViewBag.DatosMadre.Avatar;
+
+    if (ViewBag.DatosPadre != null)
+        RutaFotoPadre = "/media/avatars/" + ViewBag.DatosPadre.Avatar;
+}
+
+
+
+<div class="container">
+    
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Datos de la madre</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="col-md-12">
+                        <label for="NombresMadre">Nombres</label>
+                        <input type="text" maxlength="70" class="form-control" name="NombresMadre" id="NombresMadre" placeholder="Obligatorio dos nombres" required oninput="validarLetras(event)" 
+                        value="@if(ViewBag.DatosMadre!=null){@ViewBag.DatosMadre.Nombres}" />
+                        <small id="errNombresMadre">nombres son requeridos</small>
+                    </div>
+                    <br />
+                    <div class="col-md-12">
+                        <label for="ApellidosMadre">Apellidos</label>
+                        <input type="text" maxlength="70" class="form-control" name="ApellidosMadre" id="ApellidosMadre" placeholder="Obligatorio dos nombres" requeried oninput="validarLetras(event)"
+                        value="@if(ViewBag.DatosMadre!=null){@ViewBag.DatosMadre.Apellidos}" />
+                        <small id="errApellidosMadre">apellidos son requeridos</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <center>
+                        <div class="row mb-5">
+                            <div class="col-md-12">
+                                <!--begin::Image input-->
+                                <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath(RutaFotoPadre))">
+                                    <small id="errAvatarMadre">Foto es requerida</small>
+                                    <div class="form-text">Foto (png,jpg,jpeg)</div>
+                                    <!--begin::Preview existing avatar-->
+                                   
+                                    <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@KTTheme.GetAssetPath(RutaFotoMadre))">
+                                    
+                                    </div>
+                                    <!--ExisteMAdre-->
+                                   
+                                  
+                                    <!--end::Preview existing avatar-->
+                                    <!--begin::Label-->
+                                    <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                        <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                        <!--begin::Inputs-->
+                                        <input type="file" name="AvatarMadre" id="AvatarMadre" accept=".png, .jpg, .jpeg" />
+                                        <input type="hidden" name="avatar_remove" />
+                                        <!--end::Inputs-->
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Cancel-->
+                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                        <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                    <!--end::Cancel-->
+                                    <!--begin::Remove-->
+                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover imagen">
+                                        <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                    <!--end::Remove-->
+                                </div>
+                                <!--end::Image input-->
+                                <!--begin::Hint-->
+                                <!--end::Hint-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                    </center>
+                </div>
+                
+            </div>
+
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="TipoIdMadre">Tipo Identificación</label>
+                    <select class="form-select" name="TipoIdMadre" id="TipoIdMadre" requeried>
+                        <option value="">Seleccionar....</option>
+                        @foreach (var registro in (List<TipoIdentificacion>)ViewBag.TipoIdentificacion)
+                        {
+                            @if (ViewBag.DatosMadre != null && ViewBag.DatosMadre.TipoIdentificacionId == registro.Id)
+                            {
+                                <option value="@registro.Id" selected>@registro.Descripcion</option>
+                            }
+                            else
+                            {
+                                <option value="@registro.Id">@registro.Descripcion</option>
+                            }
+
+                            
+                        }
+                    </select>
+                    <small id="errTipoIdMadre">Tipo identificación es requerido</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="IdMadre">Identificación No.</label>
+                    <input type="text" maxlength="20" class="form-control" name="IdMadre" id="IdMadre" placeholder="Obligatorio" requeried
+                     value="@if(ViewBag.DatosMadre!= null){@ViewBag.DatosMadre.Identificacion}" />
+                    <small id="errIdMadre">Identificación es requerida</small>
+                </div>
+                
+            </div>
+            <div class="row" style="padding-top: 5px;padding-bottom: 5px;">
+                <div class="col">
+                <label>Subir pdf de la cédula</label>
+                    <input type="file" class="form-control" id="PDFIdentificacionMadre" name="PDFIdentificacionMadre" accept=".pdf" />
+                    <small id="errPDFIdentificacionMadre">Pdf de Identificación es requerido</small>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="TelfMovilMadre">Teléfono Movil</label>
+                    <input type="text" maxlength="15" class="form-control" name="TelfMovilMadre" id="TelfMovilMadre" placeholder="Obligatorio" requeried oninput="validarNumeros(event)"
+                            value="@if(ViewBag.DatosMadre!= null){@ViewBag.DatosMadre.TelefonoMovil}" />
+                    <small id="errTelfMovilMadre">Teléfono Movil es requerido</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="ProfesionMadre">Profesión</label>
+                    <input type="text" maxlength="70" class="form-control" name="ProfesionMadre" id="ProfesionMadre" placeholder="Obligatorio" requeried oninput="validarLetras(event)"
+                           value="@if(ViewBag.DatosMadre!= null){@ViewBag.DatosMadre.Profesion}" />
+                    <small id="errProfesionMadre">Profesión es requerida</small>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="LugarTrabajoMadre">Lugar de Trabajo</label>
+                    <input type="text" maxlength="70" class="form-control" name="LugarTrabajoMadre" id="LugarTrabajoMadre" placeholder="Obligatorio" requeried
+                           value="@if(ViewBag.DatosMadre!= null){@ViewBag.DatosMadre.LugarTrabajo}" />
+                    <small id="errLugarTrabajoMadre">Lugar de Trabajo es requerido</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="CargoMadre">Cargo</label>
+                    <input type="text" maxlength="70" class="form-control" name="CargoMadre" id="CargoMadre" placeholder="Obligatorio" requeried
+                           value="@if(ViewBag.DatosMadre!= null){@ViewBag.DatosMadre.Cargo}" />
+                    <small id="errCargoMadre">Cargo es requerido</small>
+                </div>
+
+           </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="EmailMadre">Correo electrónico</label>
+                    <input type="email" maxlength="100" class="form-control" name="EmailMadre" id="EmailMadre" placeholder="Obligatorio" requeried
+                            value="@if(ViewBag.DatosMadre!= null){
+                    @ViewBag.DatosMadre.EmailPrincipal
+}" />
+                    <small id="errEmailMadre">Correo electrónico es requerido</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="RepresentanteMadre"><b>Responsable de la firma de servicios estudiantiles</b></label>
+                    @if (ViewBag.DatosMadre!=null && ViewBag.DatosMadre.Representante == true)
+                    {
+                        <input type="checkbox" name="RepresentanteMadre" id="RepresentanteMadre" checked="checked" />
+                    }
+                    else
+                    {
+                        <input type="checkbox" name="RepresentanteMadre" id="RepresentanteMadre" requeried />
+                    }
+                    <small id="errRepresentanteMadre">Un representante es requerido</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ------------------------------------------------------------------------------ -->
+        <div class="col-md-6">
+            <h4>Datos del padre</h4>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="col-md-12">
+                        <label for="NombresPadre">Nombres</label>
+                        <input type="text" maxlength="70" class="form-control" name="NombresPadre" id="NombresPadre" placeholder="Obligatorio dos nombres" required oninput="validarLetras(event)"
+                               value="@if(ViewBag.DatosPadre!= null){@ViewBag.DatosPadre.Nombres}" />
+                        <small id="errNombresPadre">nombres son requeridos</small>
+                    </div>
+                    <br />
+                    <div class="col-md-12">
+                        <label for="ApellidosPadre">Apellidos</label>
+                        <input type="text" maxlength="70" class="form-control" name="ApellidosPadre" id="ApellidosPadre" placeholder="Obligatorio dos apellidos" requeried oninput="validarLetras(event)"
+                               value="@if(ViewBag.DatosPadre!= null){@ViewBag.DatosPadre.Apellidos}" />
+                        <small id="errApellidosPadre">apellidos son requeridos</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <center>
+                        <div class="row mb-5">
+                            <div class="col-md-12">
+                                <!--begin::Image input-->
+                                <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath(RutaFotoPadre))">
+                                    <small id="errAvatarPadre">Foto es requerida</small>
+                                    <div class="form-text">Foto (png,jpg,jpeg)</div>
+                                    <!--begin::Preview existing avatar-->
+                                    <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@KTTheme.GetAssetPath(RutaFotoPadre))"></div>
+                                    <!--end::Preview existing avatar-->
+                                    <!--begin::Label-->
+                                    <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                        <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                        <!--begin::Inputs-->
+                                        <input type="file" name="AvatarPadre" id="AvatarPadre" accept=".png, .jpg, .jpeg" />
+                                        <input type="hidden" name="avatar_remove" />
+                                        <!--end::Inputs-->
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Cancel-->
+                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                        <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                    <!--end::Cancel-->
+                                    <!--begin::Remove-->
+                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover imagen">
+                                        <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                    <!--end::Remove-->
+                                </div>
+                                <!--end::Image input-->
+                                <!--begin::Hint-->
+                                <!--end::Hint-->
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                    </center>
+                </div>
+
+            <br />
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="TipoIdPadre">Tipo Identificación</label>
+                        <select class="form-select" name="TipoIdPadre" id="TipoIdPadre" requeried>
+                            <option value="">Seleccionar....</option>
+                            @foreach (var registro in (List<TipoIdentificacion>)ViewBag.TipoIdentificacion)
+                            {
+
+                                @if (ViewBag.DatosPadre != null && ViewBag.DatosPadre.TipoIdentificacionId == registro.Id)
+                                {
+                                    <option value="@registro.Id" selected>@registro.Descripcion</option>
+                                }
+                                else
+                                {
+                                    <option value="@registro.Id">@registro.Descripcion</option>
+                                }
+                            }
+                    </select>
+                        <small id="errTipoIdPadre">Tipo Identificación es requerido</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="IdPadre">Identificación No.</label>
+                    <input type="text" maxlength="20" class="form-control" name="IdPadre" id="IdPadre" placeholder="Obligatorio" requeried
+                               value="@if(ViewBag.DatosPadre!= null){@ViewBag.DatosPadre.Identificacion}" />
+                        <small id="errIdPadre">Identificación es requerida</small>
+                </div>
+                   
+            </div>
+
+                <div class="row" style="padding-top: 5px;padding-bottom: 5px;">
+                    <div class="col">
+                    <label>Subir pdf de la cédula</label>
+                        <input type="file" class="form-control" id="PDFIdentificacionPadre" name="PDFIdentificacionPadre" accept=".pdf" />
+                        <small id="errPDFIdentificacionPadre">PDF de identificación es requerido</small>
+                    </div>
+            </div>
+                <br /><br /><br /><br />
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="TelfMovilPadre">Teléfono Movil</label>
+                        <input type="text" maxlength="15" class="form-control" name="TelfMovilPadre" id="TelfMovilPadre" placeholder="Obligatorio" requeried oninput="validarNumeros(event)"
+                               value="@if(ViewBag.DatosPadre!= null){@ViewBag.DatosPadre.TelefonoMovil}" />
+                        <small id="errTelfMovilPadre">Teléfono Movil es requerido</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="ProfesionPadre">Profesión</label>
+                        <input type="text" maxlength="70" class="form-control" name="ProfesionPadre" id="ProfesionPadre" placeholder="Obligatorio" requeried oninput="validarLetras(event)"
+                               value="@if(ViewBag.DatosPadre!= null){@ViewBag.DatosPadre.Profesion}" />
+                        <small id="errProfesionPadre">Profesión es requerida</small>
+                 </div>
+
+                
+            </div>
+                <br /><br /><br /><br />
+            <div class="row">
+                <div class="col-md-6">
+                        <label for="LugarTrabajoPadre">Lugar de Trabajo</label>
+                        <input type="text" maxlength="70" class="form-control" name="LugarTrabajoPadre" id="LugarTrabajoPadre" placeholder="Obligatorio" requeried
+                               value="@if(ViewBag.DatosPadre!= null){@ViewBag.DatosPadre.LugarTrabajo}" />
+                        <small id="errLugarTrabajoPadre">Lugar de Trabajo es requerido</small>
+                    </div>
+
+                <div class="col-md-6">
+                        <label for="CargoPadre">Cargo</label>
+                        <input type="text" maxlength="20" class="form-control" name="CargoPadre" id="CargoPadre" placeholder="Obligatorio" requeried
+                               value="@if(ViewBag.DatosPadre!= null){@ViewBag.DatosPadre.Cargo}" />
+                        <small id="errCargoPadre">Cargo es requerido</small>
+                </div>
+
+            </div>
+                <br /><br /><br /><br />
+           <div class="row">
+                    <div class="col-md-6">
+                        <label for="EmailPadre">Correo electrónico</label>
+                        <input type="email" maxlength="100" class="form-control" name="EmailPadre" id="EmailPadre" placeholder="Obligatorio" requeried
+                                value="@if(ViewBag.DatosPadre!= null){
+                        @ViewBag.DatosPadre.EmailPrincipal
+}" />
+                        <small id="errEmailPadre">Correo electrónico es requerido</small>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="RepresentantePadre"><b>Responsable de la firma de servicios estudiantiles</b></label>
+                      
+                        @if (ViewBag.DatosPadre!=null && ViewBag.DatosPadre.Representante == true)
+                        {
+                            <input type="checkbox" name="RepresentantePadre" id="RepresentantePadre" checked="checked" />
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="RepresentantePadre" id="RepresentantePadre" requeried />
+                        }
+                        <small id="errRepresentantePadre">Un representante es requerido</small>
+                    </div>
+            </div>
+            
+        </div>
+
+    </div>
+</div>
+</div>

@@ -1,0 +1,150 @@
+﻿@using Domain;
+@{
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+        <h4>Información del autorizado a retirar al estudiante de la institución</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="col-md-12">
+                    <label for="NombresAutorizado">Nombres</label>
+                        <input type="text" maxlength="70" class="form-control" name="NombresAutorizado" id="NombresAutorizado" placeholder="Dos nombres" requeried oninput="validarLetras(event)"
+                           value="@if(ViewBag.DatosPersonaAutorizadaRetirar!= null){@ViewBag.DatosPersonaAutorizadaRetirar.Nombres}" />
+                    <small id="errNombresAutorizado">nombres son requeridos</small>
+                </div>
+                <br />
+                <div class="col-md-12">
+                    <label for="ApellidosAutorizado">Apellidos</label>
+                        <input type="text" maxlength="70" class="form-control" name="ApellidosAutorizado" id="ApellidosAutorizado" placeholder="Dos apellidos" requeried oninput="validarLetras(event)"
+                           value="@if(ViewBag.DatosPersonaAutorizadaRetirar!= null){@ViewBag.DatosPersonaAutorizadaRetirar.Apellidos}" />
+                    <small id="errApellidosAutorizado">apellidos son requeridos</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <center>
+                    <div class="row mb-5">
+                        <div class="col-md-12">
+                            <!--begin::Image input-->
+                            <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))">
+                                <small id="errAvatarAutorizado">Foto es requerida</small>
+                                <div class="form-text">Foto (png,jpg,jpeg)</div>
+                                <!--begin::Preview existing avatar-->
+                                <div class="image-input-wrapper w-125px h-125px" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))"></div>
+                                <!--end::Preview existing avatar-->
+                                <!--begin::Label-->
+                                <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                    <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                    <!--begin::Inputs-->
+                                    <input type="file" name="AvatarAutorizado" id="AvatarAutorizado" accept=".png, .jpg, .jpeg" />
+                                    <input type="hidden" name="avatar_remove" />
+                                    <!--end::Inputs-->
+                                </label>
+                                <!--end::Label-->
+                                <!--begin::Cancel-->
+                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                    <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                </span>
+                                <!--end::Cancel-->
+                                <!--begin::Remove-->
+                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover imagen">
+                                    <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                </span>
+                                <!--end::Remove-->
+                            </div>
+                            <!--end::Image input-->
+                            <!--begin::Hint-->
+                            <!--end::Hint-->
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                </center>
+            </div>
+
+        </div>
+
+        
+        <div class="row">
+            <div class="col-md-6">
+                <label for="TipoIdAutorizado">Tipo Identificación</label>
+                    <select class="form-select" name="TipoIdAutorizado" id="TipoIdAutorizado" requeried>
+                    <option value="">Seleccionar....</option>
+                    @foreach (var registro in (List<TipoIdentificacion>)ViewBag.TipoIdentificacion)
+                    {
+
+                        @if (ViewBag.DatosPersonaAutorizadaRetirar != null && ViewBag.DatosPersonaAutorizadaRetirar.TipoIdentificacionId == registro.Id)
+                        {
+                            <option value="@registro.Id" selected>@registro.Descripcion</option>
+                        }
+                        else
+                        {
+                            <option value="@registro.Id">@registro.Descripcion</option>
+                        }
+                    }
+                </select>
+                <small id="errTipoIdAutorizado">Tipo Identificación es requerida</small>
+            </div>
+
+            <div class="col-md-6">
+                <label for="IdAutorizado">Identificación No.</label>
+                    <input type="text" maxlength="20" class="form-control" name="IdAutorizado" id="IdAutorizado" requeried placeholder="Obligatorio"
+                       value="@if(ViewBag.DatosPersonaAutorizadaRetirar!= null){@ViewBag.DatosPersonaAutorizadaRetirar.Identificacion}" />
+                <small id="errIdAutorizado">Identificación es requerida</small>
+            </div>
+
+        </div>
+        <br />
+        <div class="row" style="padding-top: 5px;padding-bottom: 5px;">
+            <div class="col">
+                <label>Subir pdf de la cédula</label>
+                <input type="file" class="form-control" id="PDFIdentificacionAutorizado" name="PDFIdentificacionAutorizado" accept=".pdf" />
+                <small id="errPDFIdentificacionAutorizado">Pdf de Identificación es requerido</small>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-6">
+                <label for="RelacionAutorizado">Relación</label>
+                    <select class="form-select" name="RelacionAutorizado" id="RelacionAutorizado" requeried>
+                    <option value="">Seleccionar....</option>
+                    @foreach (var registro in (List<TipoRelacion>)ViewBag.TipoRelacion)
+                    {
+                        if (registro.Id != 1 && registro.Id!=2)//el autorizado debe ser diferente a padre y madre
+                        {
+                            if (ViewBag.RelacionAutorizadoRetirar != null && (int)ViewBag.RelacionAutorizadoRetirar.TipoRelacionId == registro.Id)
+                            {
+                                <option value="@registro.Id" selected>@registro.Descripcion</option>
+                            }
+                            else
+                            {
+                                <option value="@registro.Id">@registro.Descripcion</option>
+                            }
+
+                          
+                            
+                        }
+                        
+                    }
+                </select>
+                <small id="errRelacionAutorizado">Relación es requerida</small>
+            </div>
+
+            <div class="col-md-6">
+                <label for="TelfMovilAutorizado">Teléfono Movil</label>
+                    <input type="text" maxlength="20" class="form-control" name="TelfMovilAutorizado" requeried id="TelfMovilAutorizado" placeholder="Obligatorio" oninput="validarNumeros(event)"
+                       value="@if(ViewBag.DatosPersonaAutorizadaRetirar!= null){@ViewBag.DatosPersonaAutorizadaRetirar.TelefonoMovil}" />
+                <small id="errTelfMovilAutorizado">Teléfono Movil es requerido</small>
+            </div>
+
+        </div>
+    </div>
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+            <div class="text-center align-self-center">
+                <h5>La información de madre y padre han sido registrados automáticamente.</h5>
+                <h5>Por favor agregar información de otras personas autorizadas</h5>
+                <h5 style="color:red">“Si no desea agregar una persona a retirar, presione Continuar” </h5>
+            </div>
+        </div>
+    </div>
+</div>

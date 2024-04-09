@@ -1,0 +1,616 @@
+﻿@{
+    ViewData["Title"] = "Guardia Puembo";
+    //KTTheme.AddJavascriptFile("js/custom/card/GuardiaEstRep.js");
+}
+<h1>Guardia Puembo</h1>
+<div class="card-title m-0">
+    <h1 style="padding-left:20px; color:#3c7edd" class="fw-bold m-0 pt-10 pb-5">Guardia - Representante</h1>
+</div>
+
+<div class="card border-top">
+
+    <div class="card">
+        <div class="card-body">
+            <div class="card text-center pb-15">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-12">
+                                @*<div class="input-group mb-5">
+                                <span class="input-group-text" id="basic-addon1">
+                                <i class="ki-duotone ki-magnifier fs-2 fs-lg-1 text-gray-500"><span class="path1"></span><span class="path2"></span></i>
+                                </span>
+                                <input type="text" id="searchInput" onkeyup="searchData()" class="form-control" placeholder="Datos del estudiante" aria-label="" aria-describedby="basic-addon1" />
+                                </div>*@
+                                <select id="estudianteSelect" class="form-select form-select-lg form-select-solid" data-control="select2" data-placeholder="Seleccione un estudiante" data-allow-clear="true">
+                                    <option value="">Selecciona el estudiante</option>
+                                    @foreach (var estudiante in ViewBag.Estudiantes)
+                                    {
+                                        <option value="@estudiante.Id">@estudiante.Nombres @estudiante.Apellidos - @estudiante.Identificacion</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+
+                                <div>
+                                    <select id="representanteSelect" class="form-select form-select-lg form-select-solid" data-control="select2" data-placeholder="Seleccione un representante" data-allow-clear="true">
+                                    <option value="">Selecciona el representante</option>
+                                    @foreach (var estudiante in ViewBag.Autorizados)
+                                    {
+                                        <option value="@estudiante.Id">@estudiante.Nombres @estudiante.Apellidos - @estudiante.Identificacion</option>
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col text-center">
+                                    @*<button class="btn btn-primary" id="buscarBtn" onclick="buscar()">Buscar</button>*@
+                                <button type="button" class="btn btn-primary" id="buscarBtn">Buscar</button>
+                                </div>
+                            </div>
+                            <div class="row gx-5 gx-xl-10">
+                                <div class="col-12 col-md-6 mb-5 mb-xl-10">
+                                <div class="card card-flush h-xl-100" style="margin: 20px;" id="subject">
+                                    <div id="estudianteCard" class="collapse show" style="display: none;" >
+                                            <h1 class="fw-bold m-0">Estudiante</h1>
+                                            <div class="card-body border-top">
+                                                <div class="row mb-6 align-items-center">
+                                                    <div class="col-lg-6">
+                                                        <div class="image-input image-input-outline">
+                                                            <div id="imagenEstudiante" class="image-input-wrapper w-200px h-200px" style="background-image: url(/assets/media/avatars/)"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="card-header border-0" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                                                            <div class="card-title m-0 text-center">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-6">
+                                                            <div class="col-lg-12 fv-row">
+                                                                <input id="NombreEstudiante" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Nombres" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-6">
+                                                            <div class="col-lg-12 fv-row">
+                                                                <input id="ApellidosEstudiante" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-6">
+                                                            <div class="col-lg-12 fv-row">
+                                                                <input id="CedulaEstudiante" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Cédula" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-6">
+                                                            <div class="col-lg-12 fv-row">
+                                                                <input id="GradoEstudiante" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Grado" readonly>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 mb-5 mb-xl-10" style="max-height: 400px; overflow-y: scroll;">
+                                    <div class="card card-flush h-xl-100" style="margin: 20px;">
+                                            <div id="representanteCard" class="collapse show" style="display: none;">
+                                                <h1 class="fw-bold m-0">Autorizado a retirar</h1>
+                                                <div class="card-body border-top">
+                                                    <div class="row mb-6 align-items-center">
+                                                        <div class="col-lg-6">
+                                                            <div class="image-input image-input-outline">
+                                                                <div id="imagenAutorizado1" class="image-input-wrapper w-200px h-200px" style="background-image: url(/assets/media/avatars/Autorizado1.png)"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="card-header border-0" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                                                                <div class="card-title m-0 text-center">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="nombreAutorizado1" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Nombres" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                <input id="apellidoAutorizado1" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="cedulaAutorizado1" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Cédula" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="parentescoAutorizado1" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Parentesco" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="representanteCard2" style="display: none;">
+                                        <h1 class="fw-bold m-0">Autorizado a retirar 2</h1>
+                                        <div class="card-body border-top">
+                                            <div class="row mb-6 align-items-center">
+                                                <div class="col-lg-6">
+                                                    <div class="image-input image-input-outline">
+                                                        <div id="imagenAutorizado2" class="image-input-wrapper w-200px h-200px" style="background-image: url(/assets/media/avatars/Autorizado1.png)"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="card-header border-0" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                                                        <div class="card-title m-0 text-center">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-6">
+                                                        <div class="col-lg-12 fv-row">
+                                                            <input id="nombreAutorizado2" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Nombres" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-6">
+                                                        <div class="col-lg-12 fv-row">
+                                                            <input id="apellidoAutorizado2" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-6">
+                                                        <div class="col-lg-12 fv-row">
+                                                            <input id="cedulaAutorizado2" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Cédula" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-6">
+                                                        <div class="col-lg-12 fv-row">
+                                                            <input id="parentescoAutorizado2" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Parentesco" readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                            <div id="representanteCard3" style="display: none;">
+                                                <h1 class="fw-bold m-0">Autorizado a retirar 3</h1>
+                                                <div class="card-body border-top">
+                                                    <div class="row mb-6 align-items-center">
+                                                        <div class="col-lg-6">
+                                                            <div class="image-input image-input-outline">
+                                                                <div id="imagenAutorizado3" class="image-input-wrapper w-200px h-200px" style="background-image: url(/assets/media/avatars/Autorizado1.png)"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="card-header border-0" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                                                                <div class="card-title m-0 text-center">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="nombreAutorizado3" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Nombres" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="apellidoAutorizado3" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="cedulaAutorizado3" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Cédula" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="parentescoAutorizado3" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Parentesco" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="representanteCard4" style="display: none;">
+                                                <h1 class="fw-bold m-0">Autorizado a retirar 4</h1>
+                                                <div class="card-body border-top">
+                                                    <div class="row mb-6 align-items-center">
+                                                        <div class="col-lg-6">
+                                                            <div class="image-input image-input-outline">
+                                                                <div id="imagenAutorizado4" class="image-input-wrapper w-200px h-200px" style="background-image: url(/assets/media/avatars/Autorizado1.png)"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="card-header border-0" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                                                                <div class="card-title m-0 text-center">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="nombreAutorizado4" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Nombres" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="apellidoAutorizado4" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="cedulaAutorizado4" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Cédula" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="parentescoAutorizado4" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Parentesco" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="representanteCard5" style="display: none;">
+                                                <h1 class="fw-bold m-0">Autorizado a retirar 5</h1>
+                                                <div class="card-body border-top">
+                                                    <div class="row mb-6 align-items-center">
+                                                        <div class="col-lg-6">
+                                                            <div class="image-input image-input-outline">
+                                                                <div id="imagenAutorizado5" class="image-input-wrapper w-200px h-200px" style="background-image: url(/assets/media/avatars/Autorizado1.png)"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="card-header border-0" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                                                                <div class="card-title m-0 text-center">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="nombreAutorizado5" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Nombres" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="apellidoAutorizado5" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="cedulaAutorizado5" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Cédula" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                    <input id="parentescoAutorizado5" type="text" name="" class="form-control form-control-lg form-control-solid" placeholder="Parentesco" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="card-footer d-flex justify-content-center py-6 px-9">
+                                        <button type="submit" class="btn btn-primary" id="limpiarBtn" onclick="limpiar()">Limpiar</button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const nombreInput = document.getElementById('NombreEstudiante');
+    const apellidoInput = document.getElementById('ApellidosEstudiante');
+    const cedulaInput = document.getElementById('CedulaEstudiante');
+    const gradoInput = document.getElementById('GradoEstudiante');
+    const imagen = document.getElementById('imagenEstudiante');
+    const estudiantes = @Html.Raw(Json.Serialize(ViewBag.Estudiantes));
+
+
+    const nombreAut1Input = document.getElementById('nombreAutorizado1');
+    const apellidoAut1Input = document.getElementById('apellidoAutorizado1');
+    const cedulaAut1Input = document.getElementById('cedulaAutorizado1');
+    const parentescoAut1Input = document.getElementById('parentescoAutorizado1');
+    const imagenAut1 = document.getElementById('imagenAutorizado1');
+    const autorizado = @Html.Raw(Json.Serialize(ViewBag.Autorizados));
+
+    const nombreAut2Input = document.getElementById('nombreAutorizado2');
+    const apellidoAut2Input = document.getElementById('apellidoAutorizado2');
+    const cedulaAut2Input = document.getElementById('cedulaAutorizado2');
+    const parentescoAut2Input = document.getElementById('parentescoAutorizado2');
+    const imagenAut2 = document.getElementById('imagenAutorizado2');
+
+    const nombreAut3Input = document.getElementById('nombreAutorizado3');
+    const apellidoAut3Input = document.getElementById('apellidoAutorizado3');
+    const cedulaAut3Input = document.getElementById('cedulaAutorizado3');
+    const parentescoAut3Input = document.getElementById('parentescoAutorizado3');
+    const imagenAut3 = document.getElementById('imagenAutorizado3');
+
+    const nombreAut4Input = document.getElementById('nombreAutorizado4');
+    const apellidoAut4Input = document.getElementById('apellidoAutorizado4');
+    const cedulaAut4Input = document.getElementById('cedulaAutorizado4');
+    const parentescoAut4Input = document.getElementById('parentescoAutorizado4');
+    const imagenAut4 = document.getElementById('imagenAutorizado4');
+
+    const nombreAut5Input = document.getElementById('nombreAutorizado5');
+    const apellidoAut5Input = document.getElementById('apellidoAutorizado5');
+    const cedulaAut5Input = document.getElementById('cedulaAutorizado5');
+    const parentescoAut5Input = document.getElementById('parentescoAutorizado5');
+    const imagenAut5 = document.getElementById('imagenAutorizado5');
+
+    const estudianteSelect = document.getElementById('estudianteSelect');
+    const representanteSelect = document.getElementById('representanteSelect');
+    const BuscarBtn = document.getElementById('buscarBtn');
+
+    BuscarBtn.addEventListener('click', async () => {
+        const selectedEstudianteId = estudianteSelect.value;
+        const autorizadoId = representanteSelect.value;
+        if (selectedEstudianteId) {
+            try {
+                debugger;
+                const response = await fetch(`/Guardia/ObtenerEstudiante?id=${selectedEstudianteId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const estudiante = data.estudiantes;
+                    nombreInput.value = estudiante.nombres;
+                    apellidoInput.value = estudiante.apellidos;
+                    cedulaInput.value = estudiante.identificacion;
+                    gradoInput.value = estudiante.grado;
+                    imagen.style.backgroundImage = `url(/assets/media/avatars/${estudiante.imagenUrl})`;
+                    document.getElementById('estudianteCard').style.display = 'block';
+
+                    const autorizados = data.autorizados;
+
+
+                    for (let index = 0; index < [1, 2, 3, 4, 5, 6, 7].length; index++) {
+                        let div = document.getElementById(`estudianteCard${index}`);
+                        if (div != null) {
+                            
+
+                                div.remove();
+
+                            
+                        }
+
+                    }
+
+
+
+                    autorizados.map((x, index) => {
+                        const nombreAut1Input = document.getElementById('nombreAutorizado' + (index + 1));
+                        const apellidoAut1Input = document.getElementById('apellidoAutorizado' + (index + 1));
+                        const cedulaAut1Input = document.getElementById('cedulaAutorizado' + (index + 1));
+                        const parentescoAut1Input = document.getElementById('parentescoAutorizado' + (index + 1));
+                        const imagenAut1 = document.getElementById('imagenAutorizado' + (index + 1));
+                        nombreAut1Input.value = "";
+                        apellidoAut1Input.value = "";
+                        cedulaAut1Input.value = "";
+                        parentescoAut1Input.value = "";
+                        document.getElementById('representanteCard').style.display = 'none';
+                        document.getElementById('representanteCard2').style.display = 'none';
+                        document.getElementById('representanteCard3').style.display = 'none';
+                        document.getElementById('representanteCard4').style.display = 'none';
+                        document.getElementById('representanteCard5').style.display = 'none';
+                        imagenAut5.style.backgroundImage = ``;
+                        imagenAut1.style.backgroundImage = ``;
+                        imagenAut2.style.backgroundImage = ``;
+                        imagenAut3.style.backgroundImage = ``;
+                        imagenAut4.style.backgroundImage = ``;
+                        //document.getElementById('representanteCard').style.display = 'block';
+                    });
+
+
+
+
+                    if (autorizados.length > 0) {
+                        if (autorizados.length >= 1) {
+                            const autorizado1 = autorizados[0];
+                            nombreAut1Input.value = autorizado1.nombres;
+                            apellidoAut1Input.value = autorizado1.apellidos;
+                            cedulaAut1Input.value = autorizado1.identificacion;
+                            parentescoAut1Input.value = autorizado1.parentesco;
+                            imagenAut1.style.backgroundImage = "url('/assets/media/avatars/" + autorizado1.imagenUrl + "')";
+                            document.getElementById('representanteCard').style.display = 'block';
+                        }
+                        if (autorizados.length >= 2) {
+                            const autorizado2 = autorizados[1];
+                            nombreAut2Input.value = autorizado2.nombres;
+                            apellidoAut2Input.value = autorizado2.apellidos;
+                            cedulaAut2Input.value = autorizado2.identificacion;
+                            parentescoAut2Input.value = autorizado2.parentesco;
+                            imagenAut2.style.backgroundImage = "url('/assets/media/avatars/" + autorizado2.imagenUrl + "')";
+                            document.getElementById('representanteCard2').style.display = 'block';
+                        }
+                        if (autorizados.length >= 3) {
+                            const autorizado3 = autorizados[2];
+                            nombreAut3Input.value = autorizado3.nombres;
+                            apellidoAut3Input.value = autorizado3.apellidos;
+                            cedulaAut3Input.value = autorizado3.identificacion;
+                            parentescoAut3Input.value = autorizado3.parentesco;
+                            imagenAut3.style.backgroundImage = "url('/assets/media/avatars/" + autorizado3.imagenUrl + "')";
+                            document.getElementById('representanteCard3').style.display = 'block';
+                        }
+                        if (autorizados.length >= 4) {
+                            const autorizado4 = autorizados[3];
+                            nombreAut4Input.value = autorizado4.nombres;
+                            apellidoAut4Input.value = autorizado4.apellidos;
+                            cedulaAut4Input.value = autorizado4.identificacion;
+                            parentescoAut4Input.value = autorizado4.parentesco;
+                            imagenAut4.style.backgroundImage = "url('/assets/media/avatars/" + autorizado4.imagenUrl + "')";
+                            document.getElementById('representanteCard4').style.display = 'block';
+                        }
+                        if (autorizados.length >= 5) {
+                            const autorizado5 = autorizados[4];
+                            nombreAut5Input.value = autorizado5.nombres;
+                            apellidoAut5Input.value = autorizado5.apellidos;
+                            cedulaAut5Input.value = autorizado5.identificacion;
+                            parentescoAut5Input.value = autorizado5.parentesco;
+                            imagenAut5.style.backgroundImage = "url('/assets/media/avatars/" + autorizado5.imagenUrl + "')";
+                            document.getElementById('representanteCard5').style.display = 'block';
+                        }
+                    } else {
+                        document.getElementById('representanteCard').style.display = 'none';
+                    }
+                } else {
+                    console.error('Error al obtener los datos del estudiante');
+                }
+            } catch (error) {
+                console.error('Error en la solicitud AJAX', error);
+            }
+        } else if (autorizadoId) {
+            try {
+                const response = await fetch(`/Guardia/ObtenerAutorizadosPorEstudiante?id=${autorizadoId}`);
+                console.log(response);
+                if (response.ok) {
+
+                    //ocultar x
+                    document.getElementById('representanteCard').style.display = 'none';
+                    document.getElementById('representanteCard2').style.display = 'none';
+                    document.getElementById('representanteCard3').style.display = 'none';
+                    document.getElementById('representanteCard4').style.display = 'none';
+                    document.getElementById('representanteCard5').style.display = 'none';
+
+                    nombreInput.value = "";
+                    apellidoInput.value ="";
+                    cedulaInput.value = "";
+                    gradoInput.value = "";
+                    imagen.style.backgroundImage = ``;
+                    imagenAut1.style.backgroundImage = ``;
+                    //
+
+                    nombreAut1Input.value = "";
+                    apellidoAut1Input.value = "";
+                    cedulaAut1Input.value = "";
+                    parentescoAut1Input.value = "";
+
+                    const autorizado = await response.json();
+
+                    for (let index = 0; index < [1,2,3,4,5,6,7].length; index++) {
+                        let div = document.getElementById(`estudianteCard${index}`);
+                        if(div!=null){
+                          
+                                div.remove();
+                            
+                        }
+                      
+                    }
+                  
+
+                    for (let index = 0; index < autorizado?.data?.length; index++) {
+
+
+                        let obj = `  <div id="estudianteCard${index}" class="collapse show" style="display: none;">
+                                                <h1 class="fw-bold m-0">Estudiante</h1>
+                                                <div class="card-body border-top">
+                                                    <div class="row mb-6 align-items-center">
+                                                        <div class="col-lg-6">
+                                                            <div class="image-input image-input-outline">
+                                                                        <div id="imagenEstudiante`+ index + `" class="image-input-wrapper w-200px h-200px" style="background-image: url(/assets/media/avatars/${autorizado.data[index].imagenUrlEstudiante})"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="card-header border-0" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+                                                                <div class="card-title m-0 text-center">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                                        <input id="NombreEstudiante`+ index + `"  value="${autorizado.data[index].nombresEstudiante}"  type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Nombres" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                                                <input id="ApellidosEstudiante`+ index + `"  value="${autorizado.data[index].apellidosEstudiante}" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                                            <input id="CedulaEstudiante`+ index + `" type="text"  value="${autorizado.data[index].identificacionEstudiante}" name="company" class="form-control form-control-lg form-control-solid" placeholder="Cédula" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-6">
+                                                                <div class="col-lg-12 fv-row">
+                                                                                            <input id="GradoEstudiante`+ index + `"  value="${autorizado.data[index].gradoEstudiante}" type="text" name="company" class="form-control form-control-lg form-control-solid" placeholder="Grado" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>`;
+                        const subject = document.querySelector("#subject");
+                        subject.insertAdjacentHTML(
+                            "beforebegin",
+                            obj,
+                        );
+                        document.getElementById('estudianteCard' + index).style.display = 'block';
+
+                    }
+
+
+                    document.getElementById('estudianteCard').style.display = 'none';
+
+                    nombreAut1Input.value = autorizado.data[0].nombresAutorizado;
+                    apellidoAut1Input.value = autorizado.data[0].apellidosAutorizado;
+                    cedulaAut1Input.value = autorizado.data[0].identificacionAutorizado;
+                    parentescoAut1Input.value = autorizado.data[0].parentesco;
+                    imagenAut1.style.backgroundImage = `url(/assets/media/avatars/${autorizado.data[0].imagenAutorizado})`;
+                    document.getElementById('representanteCard').style.display = 'block';
+
+
+                    //nombreInput.value = autorizado.nombresEstudiante;
+                    //apellidoInput.value = autorizado.apellidosEstudiante;
+                    //cedulaInput.value = autorizado.identificacionEstudiante;
+                    //gradoInput.value = autorizado.gradoEstudiante;
+                    //imagen.style.backgroundImage = "url('/assets/media/avatars/"+autorizado.imagenUrlEstudiante+"')";
+                    //document.getElementById('estudianteCard').style.display = 'block';
+
+                    //nombreAut1Input.value = autorizado.nombresAutorizado;
+                    //apellidoAut1Input.value = autorizado.apellidosAutorizado;
+                    //cedulaAut1Input.value = autorizado.identificacionAutorizado;
+                    //parentescoAut1Input.value = autorizado.parentesco;
+                    //imagenAut1.style.backgroundImage = "url('/assets/media/avatars/"+autorizado.imagenAutorizado+"')";
+                    //document.getElementById('representanteCard').style.display = 'block';
+
+                } else {
+                    console.error('Error al obtener los datos del estudiante');
+                }
+            } catch (error) {
+                console.error('Error en la solicitud AJAX', error);
+            }
+        }
+    });
+
+    function limpiar() {
+        var estudianteSelect = document.getElementById("estudianteSelect");
+        var representanteSelect = document.getElementById("representanteSelect");
+        var estudianteCard = document.getElementById("estudianteCard");
+        var representanteCard = document.getElementById("representanteCard");
+
+        estudianteSelect.value = "";
+        representanteSelect.value = "";
+        $(estudianteSelect).trigger("change");
+        $(representanteSelect).trigger("change");
+        estudianteCard.style.display = "none";
+        representanteCard.style.display = "none";
+        representanteCard2.style.display = "none";
+        representanteCard3.style.display = "none";
+        representanteCard4.style.display = "none";
+        representanteCard5.style.display = "none";
+        for (let index = 0; index < [1, 2, 3, 4, 5, 6, 7].length; index++) {
+            let div = document.getElementById(`estudianteCard${index}`);
+            if (div != null) {
+                div.remove();
+            }
+        }
+    }
+
+    var limpiarBtn = document.getElementById("limpiarBtn");
+
+
+    limpiarBtn.addEventListener("click", function (event) {
+        limpiar();
+    });
+</script>

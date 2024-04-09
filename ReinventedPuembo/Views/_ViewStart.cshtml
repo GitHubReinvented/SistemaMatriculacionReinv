@@ -1,0 +1,8 @@
+﻿@using Application.Persistence
+@inject IKTTheme KTTheme;
+
+@{
+    //Layout = "_Layout";
+    Layout = KTTheme.GetView("Default.cshtml");
+}
+

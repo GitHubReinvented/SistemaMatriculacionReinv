@@ -1,0 +1,1335 @@
+@using Domain
+@model CardViewModel
+@{
+    var sucursal = @User.Claims.FirstOrDefault(c => c.Type == "Sucursal")?.Value;
+    ViewBag.Servicio = ViewData["Servicio"];
+    KTTheme.AddJavascriptFile("js/custom/card/TransporteE.js");
+    ViewBag.ListaEstudiantes = ViewData["ListaEstudiante"];
+
+}
+<script>
+    var formularioEnviado = false;
+</script>
+<style>
+
+</style>
+<!--begin::Card widget 18-->
+<div class="card card-flush">
+
+    <!--begin::Body-->
+    <div class="card-body py-9">
+        <!--begin::Row-->
+        <div class="row gx-9">
+            <!--begin::Col-->
+            <div class="col-sm-6 mb-10 mb-sm-0">
+                <!--begin::Image-->
+                <div class="bgi-no-repeat bgi-position-center bgi-size-contain card-rounded min-h-200px min-h-sm-100 h-100" style="background-image: none; position: relative;background-color: @Model.Color;">
+                    <i class="@Model.Icon" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 500%;"></i>
+                </div>
+                <!--end::Image-->
+            </div>
+            <!--end::Col-->
+            <!--begin::Col-->
+            <div class="col-sm-6">
+                <!--begin::Wrapper-->
+                <div class="d-flex flex-column">
+                    <!--begin::Header-->
+                    <div class="mb-7">
+                        <!--begin::Headin-->
+                        <div class="d-flex flex-stack mb-6">
+                            <!--begin::Title-->
+                            <div class="flex-shrink-0 me-5">
+                                <span class="text-gray-800 fs-1 fw-bold">@Model.Title</span>
+                            </div>
+                            <!--end::Title-->
+                            @*<span class="badge badge-light-primary flex-shrink-0 align-self-center py-3 px-4 fs-7">In Process</span>*@
+                        </div>
+                        <!--end::Heading-->
+                        <!--begin::Items-->
+                        <div class="d-flex align-items-center flex-wrap d-grid gap-2">
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center me-5 me-xl-13">
+                            </div>
+                            <!--end::Item-->
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center">
+                            </div>
+                            <!--end::Item-->
+                        </div>
+                        <span class="fw-semibold text-gray-600 fs-6 mb-8 d-block">@Model.Description</span>
+                        <!--end::Text-->
+                        <!--end::Items-->
+                    </div>
+                    <!--end::Header-->
+                    <!--begin::Body-->
+                    <div class="mb-6">
+                    </div>
+                    <!--end::Body-->
+                    <!--begin::Footer-->
+                    <div class="d-flex  mt-auto bd-highlight">
+                        @if (Model.Action != "" || Model.Controller != "")
+                        {
+                            <a asp-action="@Model.Action" asp-controller="@Model.Controller" asp-route-tipo="" class="btn btn-primary d-flex align-items-center opacity-75-hover fs-6 fw-semibold" disable>
+                                Registrar
+                            </a>
+                        }
+                        else
+                        {
+                            if (Model.Title.Contains("Alimentos"))
+                            {
+                                <a class="btn btn-secondary d-flex align-items-center opacity-75-hover fs-6 fw-semibold" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#ModalAlimento">
+                                    Mas información
+                                </a>
+                            }
+                            if (Model.Title.Contains("Uniforme"))
+                            {
+                                <a href="@Model.Param" target="_blank" class="btn btn-secondary d-flex align-items-center opacity-75-hover fs-6 fw-semibold" style="font-size: 10px;">
+                                    Mas información
+                                </a>
+                            }
+                            else if (Model.Title.Contains("Transporte"))
+                            {
+                                if (ViewBag.rutaEstudiante != null && ViewBag.rutaEstudiante.Count > 0)
+                                {
+                                    <a class="btn btn-secondary d-flex align-items-center opacity-75-hover fs-6 fw-semibold" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#miModalYaEnviado">
+                                        Servicio solicitado
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-primary fs-6 px-6 py-6" data-bs-toggle="modal" data-bs-target="#miModal">
+                                        Registrar
+                                    </a>
+                                }
+                            }
+                            else if (Model.Title.Contains("Seguro"))
+                            {
+                                <a class="btn btn-secondary d-flex align-items-center opacity-75-hover fs-6 fw-semibold" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#ModalSeguro">
+                                    Mas información
+                                </a>
+                            }
+
+                        }
+                        <!--end::Actions-->
+                    </div>
+                    <!--end::Footer-->
+                </div>
+                <!--end::Wrapper-->
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Row-->
+    </div>
+    <!--end::Body-->
+</div>
+
+<div class="modal fade" tabindex="-1" id="miModalYaEnviado">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Información enviada</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if (@User.Claims.FirstOrDefault(c => c.Type == "Sucursal")?.Value == "Puembo")
+                {
+                    <p>Hemos recibido tu solicitud de forma exitosa, si tienes alguna consulta adicional por favor escríbenos a <a href="mailto:transporte@reinventedpuembo.edu.ec">transporte@reinventedpuembo.edu.ec</a></p>
+                }
+                else
+                {
+                    <p>Hemos recibido tu solicitud de forma exitosa, si tienes alguna consulta adicional por favor escríbenos a <a href="mailto:transporte@reinventedsantaclara.edu.ec">transporte@reinventedsantaclara.edu.ec</a></p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="ModalAlimento">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Servicio de alimentos</h3>
+
+                <!--begin::close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="close">
+                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+                <!--end::close-->
+            </div>
+
+            <div class="modal-body">
+                <h4>Estamos trabajando en ofrecer el mejor servicio de alimentación en Reinvented @User.Claims.FirstOrDefault(c => c.Type == "Sucursal")?.Value, le enviaremos mayor información próximamente.</h4>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="ModalSeguro" >
+    <div class="modal-dialog modal-xl" style="max-width: 1400px; width: 100%; max-height: 90vh;">
+        <div class="modal-content" style="height: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Información de seguro</h3>
+
+                <!--begin::close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="close">
+                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+                <!--end::close-->
+            </div>
+
+            <div class="modal-body">
+                <object id="Info" data="/Docs/InformacionSeguro.pdf#toolbar=0" height="100%" width="100%"></object>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .estudiante-links {
+        display: flex; /* Muestra los enlaces en una línea */
+    }
+
+    .estudiante-link {
+        margin-right: 10px; /* Agrega un margen a la derecha para separar los enlaces */
+    }
+
+    .loading {
+        margin:50%;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 120px;
+        height: 120px;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 2s linear infinite;
+    }
+
+    /* Safari */
+    @@-webkit-keyframes spin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        var pasa=0;
+       
+        $('.estudiante-button').click(function () {
+       
+                var estudianteId = $(this).data('estudiante-id');
+                $('#idEst').val(estudianteId);
+          
+                cargarDetallesEstudiante(estudianteId);
+           
+            
+
+        });
+
+
+        function cargarDetallesEstudiante(estudianteId) {
+            pasa=1;
+            $.ajax({
+                url: '/Home/ObtenerDetallesEstudiante/' + estudianteId,
+                method: 'GET',
+                success: function (data) {
+                      pasa=0;
+                    $('#nombresCompletos').val(data.nombres + ' ' + data.apellidos);
+                    $('#nivelEscolar').val(data.nivelEscolar);
+                    $('#callePrincipal').val(data.callePrincipal);
+                    $('#calleSecundaria').val(data.calleSecundaria);
+                    $('#numero').val(data.numero);
+                    $('#idEst').val(estudianteId);
+                    $('#RegistradoFlag').val(data.regist);
+
+                    $('#AutorizaTerminosTranporte').prop('checked', false);
+                    if(data.regist==true)
+               {
+                        $('#btnSolicitarServicio').prop('disabled', true);
+                        
+                         $('#iconodatos').show();
+               }else{
+                   $('#iconodatos').hide();
+               }                    
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+    });
+</script>
+<!--end::Card widget 18-->
+
+<form asp-action="GuardarTransporte" asp-controller="Home" id="formtransporte" class="form" enctype="multipart/form-data">
+    <div class="modal fade" tabindex="-1" id="miModal">
+   
+        <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 1400px;width: 100%;">
+            <!-- Agrega la clase 'modal-lg' para un tamaño grande -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrar transporte </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                   
+                </div>
+                <div class="loading" id="loadingAA" style="display:none"></div>
+                <div class="modal-body" id="modalformtransporte">
+                    <a href="#" class="fs-4" onclick="CargaInformacionTransporte(@ViewBag.sucursalColegio)" data-bs-target="#ModalInformacionTransporte" data-bs-toggle="modal" data-bs-dismiss="modal">Más información transporte</a>
+                    <h3 style="padding-bottom:15px; padding-top: 30px;">
+                        <span>Datos del estudiante </span>
+                        <span>
+                            <i class="ki-duotone ki-user fs-2 text-success text-success fs-3x" id="iconodatos" style="display:none">
+                                <i class="path1"></i>
+                                <i class="path2"></i>
+                            </i>
+                        </span>
+                       
+                        </h3>
+                    <div class="row">
+                        <div>
+                            <h4 class="d-flex align-items-center">
+                                Seleccione el estudiante:
+                                <div class="btn-group">
+                                    @foreach (var estudiante in ViewBag.Estudiante)
+                                    {
+                                        <button type="button" class="btn btn-light estudiante-button" data-estudiante-id="@estudiante.Id">@estudiante.Nombres @estudiante.Apellidos</button>
+                                    }
+                                </div>
+                            </h4>
+                        </div>
+
+                        <div class="col-lg-6 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres completos</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="idEst" name="idEstudiante" type="hidden"/>
+                                    <input id="RegistradoFlag" name="RegistradoFlag" type="hidden" />
+                                    <input id="nombresCompletos" type="text" class="form-control form-control-lg form-control-solid" placeholder="Nombres completos" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Nivel Escolar</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="nivelEscolar" type="text" class="form-control form-control-lg form-control-solid" placeholder="Nivel Escolar" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Calle Principal</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="callePrincipal" type="text" class="form-control form-control-lg form-control-solid" placeholder="Calle Principal" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Número de casa</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="numero" type="text" class="form-control form-control-lg form-control-solid" placeholder="Número de casa" readonly/>
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Calle Secundaria</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input id="calleSecundaria" type="text" class="form-control form-control-lg form-control-solid" placeholder="Calle Secundaria" readonly/>
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Referencia</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input name="Referencia1" type="text" class="form-control form-control-lg form-control-solid" placeholder="Referencia" value="@(ViewBag.direccionEstudiante[0].Referencia ?? "")" />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Ubicación</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input name="linkGoogleMaps1" type="text" class="form-control form-control-lg form-control-solid" placeholder="Ingrese el link de google maps con la ubicación del domicilio" value="@(ViewBag.direccionEstudiante[0].linkGoogleMaps ?? "")" />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-3 col-form-label fw-semibold fs-6">Registrar otro domicilio?</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-4 fv-row">
+                            <div class="col-lg-3 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                <input class="form-check-input" type="checkbox" value="1" id="DomiciliosCheckChecked" />
+                                <label class="form-check-label" for="DomiciliosCheckChecked">
+                                    Sí
+                                </label>
+                            </div>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <div class="row mb-6" id="enfermedad-div" style="display: none;">
+
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Calle Principal</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="CallePrincipal2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Calle Principal" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Número de casa</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="Numero2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Número de casa" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Calle Secundaria</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="CalleSecundaria2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Calle Secundaria" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Referencia</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="Referencia2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Referencia" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Ubicación</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="linkGoogleMaps2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Ingrese el link de google maps con la ubicación del domicilio" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+
+                    <h3 style="padding-bottom:15px">Información para aplicación de rastreo</h3>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres del representante:</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    Nombres:
+                                    <input name="" type="text" class="form-control form-control-lg form-control-solid" placeholder="Nombres" value="@ViewBag.nombresRepresentante" readonly />
+                                    Apellidos:
+                                    <input name="" type="text" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" value="@ViewBag.apellidosRepresentante" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Correo electrónico:</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input name="" type="text" class="form-control form-control-lg form-control-solid" placeholder="Correo electrónico" value="@ViewBag.EmailRepresentante" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Número de telefono:</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input name="" type="text" class="form-control form-control-lg form-control-solid" placeholder="Número de telefono celular" value="@ViewBag.TelfRepresentante" readonly />
+                                </div>
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Identificación:</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input name="" type="text" class="form-control form-control-lg form-control-solid" placeholder="Identificacion" value="@ViewBag.numIdRepresentante" readonly />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-2 col-form-label fw-semibold fs-6">Agregar otro usuario:</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                            <input class="form-check-input" type="checkbox" value="1" id="Autorizado2CheckChecked" />
+                            <label class="form-check-label" for="Autorizado2CheckChecked">
+                                Sí
+                            </label>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+
+
+                    <div id="autorizado2-div" style="display: none">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres completos:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        Nombres:
+                                        <input name="NombresRastreo2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Nombres" />
+                                        Apellidos:
+                                        <input name="ApellidosRastreo2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Correo electrónico:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="EmailPrincipal2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Correo electrónico" />
+                                    </div>
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Seleccione el parentesco:</label>
+                                    <div class="form">
+                                        <select name="TipoRelacionId2" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                            <option value="">Seleccione</option>
+                                            <option value="3">Apoderado</option>
+                                            <option value="4">Hermano(a)</option>
+                                            <option value="5">Primo(a)</option>
+                                            <option value="6">Abuelo(a)</option>
+                                            <option value="7">Tío(a)</option>
+                                            <option value="8">Empleado domestico</option>
+                                        </select>
+                                    <!--end::Col-->
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Número de telefono:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="TelefonoMovil2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Número de telefono celular" />
+                                    </div>
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Identificación:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="Identificacion2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Identificacion" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-2 col-form-label fw-semibold fs-6">Agregar otro usuario:</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                <input class="form-check-input" type="checkbox" value="1" id="Autorizado3CheckChecked" />
+                                <label class="form-check-label" for="Autorizado3CheckChecked">
+                                    Sí
+                                </label>
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                    </div>
+                    <div id="autorizado3-div" style="display: none">
+
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres completos:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        Nombres:
+                                        <input name="NombresRastreo3" type="text" class="form-control form-control-lg form-control-solid" placeholder="Nombres" />
+                                        Apellidos:
+                                        <input name="ApellidosRastreo3" type="text" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Correo electrónico:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="EmailPrincipal3" type="text" class="form-control form-control-lg form-control-solid" placeholder="Correo electrónico" />
+                                    </div>
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Seleccione el parentesco:</label>
+                                    <div class="form">
+                                        <select name="TipoRelacionId2" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                            <option value="">Seleccione</option>
+                                            <option value="3">Apoderado</option>
+                                            <option value="4">Hermano(a)</option>
+                                            <option value="5">Primo(a)</option>
+                                            <option value="6">Abuelo(a)</option>
+                                            <option value="7">Tío(a)</option>
+                                            <option value="8">Empleado domestico</option>
+                                        </select>
+                                        @*<label for="floatingSelect">Parentesco</label>*@
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Número de telefono:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="TelefonoMovil3" type="text" class="form-control form-control-lg form-control-solid" placeholder="Número de telefono celular" />
+                                    </div>
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Identificación:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="Identificacion3" type="text" class="form-control form-control-lg form-control-solid" placeholder="Identificacion" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="padding-bottom: 15px">Personas autorizadas a recibir al estudiante:</h3>
+                    <div class="row mb-6">
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres completos:</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    Nombres:
+                                    <input name="NombresAutorizado1" type="text" class="form-control form-control-lg form-control-solid" placeholder="Nombres" />
+                                    Apellidos:
+                                    <input name="ApellidosAutorizado1" type="text" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Correo electrónico:</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input name="EmailAutorizado1" type="text" class="form-control form-control-lg form-control-solid" placeholder="Correo electrónico" />
+                                </div>
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Seleccione el parentesco:</label>
+                                <div class="form">
+                                    <select name="TipoRelacionAutorizado1" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                        <option value="">Seleccione</option>
+                                        <option value="3">Apoderado</option>
+                                        <option value="4">Hermano(a)</option>
+                                        <option value="5">Primo(a)</option>
+                                        <option value="6">Abuelo(a)</option>
+                                        <option value="7">Tío(a)</option>
+                                        <option value="8">Empleado domestico</option>
+                                    </select>
+                                    @*<label for="floatingSelect">Parentesco</label>*@
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Celular:</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input name="TelefonoMovilAutorizado1" type="text" class="form-control form-control-lg form-control-solid" placeholder="Número teléfono celular" />
+                                </div>
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Identificación:</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-8 fv-row">
+                                    <input name="IdentificacionAutorizado1" type="text" class="form-control form-control-lg form-control-solid" placeholder="Identificacion" />
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto del autorizado:</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-3 col-md-6 col-sm-6">
+                                    <!--begin::Image input-->
+                                    <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))">
+                                        <!--begin::Preview existing avatar-->
+                                        <div class="image-input-wrapper w-100px h-100px" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))"></div>
+                                        <!--end::Preview existing avatar-->
+                                        <!--begin::Label-->
+                                        <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                            <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                            <!--begin::Inputs-->
+                                            <input type="file" name="AvatarAutorizado1" accept=".png, .jpg, .jpeg" />
+                                            <input type="hidden" name="avatar_remove" />
+                                            <!--end::Inputs-->
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Cancel-->
+                                        <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                            <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                        </span>
+                                        <!--end::Cancel-->
+                                        <!--begin::Remove-->
+                                        <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover imagen">
+                                            <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                        </span>
+                                        <!--end::Remove-->
+                                    </div>
+                                    <!--end::Image input-->
+                                    <!--begin::Hint-->
+                                    <div class="form-text">Tipos permitidos: png, jpg, jpeg.</div>
+                                    <!--end::Hint-->
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <!--begin::Label-->
+                            <label class="col-lg-2 col-form-label fw-semibold fs-6">Agregar otro autorizado:</label>
+                            <!--end::Label-->
+                            <!--begin::Col-->
+                            <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                <input class="form-check-input" type="checkbox" value="1" id="RecibirEst1CheckChecked" />
+                                <label class="form-check-label" for="RecibirEst1CheckChecked">
+                                    Sí
+                                </label>
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                    </div>
+                    <div id="autorizadoRetirar2-div" style="display:none">
+                        <div class="row mb-6">
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres completos:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        Nombres:
+                                        <input name="NombresAutorizado2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Nombres" />
+                                        Apellidos:
+                                        <input name="ApellidosAutorizado2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Correo electrónico:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="EmailAutorizado2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Correo electrónico" />
+                                    </div>
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Seleccione el parentesco:</label>
+                                    <div class="form">
+                                        <select name="TipoRelacionAutorizado2" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                            <option value="">Seleccione</option>
+                                            <option value="3">Apoderado</option>
+                                            <option value="4">Hermano(a)</option>
+                                            <option value="5">Primo(a)</option>
+                                            <option value="6">Abuelo(a)</option>
+                                            <option value="7">Tío(a)</option>
+                                            <option value="8">Empleado domestico</option>
+                                        </select>
+                                        @*<label for="floatingSelect">Parentesco</label>*@
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Celular</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="TelefonoMovilAutorizado2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Número de telefono celular:" />
+                                    </div>
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Identificación:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="IdentificacionAutorizado2" type="text" class="form-control form-control-lg form-control-solid" placeholder="Identificacion" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto del autorizado:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-3 col-md-6 col-sm-6">
+                                        <!--begin::Image input-->
+                                        <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))">
+                                            <!--begin::Preview existing avatar-->
+                                            <div class="image-input-wrapper w-100px h-100px" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))"></div>
+                                            <!--end::Preview existing avatar-->
+                                            <!--begin::Label-->
+                                            <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                                <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                                <!--begin::Inputs-->
+                                                <input type="file" name="AvatarAutorizado2" accept=".png, .jpg, .jpeg" />
+                                                <input type="hidden" name="avatar_remove" />
+                                                <!--end::Inputs-->
+                                            </label>
+                                            <!--end::Label-->
+                                            <!--begin::Cancel-->
+                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                                <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                            </span>
+                                            <!--end::Cancel-->
+                                            <!--begin::Remove-->
+                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover imagen">
+                                                <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                            </span>
+                                            <!--end::Remove-->
+                                        </div>
+                                        <!--end::Image input-->
+                                        <!--begin::Hint-->
+                                        <div class="form-text">Tipos permitidos: png, jpg, jpeg.</div>
+                                        <!--end::Hint-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-3 col-form-label fw-semibold fs-6">Agregar otro autorizado:</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                    <input class="form-check-input" type="checkbox" value="1" id="RecibirEst2CheckChecked" />
+                                    <label class="form-check-label" for="RecibirEst2CheckChecked">
+                                        Sí
+                                    </label>
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                    </div>
+                    <div id="autorizadoRetirar3-div" style="display:none">
+                        <div class="row mb-6">
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres completos:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        Nombres:
+                                        <input name="NombresAutorizado3" type="text" class="form-control form-control-lg form-control-solid" placeholder="Nombres" />
+                                        Apellidos:
+                                        <input name="ApellidosAutorizado3" type="text" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Correo electrónico:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="EmailAutorizado3" type="text" class="form-control form-control-lg form-control-solid" placeholder="Correo electrónico" />
+                                    </div>
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Seleccione el parentesco:</label>
+                                    <div class="form">
+                                        <select name="TipoRelacionAutorizado3" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                            <option value="">Seleccione</option>
+                                            <option value="3">Apoderado</option>
+                                            <option value="4">Hermano(a)</option>
+                                            <option value="5">Primo(a)</option>
+                                            <option value="6">Abuelo(a)</option>
+                                            <option value="7">Tío(a)</option>
+                                            <option value="8">Empleado domestico</option>
+                                        </select>
+                                        @*<label for="floatingSelect">Parentesco</label>*@
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Celular:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="TelefonoMovilAutorizado3" type="text" class="form-control form-control-lg form-control-solid" placeholder="Número de telefono celular" />
+                                    </div>
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Identificación:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="IdentificacionAutorizado3" type="text" class="form-control form-control-lg form-control-solid" placeholder="Identificacion" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto del autorizado:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-3 col-md-6 col-sm-6">
+                                        <!--begin::Image input-->
+                                        <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))">
+                                            <!--begin::Preview existing avatar-->
+                                            <div class="image-input-wrapper w-100px h-100px" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))"></div>
+                                            <!--end::Preview existing avatar-->
+                                            <!--begin::Label-->
+                                            <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                                <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                                <!--begin::Inputs-->
+                                                <input type="file" name="AvatarAutorizado3" accept=".png, .jpg, .jpeg" />
+                                                <input type="hidden" name="avatar_remove" />
+                                                <!--end::Inputs-->
+                                            </label>
+                                            <!--end::Label-->
+                                            <!--begin::Cancel-->
+                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                                <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                            </span>
+                                            <!--end::Cancel-->
+                                            <!--begin::Remove-->
+                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover imagen">
+                                                <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                            </span>
+                                            <!--end::Remove-->
+                                        </div>
+                                        <!--end::Image input-->
+                                        <!--begin::Hint-->
+                                        <div class="form-text">Tipos permitidos: png, jpg, jpeg.</div>
+                                        <!--end::Hint-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <!--begin::Label-->
+                                <label class="col-lg-3 col-form-label fw-semibold fs-6">Agregar otro usuario:</label>
+                                <!--end::Label-->
+                                <!--begin::Col-->
+                                <div class="col-lg-2 form-check form-check-custom form-check-solid" style="padding-left: 10px;">
+                                    <input class="form-check-input" type="checkbox" value="1" id="RecibirEst3CheckChecked" />
+                                    <label class="form-check-label" for="RecibirEst3CheckChecked">
+                                        Sí
+                                    </label>
+                                </div>
+                                <!--end::Col-->
+                            </div>
+                        </div>
+                    </div>
+                    <div id="autorizadoRetirar4-div" style="display:none">
+                        <div class="row mb-6">
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Nombres completos:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        Nombres:
+                                        <input name="NombresAutorizado4" type="text" class="form-control form-control-lg form-control-solid" placeholder="Nombres" />
+                                        Apellidos:
+                                        <input name="ApellidosAutorizado4" type="text" class="form-control form-control-lg form-control-solid" placeholder="Apellidos" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Correo electrónico:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="EmailAutorizado4" type="text" class="form-control form-control-lg form-control-solid" placeholder="Dirección del domicilio" />
+                                    </div>
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Seleccione el parentesco:</label>
+                                    <div class="form">
+                                        <select name="TipoRelacionAutorizado4" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                            <option value="">Seleccione</option>
+                                            <option value="3">Apoderado</option>
+                                            <option value="4">Hermano(a)</option>
+                                            <option value="5">Primo(a)</option>
+                                            <option value="6">Abuelo(a)</option>
+                                            <option value="7">Tío(a)</option>
+                                            <option value="8">Empleado domestico</option>
+                                        </select>
+                                        @*<label for="floatingSelect">Parentesco</label>*@
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Celular:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="TelefonoMovilAutorizado4" type="text" class="form-control form-control-lg form-control-solid" placeholder="Número de teléfono celular" />
+                                    </div>
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Identificación:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-8 fv-row">
+                                        <input name="IdentificacionAutorizado4" type="text" class="form-control form-control-lg form-control-solid" placeholder="Identificacion" />
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="row mb-6">
+                                    <!--begin::Label-->
+                                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Foto del autorizado:</label>
+                                    <!--end::Label-->
+                                    <!--begin::Col-->
+                                    <div class="col-lg-3 col-md-6 col-sm-6">
+                                        <!--begin::Image input-->
+                                        <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))">
+                                            <!--begin::Preview existing avatar-->
+                                            <div class="image-input-wrapper w-100px h-100px" style="background-image: url(@KTTheme.GetAssetPath("media/avatars/blank.png"))"></div>
+                                            <!--end::Preview existing avatar-->
+                                            <!--begin::Label-->
+                                            <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Insertar imagen">
+                                                <i class="ki-duotone ki-pencil fs-7 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                                <!--begin::Inputs-->
+                                                <input type="file" name="AvatarAutorizado4" accept=".png, .jpg, .jpeg" />
+                                                <input type="hidden" name="avatar_remove" />
+                                                <!--end::Inputs-->
+                                            </label>
+                                            <!--end::Label-->
+                                            <!--begin::Cancel-->
+                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                                <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                            </span>
+                                            <!--end::Cancel-->
+                                            <!--begin::Remove-->
+                                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover imagen">
+                                                <i class="ki-duotone ki-cross fs-2 text-light"><span class="path1"></span><span class="path2"></span></i>
+                                            </span>
+                                            <!--end::Remove-->
+                                        </div>
+                                        <!--end::Image input-->
+                                        <!--begin::Hint-->
+                                        <div class="form-text">Tipos permitidos: png, jpg, jpeg.</div>
+                                        <!--end::Hint-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (ViewBag.sucursalColegio == 1)
+                    {
+                        <p class="fs-5">Para mayor información, contáctate con coordinación de transporte al correo transporte@reinventedpuembo.edu.ec </p>
+                    }
+                    @if (ViewBag.sucursalColegio == 2)
+                    {
+                        <p class="fs-5">Para mayor información, contáctate con coordinación de transporte al correo transporte@reinventedsantaclara.edu.ec </p>
+                            
+                     }
+                </div>
+                <div class="container">
+                  
+                    <div class="row">
+                        
+                        <div class="col-md-2" >
+                            <button type="button" class="btn btn-secondary float-start" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+
+                        <div class="col-md-8" align="right">
+                            He leído y acepto los términos y condiciones del servicio
+                            <input type="checkbox" id="AutorizaTerminosTranporte" onclick="AceptaTerminosTransporte()" />
+                            <a href="#" onclick="CargaCondiciones(@ViewBag.sucursalColegio)" data-bs-target="#ModalTerminosTransporte" data-bs-toggle="modal" data-bs-dismiss="modal">Términos y condiciones</a>
+                        </div>
+
+                        <div class="col-md-2">
+                            @*enviarFormulario*@
+                            <button type="submit" class="btn btn-primary" id="btnSolicitarServicio" disabled >Solicitar el servicio</button>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="modal" tabindex="-1" id="ModalInformacionTransporte" style="z-index:18000;">
+    <div class="modal-xl modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                
+            </div>
+            <!--el contenido carga al dar click en link términos y condiciones-->
+            <div class="modal-body" style="height:80vh;width:100%;">
+                <object id="InfoTransporte" data="" height="100%" width="100%"></object>
+            </div>
+            <div class="modal-footer">
+                <!--button-- type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</!--button-->
+                <button class="btn btn-primary" data-bs-target="#miModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" tabindex="-1" id="ModalTerminosTransporte" style="z-index:18000;">
+    <div class="modal-xl modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                
+            </div>
+            <!--el contenido carga al dar click en link términos y condiciones-->
+            <div class="modal-body" style="height:80vh;width:100%;">
+                <object id="TerminosTransporte" data="" height="100%" width="100%"></object>
+            </div>
+            <div class="modal-footer">
+                <!--button-- type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</!--button-->
+                <button class="btn btn-primary" data-bs-target="#miModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function enviarFormulario() {
+       
+            // Aquí puedes agregar el código para enviar el formulario por JavaScript, si es necesario.
+            // Por ejemplo, si utilizas jQuery para enviar el formulario:
+
+
+       
+       
+             // Se marca el formulario como enviado
+
+    }
+
+    function setVisible(selector, visible) {
+        document.getElementById(selector).style.display = visible ? 'block' : 'none';
+    }
+
+    $("#formtransporte").submit(function (e) {
+        e.preventDefault();
+        var parametros = new FormData($(this)[0])
+
+        setVisible('modalformtransporte', false);
+        setVisible('loadingAA', true);
+        $.ajax({
+            dataType: 'json',
+            type: "POST",
+            url: './Home/GuardarTransporte',
+            contentType: false,
+            processData: false,
+            data: parametros,
+            success: function (ret) {
+                try{
+                
+                    setVisible('modalformtransporte', true);
+                    setVisible('loadingAA', false);
+                    if(ret.data=="OK"){
+                        toastr["success"](ret.data, "OK");
+                    }else{
+                         toastr["warning"](ret.data, "ERROR");
+                    }
+                    $('#AutorizaTerminosTranporte').prop('checked', false);
+                    $('#btnSolicitarServicio').prop('disabled', true);
+                    formularioEnviado = true;
+                }catch(e){
+                   toastr["warning"](e, "ERROR");
+                    setVisible('loadingAA', false);
+                    setVisible('modalformtransporte', true);
+                }
+            },
+            error: function (jqXHR) {
+
+                console.log(jqXHR);
+                toastr["warning"](jqXHR, "ERROR");
+                setVisible('loadingAA', false);
+            setVisible('modalformtransporte', true);
+            }
+        });
+
+    });
+   
+    function abrirModalRegistro() {
+        if(!formularioEnviado){
+        $('#miModal').modal('show'); // Muestra el modal de registro de transporte
+        }else{
+        $('#miModalYaEnviado').modal('show');
+        }
+    }
+
+    function AceptaTerminosTransporte() {
+
+        if ($('#AutorizaTerminosTranporte').is(':checked')) {
+            $('#btnSolicitarServicio').prop('disabled', false); //TO ENABLE
+          
+            if ($('#RegistradoFlag').val()=='true') {
+                 $('#btnSolicitarServicio').prop('disabled', true); 
+            }
+        }
+        else
+            $('#btnSolicitarServicio').prop('disabled', true); //TO disabled
+    }
+
+
+
+
+    function CargaCondiciones(codigoSucursal) {
+
+        var urlBase = '@ViewBag.BaseUri';
+
+        $("#TerminosTransporte").attr("data", urlBase + 'Docs/TerminosTransporte' + codigoSucursal + '.pdf');
+
+
+        setTimeout(function () {
+            $('#ModalTerminosTransporte').modal('show');
+
+        }, 1000);
+
+
+    }
+
+    function CargaInformacionTransporte(codigoSucursal) {
+        debugger
+        var urlBase = '@ViewBag.BaseUri';
+
+        $("#InfoTransporte").attr("data", urlBase + 'Docs/InformacionTransporte' + codigoSucursal + '.pdf');
+
+        setTimeout(function () {
+            $('#ModalInformacionTransporte').modal('show');
+
+        }, 1000);
+
+    }
+
+
+
+</script>

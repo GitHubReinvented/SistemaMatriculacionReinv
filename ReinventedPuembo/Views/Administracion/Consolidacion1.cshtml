@@ -1,0 +1,191 @@
+﻿@using Domain;
+@model IReadOnlyList<ConsolidacionViewModel>;
+@{
+    KTTheme.AddJavascriptFile("js/custom/tables/TablaConsolidacion.js");
+
+}
+
+<div class="card mb-5 mb-xl-8">
+    <!--begin::Header-->
+    <div class="card-header border-0 pt-5">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Consolidación</span>
+        </h3>
+        <div class="card-toolbar">
+            <!--begin::Search-->
+            <div class="position-relative my-1">
+                @Html.Raw(KTTheme.GetIcon("magnifier", "fs-2 position-absolute top-50 translate-middle-y ms-4"))
+                <input type="text" data-consolidacionTable="search" class="form-control w-150px fs-7 ps-12" placeholder="Buscar" />
+            </div>
+            <!--end::Search-->
+        </div>
+    </div>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div class="card-body py-3">
+        <!--begin::Table container-->
+        <div class="table-responsive">
+            <!--begin::Table-->
+            <table class="table align-middle gs-0 gy-4" id="consolidacionTable">
+                <!--begin::Table head-->
+                <thead>
+                    <tr class="fw-bold text-muted bg-light">
+                        <th class="ps-4 min-w-150px rounded-start">Representante</th>
+                        <th class="min-w-125px">Estudiante</th>
+                        <th class="min-w-125px">Sucursal</th>
+                        <th class="min-w-125px">Estado</th>
+                        <th class="min-w-100px text-center">Acciones</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <!--end::Table head-->
+                <!--begin::Table body-->
+                <tbody>
+                    @foreach (var representante in Model)
+                   {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="d-flex justify-content-start flex-column">
+                                    <a class="text-dark fw-bold text-hover-primary mb-1 fs-6">@representante.Nombre @representante.Apellido</a>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                                <a class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">@representante.NombreEstudiante @representante.ApellidoEstudiante</a>
+                        </td>
+                        <td>
+                                <a class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">@representante.Sucursal</a>
+                        </td>
+                        <td>
+                                @*<span class="badge badge-light-primary fs-7 fw-bold">Approved</span>*@
+                                <span class="badge badge-light-primary fs-7 fw-bold">@representante.Estado</span>
+                        </td>
+
+                        <td class="text-center">
+
+                                <a class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm" data-bs-toggle="modal" data-bs-target="#Pendientes">
+                                    <i class="fas fa-solid fa-receipt fs-2"></i>
+                                </a>
+                                <a class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#Transferencia">
+                                    <i class="fas fa-solid fa-money-bill-transfer fs-2"></i>
+                                </a>
+                                <a class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm" data-bs-toggle="modal" data-bs-target="#Seguro">
+                                    <i class="fas fa-solid fa-user-shield fs-2"></i>
+                                </a>
+                        </td>
+                        <td></td>
+                    </tr>
+                    }
+                  
+                </tbody>
+                <!--end::Table body-->
+            </table>
+            <!--end::Table-->
+        </div>
+        <!--end::Table container-->
+    </div>
+    <!--begin::Body-->
+</div>
+
+
+<div class="modal fade" tabindex="-1" id="Pendientes">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <!-- Agrega la clase 'modal-lg' para un tamaño grande -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Obligaciones pendientes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-6">
+                    <!--begin::Label-->
+                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Obligaciones</label>
+                    <!--end::Label-->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" id="Transferencia">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <!-- Agrega la clase 'modal-lg' para un tamaño grande -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Transferencia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-6">
+                    <!--begin::Label-->
+                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Transferencia</label>
+                    <!--end::Label-->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="Seguro">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <!-- Agrega la clase 'modal-lg' para un tamaño grande -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Seguro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-6">
+                    <!--begin::Label-->
+                    <!--end::Label-->
+                </div>
+                <div class="row mb-6">
+                    <!--begin::Label-->
+                    <label class="col-lg-4 col-form-label fw-semibold fs-6">Justificación del por que no acepta el seguro escolar</label>
+                    <!--end::Label-->
+                    <!--begin::Col-->
+                    <div class="col-lg-8">
+                        <!--begin::Row-->
+                        <div class="row">
+@*                            @foreach (var representante in Model)
+                   {
+                                <!--begin::Col-->
+                                @if (@representante.JustificacionNoSeguro == "")
+                                {
+                                <div class="col-lg-6 fv-row">
+
+                                        <input type="text" name="Apellidos" id="apellidosEst" class="form-control form-control-lg form-control-solid" maxlength="70" readonly />
+                                    </div>
+                                    }
+                                    else
+                                    {
+                                    <div class="col-lg-6 fv-row">
+
+                                        <input type="text" name="Apellidos" id="apellidosEst" class="form-control form-control-lg form-control-solid" maxlength="70" value="@representante.JustificacionNoSeguro" readonly />
+                                    </div>
+                                    }
+                   }*@
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Row-->
+                    </div>
+                    <!--end::Col-->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
